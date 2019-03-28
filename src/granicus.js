@@ -13,7 +13,10 @@
 	var fnPday = fortnightPrior.getUTCDate();
 	var fnPyear = fortnightPrior.getUTCFullYear();
 	var fnPnewdate = fnPyear + "-" + fnPmonth + "-" + fnPday;
-
+    var myHeaders = new Headers();
+    myHeaders.append('X-AUTH-TOKEN', key)
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/hal+json')
 
     // Define the schema
     myConnector.getSchema = function(schemaCallback) {
@@ -43,12 +46,7 @@
 		  columns: cols
     };
     schemaCallback([schemas]);
-    };
-
-    let myHeaders = new Headers();
-    myHeaders.append('X-AUTH-TOKEN', key)
-    myHeaders.append('Content-Type', 'application/json')
-    myHeaders.append('Accept', 'application/hal+json')
+    }
     
     myConnector.getData = function(table, doneCallback) {
     // var dates = tableau.connectionData.split(';')[1];
