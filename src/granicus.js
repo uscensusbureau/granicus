@@ -85,11 +85,11 @@
             // )
             // FOR OBJECT:
             table.appendRows(
-                {
+                [{
                     total_subscribers: jn.total_subscribers,
                     deleted_subscribers: jn.deleted_subscribers,
                     direct_subscribers: jn.direct_subscribers
-                }
+                }]
             )
             doneCallback()
         }
