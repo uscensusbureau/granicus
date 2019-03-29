@@ -36,14 +36,14 @@
             dataType: tableau.dataTypeEnum.int
 		}];
 
-         var schemas = {
-		  id: "subscribers",
-		  alias:
-			"Subscribers: " +
-			fnPnewdate +
-			" - end: " +
-			newdate,
-		  columns: cols
+        var schemas = {
+        id: "subscribers",
+        alias:
+        "Subscribers: " +
+        fnPnewdate +
+        " - end: " +
+        newdate,
+        columns: cols
     };
     schemaCallback([schemas]);
     }
@@ -52,7 +52,12 @@
     // var dates = tableau.connectionData.split(';')[1];
 
         var apiCall =
-        `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/reports/subscriber_activity/summary?start_date=${fnPnewdate}&end_date=${newdate}`
+        "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
+        + account +
+        "/reports/subscriber_activity/summary?start_date="
+        + fnPnewdate +
+        "&end_date="
+        + newdate
 
         // tableau.log("dates: " + dates);
         tableau.log("api call: " + apiCall);
