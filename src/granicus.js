@@ -46,12 +46,12 @@
     
     myConnector.getData = function(table, doneCallback) {
     // var dates = tableau.connectionData.split(';')[1];
-        var myHeaders = new Headers();
-        myHeaders.append('X-AUTH-TOKEN', key)
-        myHeaders.append('Content-Type', 'application/json')
-        myHeaders.append('Accept', 'application/hal+json')
         var account = $('#accountID').val().trim();
         var key = $('#apiKey').val().trim();
+        var req = new XMLHttpRequest()
+        req.setRequestHeader('X-AUTH-TOKEN', key)
+        req.setRequestHeader('Content-Type', 'application/json')
+        req.setRequestHeader('Accept', 'application/hal+json')
         var apiCall =
         "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
         + account +
@@ -62,28 +62,45 @@
 
         // tableau.log("dates: " + dates);
         tableau.log("api call: " + apiCall);
-
-        fetch(apiCall,
-            {
-                method: "GET",
-                headers: myHeaders
-            })
-            .then(function(r) { 
-                return r.json()
-            })
-            .then(function(j) { 
-            tableau.log("resp: " + j);
+        
+        req.open("GET", apiCall, true)
+        req.onload = function() {
+            var res = req.response
+            var jn = JSON.parse(res)
+            tableau.log("resp: " + jn);
             table.appendRows(
-            j.map(function(result) {
-                return {
-                    total_subscribers: result.sources.total_subscribers,
-                    deleted_subscribers: result.sources.deleted_subscribers,
-                    direct_subscribers: result.sources.direct_subscribers
-                };
-            })
+                jn.map(function(result) {
+                    return {
+                        total_subscribers: result.total_subscribers,
+                        deleted_subscribers: result.deleted_subscribers,
+                        direct_subscribers: result.direct_subscribers
+                    };
+                })
             )
-            doneCallback();
-        })
+        }
+            
+        req.send()
+        // fetch(apiCall,
+        //     {
+        //         method: "GET",
+        //         headers: myHeaders
+        //     })
+        //     .then(function(r) { 
+        //         return r.json()
+        //     })
+        //     .then(function(j) { 
+        //     tableau.log("resp: " + j);
+        //     table.appendRows(
+        //     j.map(function(result) {
+        //         return {
+        //             total_subscribers: result.total_subscribers,
+        //             deleted_subscribers: result.deleted_subscribers,
+        //             direct_subscribers: result.direct_subscribers
+        //         };
+        //     })
+        //     )
+        //     doneCallback();
+        // })
     };
 
     tableau.registerConnector(myConnector);
