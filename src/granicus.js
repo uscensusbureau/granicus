@@ -11,7 +11,10 @@
 	var fnPmonth = fortnightPrior.getUTCMonth() + 1;
 	var fnPday = fortnightPrior.getUTCDate();
 	var fnPyear = fortnightPrior.getUTCFullYear();
-	var fnPnewdate = fnPyear + "-" + fnPmonth + "-" + fnPday;
+    var fnPnewdate = fnPyear + "-" + fnPmonth + "-" + fnPday;
+    var req = new XMLHttpRequest()
+    req.setRequestHeader('Content-Type', 'application/json')
+    req.setRequestHeader('Accept', 'application/hal+json')
 
 
     // Define the schema
@@ -48,10 +51,7 @@
     // var dates = tableau.connectionData.split(';')[1];
         var account = $('#accountID').val().trim();
         var key = $('#apiKey').val().trim();
-        var req = new XMLHttpRequest()
         req.setRequestHeader('X-AUTH-TOKEN', key)
-        req.setRequestHeader('Content-Type', 'application/json')
-        req.setRequestHeader('Accept', 'application/hal+json')
         var apiCall =
         "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
         + account +
