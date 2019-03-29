@@ -67,7 +67,10 @@
                 method: "GET",
                 headers: myHeaders
             })
-            .then(r => r.json()).then(j => {
+            .then(function(r) { 
+                return r.json()
+            })
+            .then( function(j) { 
             tableau.log("resp: " + j);
             table.appendRows(
             j.map(function(result) {
