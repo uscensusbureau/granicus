@@ -45,9 +45,12 @@
     // var dates = tableau.connectionData.split(';')[1];
         // var account = $('#accountID').val().trim();
         // var key = $('#apiKey').val().trim();
+        var data = JSON.parse(tableau.connectionData)
+        var account = data[0]
+        var key = data[1]
         var apiCall =
         "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
-        + tableau.account +
+        + account +
         "/reports/subscriber_activity/summary?start_date="
         + fnPnewdate +
         "&end_date="
@@ -58,7 +61,7 @@
         req.open("GET", apiCall, true)
         req.setRequestHeader('Content-Type', 'application/json')
         req.setRequestHeader('Accept', 'application/hal+json')
-        req.setRequestHeader('X-AUTH-TOKEN', tableau.key)
+        req.setRequestHeader('X-AUTH-TOKEN', key)
 
 
         // tableau.log("dates: " + dates);
@@ -119,8 +122,10 @@
     // Create event listeners for when the user submits the form
     $(document).ready(function() {
         $("#submitButton").click(function() {
-            tableau.account = $('#accountID').val().trim();
-            tableau.key = $('#apiKey').val().trim();
+            var pass = []
+            pass.push( $('#accountID').val().trim() )
+            pass.push( $('#apiKey').val().trim() )
+            tableau.connectionData = JSON.stringify(pass)
             tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
             tableau.submit(); // This sends the connector object to Tableau
         });
