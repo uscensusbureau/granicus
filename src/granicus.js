@@ -1,7 +1,6 @@
 (function() {
     // Create the connector object
-    var account = $('#accountID').val().trim();
-    var key = $('#apiKey').val().trim();
+
 	var myConnector = tableau.makeConnector();
 	var dateObj = new Date();
 	var month = dateObj.getUTCMonth() + 1; //jan = 0
@@ -13,10 +12,7 @@
 	var fnPday = fortnightPrior.getUTCDate();
 	var fnPyear = fortnightPrior.getUTCFullYear();
 	var fnPnewdate = fnPyear + "-" + fnPmonth + "-" + fnPday;
-    var myHeaders = new Headers();
-    myHeaders.append('X-AUTH-TOKEN', key)
-    myHeaders.append('Content-Type', 'application/json')
-    myHeaders.append('Accept', 'application/hal+json')
+
 
     // Define the schema
     myConnector.getSchema = function(schemaCallback) {
@@ -50,7 +46,12 @@
     
     myConnector.getData = function(table, doneCallback) {
     // var dates = tableau.connectionData.split(';')[1];
-
+        var myHeaders = new Headers();
+        myHeaders.append('X-AUTH-TOKEN', key)
+        myHeaders.append('Content-Type', 'application/json')
+        myHeaders.append('Accept', 'application/hal+json')
+        var account = $('#accountID').val().trim();
+        var key = $('#apiKey').val().trim();
         var apiCall =
         "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
         + account +
@@ -70,7 +71,7 @@
             .then(function(r) { 
                 return r.json()
             })
-            .then( function(j) { 
+            .then(function(j) { 
             tableau.log("resp: " + j);
             table.appendRows(
             j.map(function(result) {
