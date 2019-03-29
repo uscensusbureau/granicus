@@ -77,18 +77,18 @@
             // table.appendRows(
             //     jn.map(function(result) {
             //         return {
-            //             total_subscribers: result.total_subscribers,
-            //             deleted_subscribers: result.deleted_subscribers,
-            //             direct_subscribers: result.direct_subscribers
+            //             "total_subscribers" : result.total_subscribers,
+            //             "deleted_subscribers" : result.deleted_subscribers,
+            //             "direct_subscribers" : result.direct_subscribers
             //         };
             //     })
             // )
             // FOR OBJECT:
             table.appendRows(
                 [{
-                    total_subscribers: jn.total_subscribers,
-                    deleted_subscribers: jn.deleted_subscribers,
-                    direct_subscribers: jn.direct_subscribers
+                    "total_subscribers": jn.total_subscribers,
+                    "deleted_subscribers": jn.deleted_subscribers,
+                    "direct_subscribers": jn.direct_subscribers
                 }]
             )
             doneCallback()
@@ -108,9 +108,9 @@
         //     table.appendRows(
         //     j.map(function(result) {
         //         return {
-        //             total_subscribers: result.total_subscribers,
-        //             deleted_subscribers: result.deleted_subscribers,
-        //             direct_subscribers: result.direct_subscribers
+        //             "total_subscribers" : result.total_subscribers,
+        //             "deleted_subscribers" : result.deleted_subscribers,
+        //             "direct_subscribers" : result.direct_subscribers
         //         };
         //     })
         //     )
