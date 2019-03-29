@@ -12,9 +12,7 @@
 	var fnPday = fortnightPrior.getUTCDate();
 	var fnPyear = fortnightPrior.getUTCFullYear();
     var fnPnewdate = fnPyear + "-" + fnPmonth + "-" + fnPday;
-    var req = new XMLHttpRequest()
-    req.setRequestHeader('Content-Type', 'application/json')
-    req.setRequestHeader('Accept', 'application/hal+json')
+
 
 
     // Define the schema
@@ -51,7 +49,6 @@
     // var dates = tableau.connectionData.split(';')[1];
         var account = $('#accountID').val().trim();
         var key = $('#apiKey').val().trim();
-        req.setRequestHeader('X-AUTH-TOKEN', key)
         var apiCall =
         "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
         + account +
@@ -60,10 +57,18 @@
         "&end_date="
         + newdate
 
+
+        var req = new XMLHttpRequest()
+        req.open("GET", apiCall, true)
+        req.setRequestHeader('Content-Type', 'application/json')
+        req.setRequestHeader('Accept', 'application/hal+json')
+        req.setRequestHeader('X-AUTH-TOKEN', key)
+
+
         // tableau.log("dates: " + dates);
         tableau.log("api call: " + apiCall);
         
-        req.open("GET", apiCall, true)
+        
         req.onload = function() {
             var res = req.response
             var jn = JSON.parse(res)
@@ -77,6 +82,7 @@
                     };
                 })
             )
+            doneCallback()
         }
             
         req.send()
