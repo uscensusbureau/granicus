@@ -30,7 +30,7 @@
       github.io-->>CORS server: "GET" request
       CORS server->>Granicus API: CORS headers attached
       Granicus API->>CORS server: response
-      CORS server-->>github.io: JSON parsed and schema'd
+      CORS server-->>github.io: response
       github.io->>Tableau: JSON with schema
       deactivate github.io
       Tableau->>User: Table populated according to schema
