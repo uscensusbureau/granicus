@@ -56,7 +56,8 @@
       "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
       + account +
       "/reports/subscriber_activity/summary?start_date="
-      + fnPnewdate +
+      + "1990-01-01" +
+      // + fnPnewdate +
       "&end_date="
       + newdate
 
