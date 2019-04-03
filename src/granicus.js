@@ -17,7 +17,7 @@
   var monthAgoD = monthAgo.getUTCDate();
   var monthAgoY = monthAgo.getUTCFullYear();
   var monthAgoDate = monthAgoY + "-" + monthAgoM + "-" + monthAgoD 
-
+  var allTimeStartDate = "1990-01-01"
 
 
   // Define the schema
@@ -40,7 +40,7 @@
 
     var schemas = {
       id: "subscribers",
-      alias: "Subscribers: " + fnPnewdate + " - end: " + newdate,
+      alias: "Subscribers: " + allTimeStartDate + " - end: " + newdate,
       columns: cols
     };
     schemaCallback([schemas]);
@@ -56,7 +56,7 @@
       "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/"
       + account +
       "/reports/subscriber_activity/summary?start_date="
-      + "1990-01-01" +
+      + allTimeStartDate +
       // + fnPnewdate +
       "&end_date="
       + newdate
