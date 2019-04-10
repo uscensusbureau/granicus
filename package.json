@@ -9,6 +9,7 @@
   "author": "Logan Powell, Omer Bensaadon",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^7.0.0"
+    "dotenv": "^7.0.0",
+    "lodash": "^4.17.11"
   }
 }
