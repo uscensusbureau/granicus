@@ -1,6 +1,6 @@
 let _ = require("lodash")
 
-(function () {
+let GO = function () {
   // Create the connector object
   let account = "11723"
   let myConnector = tableau.makeConnector();
@@ -246,8 +246,9 @@ let _ = require("lodash")
       });
     });
   }
-})();
+};
 
+GO()
 
 
 
