@@ -1,4 +1,4 @@
-let _ = require("lodash")
+let lodash = require("lodash")
 
 (function () {
   // Create the connector object
@@ -155,7 +155,7 @@ let _ = require("lodash")
       const wk1_vals = await Object.values(dump[0])
       const wk2_vals = await Object.values(dump[1])
       const wk3_vals = await Object.values(dump[2])
-      const zipped = await _.zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+      const zipped = await lodash.zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       
       if (table.tableInfo.id == "counts") {
