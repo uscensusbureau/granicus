@@ -8,8 +8,12 @@
   },
   "author": "Logan Powell, Omer Bensaadon",
   "license": "MIT",
+  "repository": "https://github.com/uscensusbureau/granicus/issues/",
   "dependencies": {
     "dotenv": "^7.0.0",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
   }
 }
