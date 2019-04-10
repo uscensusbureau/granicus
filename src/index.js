@@ -1,4 +1,4 @@
-import _ from "lodash"
+let _ = require("lodash")
 
 (function () {
   // Create the connector object
