@@ -10139,9 +10139,10 @@ require('es6-promise').polyfill();
 
 require('babel-polyfill');
 
+// Create the connector object
+var account = "11723";
+
 (function () {
-  // Create the connector object
-  var account = "11723";
   var myConnector = tableau.makeConnector(); // var data_dump = [];
   // Custom initialization: https://tableau.github.io/webdataconnector/docs/wdc_custom_init_and_shutdown.html
   // myConnector.init = cb => {
@@ -10303,16 +10304,145 @@ require('babel-polyfill');
 
 
   myConnector.getData = function (table, doneCallback) {
-    var data_dump = JSON.parse(tableau.connectionData);
-    table.appendRows(data_dump.map(function (k) {
-      return {
-        "name": k[0],
-        "this_wk": k[1],
-        "prev_wk": k[2],
-        "three_wk": k[3]
+    var cd_data = JSON.parse(tableau.connectionData);
+    var key = cd_data.key;
+    var end = cd_data.end_date; // Latest date
+
+    var end_date = new Date(end);
+    var month = end_date.getUTCMonth() + 1; //jan = 0
+
+    var day = end_date.getUTCDate();
+    var year = end_date.getUTCFullYear();
+    var new_date = year + "-" + month + "-" + day; // Week ago date
+
+    var wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
+    var wks_1_month = wks_1.getUTCMonth() + 1;
+    var wks_1_day = wks_1.getUTCDate();
+    var wks_1_year = wks_1.getUTCFullYear();
+    var wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day; // 2 Weeks ago date
+
+    var wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
+    var wks_2_month = wks_2.getUTCMonth() + 1;
+    var wks_2_day = wks_2.getUTCDate();
+    var wks_2_year = wks_2.getUTCFullYear();
+    var wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day; // 3 weeks ago date
+
+    var wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
+    var wks_3_month = wks_3.getUTCMonth() + 1;
+    var wks_3_day = wks_3.getUTCDate();
+    var wks_3_year = wks_3.getUTCFullYear();
+    var wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day; // let allTimeStartDate = "2000-01-01";
+
+    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account;
+    var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
+    var bulletin_summary_2wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_2_date, "&end_date=").concat(wks_1_date);
+    var bulletin_summary_3wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_3_date, "&end_date=").concat(wks_2_date); // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
+    // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
+
+    var call_list = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
+
+    var get_data =
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2(calls) {
+        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                results = calls.map(
+                /*#__PURE__*/
+                function () {
+                  var _ref2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee(url) {
+                    var response;
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            tableau.log("api call: " + url);
+                            _context.next = 3;
+                            return (0, _fetchIe["default"])(url, {
+                              method: "GET",
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/hal+json',
+                                'X-AUTH-TOKEN': key
+                              }
+                            });
+
+                          case 3:
+                            response = _context.sent;
+                            return _context.abrupt("return", response.json());
+
+                          case 5:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+
+                  return function (_x2) {
+                    return _ref2.apply(this, arguments);
+                  };
+                }());
+                _context2.next = 3;
+                return Promise.all(results);
+
+              case 3:
+                dump = _context2.sent;
+                _context2.next = 6;
+                return Object.keys(dump[0]);
+
+              case 6:
+                keys_ = _context2.sent;
+                _context2.next = 9;
+                return Object.values(dump[0]);
+
+              case 9:
+                wk1_vals = _context2.sent;
+                _context2.next = 12;
+                return Object.values(dump[1]);
+
+              case 12:
+                wk2_vals = _context2.sent;
+                _context2.next = 15;
+                return Object.values(dump[2]);
+
+              case 15:
+                wk3_vals = _context2.sent;
+                return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+
+              case 17:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function get_data(_x) {
+        return _ref.apply(this, arguments);
       };
-    }));
-    doneCallback();
+    }();
+
+    get_data(call_list).then(function (result) {
+      tableau.log("data_dump: " + result);
+      console.log("data_dump: " + result);
+      table.appendRows(result.map(function (k) {
+        return {
+          "name": k[0],
+          "this_wk": k[1],
+          "prev_wk": k[2],
+          "three_wk": k[3]
+        };
+      }));
+      doneCallback();
+    });
   }; // if (table.tableInfo.id == "counts") {
   // }
   //   req.onload = function () {
@@ -10368,142 +10498,14 @@ require('babel-polyfill');
 
   $(document).ready(function () {
     $("#submitButton").click(function () {
-      // let pass = {
-      //   key: $('#apiKey').val().trim(),
-      //   end_date: $('#end_date').val().trim()
-      // };
-      // let c_data = JSON.parse(tableau.connectionData);
-      var key = $('#apiKey').val().trim();
-      var end = $('#end_date').val().trim(); // Latest date
+      var pass = {
+        key: $('#apiKey').val().trim(),
+        end_date: $('#end_date').val().trim()
+      };
+      tableau.connectionData = JSON.stringify(pass);
+      tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
 
-      var end_date = new Date(end);
-      var month = end_date.getUTCMonth() + 1; //jan = 0
-
-      var day = end_date.getUTCDate();
-      var year = end_date.getUTCFullYear();
-      var new_date = year + "-" + month + "-" + day; // Week ago date
-
-      var wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
-      var wks_1_month = wks_1.getUTCMonth() + 1;
-      var wks_1_day = wks_1.getUTCDate();
-      var wks_1_year = wks_1.getUTCFullYear();
-      var wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day; // 2 Weeks ago date
-
-      var wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
-      var wks_2_month = wks_2.getUTCMonth() + 1;
-      var wks_2_day = wks_2.getUTCDate();
-      var wks_2_year = wks_2.getUTCFullYear();
-      var wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day; // 3 weeks ago date
-
-      var wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
-      var wks_3_month = wks_3.getUTCMonth() + 1;
-      var wks_3_day = wks_3.getUTCDate();
-      var wks_3_year = wks_3.getUTCFullYear();
-      var wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day; // let allTimeStartDate = "2000-01-01";
-
-      var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account;
-      var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
-      var bulletin_summary_2wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_2_date, "&end_date=").concat(wks_1_date);
-      var bulletin_summary_3wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_3_date, "&end_date=").concat(wks_2_date); // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
-      // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
-
-      var call_list = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
-
-      var get_data =
-      /*#__PURE__*/
-      function () {
-        var _ref = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee2(calls) {
-          var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
-          return regeneratorRuntime.wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  results = calls.map(
-                  /*#__PURE__*/
-                  function () {
-                    var _ref2 = _asyncToGenerator(
-                    /*#__PURE__*/
-                    regeneratorRuntime.mark(function _callee(url) {
-                      var response;
-                      return regeneratorRuntime.wrap(function _callee$(_context) {
-                        while (1) {
-                          switch (_context.prev = _context.next) {
-                            case 0:
-                              tableau.log("api call: " + url);
-                              _context.next = 3;
-                              return (0, _fetchIe["default"])(url, {
-                                method: "GET",
-                                headers: {
-                                  'Content-Type': 'application/json',
-                                  'Accept': 'application/hal+json',
-                                  'X-AUTH-TOKEN': key
-                                }
-                              });
-
-                            case 3:
-                              response = _context.sent;
-                              return _context.abrupt("return", response.json());
-
-                            case 5:
-                            case "end":
-                              return _context.stop();
-                          }
-                        }
-                      }, _callee);
-                    }));
-
-                    return function (_x2) {
-                      return _ref2.apply(this, arguments);
-                    };
-                  }());
-                  _context2.next = 3;
-                  return Promise.all(results);
-
-                case 3:
-                  dump = _context2.sent;
-                  _context2.next = 6;
-                  return Object.keys(dump[0]);
-
-                case 6:
-                  keys_ = _context2.sent;
-                  _context2.next = 9;
-                  return Object.values(dump[0]);
-
-                case 9:
-                  wk1_vals = _context2.sent;
-                  _context2.next = 12;
-                  return Object.values(dump[1]);
-
-                case 12:
-                  wk2_vals = _context2.sent;
-                  _context2.next = 15;
-                  return Object.values(dump[2]);
-
-                case 15:
-                  wk3_vals = _context2.sent;
-                  return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
-
-                case 17:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2);
-        }));
-
-        return function get_data(_x) {
-          return _ref.apply(this, arguments);
-        };
-      }();
-
-      get_data(call_list).then(function (result) {
-        tableau.log("data_dump: " + data_dump);
-        console.log("data_dump: " + data_dump);
-        tableau.connectionData = JSON.stringify(result);
-        tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
-      }).then(tableau.submit()); // tableau.connectionData = JSON.stringify(pass);
+      tableau.submit(); // tableau.connectionData = JSON.stringify(pass);
       // tableau.submit(); // This sends the connector object to Tableau
     });
   });
