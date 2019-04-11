@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.5.4",
     "dotenv": "^7.0.0",
+    "es6-promise": "^4.2.6",
     "fetch-ie8": "^1.5.0",
     "lodash.zip": "^4.2.0",
     "tslib": "^1.9.3"
