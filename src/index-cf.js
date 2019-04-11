@@ -1,6 +1,6 @@
 require('es6-promise').polyfill();
 require('babel-polyfill');
-import fetch from 'fetch-ie8'
+const fetch = require('fetch-ie8')
 // Create the connector object
 let account = "11723";
 

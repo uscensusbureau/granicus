@@ -10125,8 +10125,6 @@ module.exports = zip;
 },{}],336:[function(require,module,exports){
 "use strict";
 
-var _fetchIe = _interopRequireDefault(require("fetch-ie8"));
-
 var _lodash = _interopRequireDefault(require("lodash.zip"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -10139,7 +10137,9 @@ require('es6-promise').polyfill();
 
 require('babel-polyfill');
 
-// Create the connector object
+var fetch = require('fetch-ie8'); // Create the connector object
+
+
 var account = "11723";
 
 (function () {
@@ -10365,7 +10365,7 @@ var account = "11723";
                           case 0:
                             tableau.log("api call: " + url);
                             _context.next = 3;
-                            return (0, _fetchIe["default"])(url, {
+                            return fetch(url, {
                               method: "GET",
                               headers: {
                                 'Content-Type': 'application/json',
