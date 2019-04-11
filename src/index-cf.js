@@ -1,6 +1,6 @@
 require('es6-promise').polyfill();
 require('babel-polyfill');
-const fetch = require('fetch-ie8')
+require('fetch-ie8')
 // Create the connector object
 let account = "11723";
 
@@ -235,7 +235,7 @@ import zip from "lodash.zip"
       
         tableau.log("api call: " + url);
       
-        const response = await fetch(url, {
+        const response = await window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',

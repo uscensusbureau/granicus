@@ -10137,7 +10137,7 @@ require('es6-promise').polyfill();
 
 require('babel-polyfill');
 
-var fetch = require('fetch-ie8'); // Create the connector object
+require('fetch-ie8'); // Create the connector object
 
 
 var account = "11723";
@@ -10365,7 +10365,7 @@ var account = "11723";
                           case 0:
                             tableau.log("api call: " + url);
                             _context.next = 3;
-                            return fetch(url, {
+                            return window.fetch(url, {
                               method: "GET",
                               headers: {
                                 'Content-Type': 'application/json',
