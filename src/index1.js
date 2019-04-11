@@ -1,10 +1,10 @@
-require('es6-promise').polyfill()
-import 'fetch-ie8'
+require('es6-promise').polyfill();
+import fetch from 'fetch-ie8'
 import zip from "lodash.zip"
 
 (function () {
   // Create the connector object
-  let account = "11723"
+  let account = "11723";
   let myConnector = tableau.makeConnector();
   
   // Define the schema
@@ -74,14 +74,14 @@ import zip from "lodash.zip"
     };
 
     schemaCallback([counts]);
-  }
+  };
 
   myConnector.getData = function (table, doneCallback) {
     // let dates = tableau.connectionData.split(';')[1];
     // let account = $('#accountID').val().trim();
     // let key = $('#apiKey').val().trim();
-    let data = JSON.parse(tableau.connectionData)
-    let key = data.key
+    let data = JSON.parse(tableau.connectionData);
+    let key = data.key;
 
     // Latest date
     const end_date = new Date(end);
@@ -108,13 +108,13 @@ import zip from "lodash.zip"
     const wks_3_year = wks_3.getUTCFullYear();
     const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
 
-    let allTimeStartDate = "2000-01-01"
+    let allTimeStartDate = "2000-01-01";
 
-    let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account 
+    let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account;
 
-    let bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}` 
-    let bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}` 
-    let bulletin_summary_3wks = base_url + `reports/bulletins/summary?start_date=${wks_3_date}&end_date=${wks_2_date}` 
+    let bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}`;
+    let bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}`;
+    let bulletin_summary_3wks = base_url + `reports/bulletins/summary?start_date=${wks_3_date}&end_date=${wks_2_date}`;
 
     // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
     // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
@@ -123,7 +123,7 @@ import zip from "lodash.zip"
       bulletin_summary_1wk,
       bulletin_summary_2wks,
       bulletin_summary_3wks
-    ]
+    ];
 
     async function get_data (calls) {
       const results = calls.map(async url => {
@@ -137,17 +137,17 @@ import zip from "lodash.zip"
             'Accept': 'application/hal+json',
             'X-AUTH-TOKEN': key
           }
-        })
+        });
 
         return response.json()
-      })
+      });
 
-      const dump = await Promise.all(results)
-      const keys_ = await Object.keys(dump[0])
-      const wk1_vals = await Object.values(dump[0])
-      const wk2_vals = await Object.values(dump[1])
-      const wk3_vals = await Object.values(dump[2])
-      const zipped = await zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+      const dump = await Promise.all(results);
+      const keys_ = await Object.keys(dump[0]);
+      const wk1_vals = await Object.values(dump[0]);
+      const wk2_vals = await Object.values(dump[1]);
+      const wk3_vals = await Object.values(dump[2]);
+      const zipped = await zip(keys_, wk1_vals, wk2_vals, wk3_vals);
 
       
       if (table.tableInfo.id == "counts") {
@@ -159,7 +159,7 @@ import zip from "lodash.zip"
               "three_wk": k[3] 
             })
           )
-        )
+        );
         doneCallback()
       }
 
@@ -168,6 +168,8 @@ import zip from "lodash.zip"
       // }
 
     }
+    
+    get_data(call_list).then( _ => tableau.log("DONE!"));
 
   //   req.onload = function () {
   //     let res = req.response
@@ -227,9 +229,9 @@ import zip from "lodash.zip"
         let pass = {
           key: $('#apiKey').val().trim(),
           end_date:  $('#end_date').val().trim()
-        }
+        };
 
-        tableau.connectionData = JSON.stringify(pass)
+        tableau.connectionData = JSON.stringify(pass);
         
         tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
         

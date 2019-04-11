@@ -13,7 +13,7 @@ const fuse = FuseBox.init({
 fuse.dev(); // launch http server
 fuse
   .bundle("bundle")
-  .instructions(" > src/index.js")
+  .instructions(" > index.js")
   .hmr()
   .watch();
 fuse.run();
