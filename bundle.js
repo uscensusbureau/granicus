@@ -10276,8 +10276,10 @@ require('babel-polyfill');
         };
       }();
 
-      get_data(call_list).then(function (d) {
-        return data_dump = d;
+      get_data(call_list).then(function (result) {
+        tableau.log("data_dump: " + data_dump);
+        console.log("data_dump: " + data_dump);
+        data_dump = result;
       }).then(cb());
     }
   }; // Define the schema

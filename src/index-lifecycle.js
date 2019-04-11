@@ -88,7 +88,11 @@ import zip from "lodash.zip"
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       };
   
-      get_data(call_list).then(d => data_dump = d ).then(cb())
+      get_data(call_list).then(function (result) {
+        tableau.log("data_dump: " + data_dump);
+        console.log("data_dump: " + data_dump);
+        data_dump = result
+      }).then(cb())
   
     }
   };
