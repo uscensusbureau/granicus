@@ -10333,7 +10333,7 @@ var account = "11723";
     var wks_3_year = wks_3.getUTCFullYear();
     var wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day; // let allTimeStartDate = "2000-01-01";
 
-    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account;
+    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
     var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
     var bulletin_summary_2wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_2_date, "&end_date=").concat(wks_1_date);
     var bulletin_summary_3wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_3_date, "&end_date=").concat(wks_2_date); // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
