@@ -10143,7 +10143,7 @@ require('babel-polyfill');
   // Create the connector object
   var account = "11723";
   var myConnector = tableau.makeConnector();
-  var data_dump; // Custom initialization: https://tableau.github.io/webdataconnector/docs/wdc_custom_init_and_shutdown.html
+  var data_dump = []; // Custom initialization: https://tableau.github.io/webdataconnector/docs/wdc_custom_init_and_shutdown.html
 
   myConnector.init = function (cb) {
     if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {

@@ -7,7 +7,7 @@ import zip from "lodash.zip"
   // Create the connector object
   let account = "11723";
   let myConnector = tableau.makeConnector();
-  var data_dump;
+  var data_dump = [];
   
   // Custom initialization: https://tableau.github.io/webdataconnector/docs/wdc_custom_init_and_shutdown.html
   myConnector.init = cb => {
