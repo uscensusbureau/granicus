@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require("fetch-ie8");
 const Promise = require("bluebird");
 fetch.Promise = Bluebird;
 import zip from "lodash.zip"
