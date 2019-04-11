@@ -10269,7 +10269,7 @@ var account = "11723";
     var count_schema = [{
       id: "name",
       alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum["int"]
+      dataType: tableau.dataTypeEnum.string
     }, {
       id: "this_wk",
       alias: "This Week",
