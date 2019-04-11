@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 const Promise = require("bluebird");
-// fetch.Promise = Bluebird;
+fetch.Promise = Bluebird;
 import zip from "lodash.zip"
 (function () {
   // Create the connector object
