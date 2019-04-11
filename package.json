@@ -10,6 +10,7 @@
   "license": "MIT",
   "repository": "https://github.com/uscensusbureau/granicus/issues/",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.4",
     "dotenv": "^7.0.0",
     "es6-promise": "^4.2.6",
