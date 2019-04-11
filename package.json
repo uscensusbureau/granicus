@@ -11,17 +11,15 @@
   "repository": "https://github.com/uscensusbureau/granicus/issues/",
   "dependencies": {
     "dotenv": "^7.0.0",
-    "gulp": "^3.9.1",
-    "lodash": "^4.17.11"
+    "es6-promise": "^4.2.6",
+    "fetch-ie8": "^1.5.0",
+    "lodash.zip": "^4.2.0",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
-    "babelify": "^10.0.0",
-    "browserify": "^16.2.3",
-    "gulp-sourcemaps": "^2.6.5",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.1"
+    "fuse-box": "^3.7.1",
+    "terser": "^3.17.0",
+    "typescript": "^3.4.3",
+    "uglify-js": "^3.5.4"
   }
 }

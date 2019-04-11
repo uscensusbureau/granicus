@@ -80,22 +80,88 @@ import zip from "lodash.zip"
     // let dates = tableau.connectionData.split(';')[1];
     // let account = $('#accountID').val().trim();
     // let key = $('#apiKey').val().trim();
-    let data_table = JSON.parse(tableau.connectionData)
-    
-    tableau.log("Logging data_table bitches!: " + data_table)
+    let data = JSON.parse(tableau.connectionData)
+    let key = data.key
+
+    // Latest date
+    const end_date = new Date(end);
+    const month = end_date.getUTCMonth() + 1; //jan = 0
+    const day = end_date.getUTCDate();
+    const year = end_date.getUTCFullYear();
+    const new_date = year + "-" + month + "-" + day;
+    // Week ago date
+    const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
+    const wks_1_month = wks_1.getUTCMonth() + 1;
+    const wks_1_day = wks_1.getUTCDate();
+    const wks_1_year = wks_1.getUTCFullYear();
+    const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
+    // 2 Weeks ago date
+    const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
+    const wks_2_month = wks_2.getUTCMonth() + 1;
+    const wks_2_day = wks_2.getUTCDate();
+    const wks_2_year = wks_2.getUTCFullYear();
+    const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
+    // 3 weeks ago date
+    const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
+    const wks_3_month = wks_3.getUTCMonth() + 1;
+    const wks_3_day = wks_3.getUTCDate();
+    const wks_3_year = wks_3.getUTCFullYear();
+    const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
+
+    let allTimeStartDate = "2000-01-01"
+
+    let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account 
+
+    let bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}` 
+    let bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}` 
+    let bulletin_summary_3wks = base_url + `reports/bulletins/summary?start_date=${wks_3_date}&end_date=${wks_2_date}` 
+
+    // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
+    // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
+
+    let call_list = [
+      bulletin_summary_1wk,
+      bulletin_summary_2wks,
+      bulletin_summary_3wks
+    ]
+
+    async function get_data (calls) {
+      const results = calls.map(async url => {
+
+        tableau.log("api call: " + url);
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/hal+json',
+            'X-AUTH-TOKEN': key
+          }
+        })
+
+        return response.json()
+      })
+
+      const dump = await Promise.all(results)
+      const keys_ = await Object.keys(dump[0])
+      const wk1_vals = await Object.values(dump[0])
+      const wk2_vals = await Object.values(dump[1])
+      const wk3_vals = await Object.values(dump[2])
+      const zipped = await zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+
       
-    if (table.tableInfo.id == "counts") {
-      table.appendRows(
-        data_table.map( k => ({
-            "name":  k[0],
-            "this_wk": k[1],
-            "prev_wk": k[2], 
-            "three_wk": k[3] 
-          })
+      if (table.tableInfo.id == "counts") {
+        table.appendRows(
+          zipped.map( k => ({
+              "name":  k[0],
+              "this_wk": k[1],
+              "prev_wk": k[2], 
+              "three_wk": k[3] 
+            })
+          )
         )
-      )
-      doneCallback()
-    }
+        doneCallback()
+      }
 
       // if (table.tableInfo.id == "counts") {
         
@@ -158,83 +224,12 @@ import zip from "lodash.zip"
     $(document).ready(function () {
       $("#submitButton").click(function () {
 
-        // let dates = tableau.connectionData.split(';')[1];
-        // let account = $('#accountID').val().trim();
-        // let key = $('#apiKey').val().trim();
-        const key = $('#apiKey').val().trim();
-        const end = $('#end_date').val().trim();
-        // Latest date
-        const end_date = new Date(end);
-        const month = end_date.getUTCMonth() + 1; //jan = 0
-        const day = end_date.getUTCDate();
-        const year = end_date.getUTCFullYear();
-        const new_date = year + "-" + month + "-" + day;
-        // Week ago date
-        const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
-        const wks_1_month = wks_1.getUTCMonth() + 1;
-        const wks_1_day = wks_1.getUTCDate();
-        const wks_1_year = wks_1.getUTCFullYear();
-        const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
-        // 2 Weeks ago date
-        const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
-        const wks_2_month = wks_2.getUTCMonth() + 1;
-        const wks_2_day = wks_2.getUTCDate();
-        const wks_2_year = wks_2.getUTCFullYear();
-        const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
-        // 3 weeks ago date
-        const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
-        const wks_3_month = wks_3.getUTCMonth() + 1;
-        const wks_3_day = wks_3.getUTCDate();
-        const wks_3_year = wks_3.getUTCFullYear();
-        const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
-
-        // let allTimeStartDate = "2000-01-01"
-
-        const base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account 
-
-        const bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}` 
-        const bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}` 
-        const bulletin_summary_3wks = base_url + `reports/bulletins/summary?start_date=${wks_3_date}&end_date=${wks_2_date}` 
-
-        // const subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
-        // const subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
-
-        const call_list = [
-          bulletin_summary_1wk,
-          bulletin_summary_2wks,
-          bulletin_summary_3wks
-        ]
-
-        async function get_data (calls) {
-          const results = calls.map(async url => {
-
-            tableau.log("api call: " + url);
-
-            const response = await fetch(url, {
-              method: "GET",
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/hal+json',
-                'X-AUTH-TOKEN': key
-              }
-            })
-
-            return response.json()
-          })
-
-          const dump = await Promise.all(results)
-          const keys_ = await Object.keys(dump[0])
-          const wk1_vals = await Object.values(dump[0])
-          const wk2_vals = await Object.values(dump[1])
-          const wk3_vals = await Object.values(dump[2])
-          const zipped = await zip(keys_, wk1_vals, wk2_vals, wk3_vals)
-
-          return zipped
+        let pass = {
+          key: $('#apiKey').val().trim(),
+          end_date:  $('#end_date').val().trim()
         }
-        
-        let data_dump = get_data(call_list)
 
-        tableau.connectionData = JSON.stringify(data_dump)
+        tableau.connectionData = JSON.stringify(pass)
         
         tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
         
@@ -242,7 +237,8 @@ import zip from "lodash.zip"
       
       });
     });
-  })();
+  }
+})();
 
 
 
