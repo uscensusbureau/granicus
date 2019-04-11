@@ -15,11 +15,13 @@ import zip from "lodash.zip"
       // let dates = tableau.connectionData.split(';')[1];
       // let account = $('#accountID').val().trim();
       // let key = $('#apiKey').val().trim();
-      let data = JSON.parse(tableau.connectionData);
-      let key = data.key;
+      let c_data = JSON.parse(tableau.connectionData);
+      let key = c_data.key;
+      let end = c_data.end_date;
   
       // Latest date
       const end_date = new Date(end);
+      
       const month = end_date.getUTCMonth() + 1; //jan = 0
       const day = end_date.getUTCDate();
       const year = end_date.getUTCFullYear();

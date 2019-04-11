@@ -2198,8 +2198,9 @@ require('es6-promise').polyfill();
       // let dates = tableau.connectionData.split(';')[1];
       // let account = $('#accountID').val().trim();
       // let key = $('#apiKey').val().trim();
-      var data = JSON.parse(tableau.connectionData);
-      var key = data.key; // Latest date
+      var c_data = JSON.parse(tableau.connectionData);
+      var key = c_data.key;
+      var end = c_data.end_date; // Latest date
 
       var end_date = new Date(end);
       var month = end_date.getUTCMonth() + 1; //jan = 0
