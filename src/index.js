@@ -14,7 +14,7 @@ browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-e
 // Polyfills
 require('babel-polyfill');
 // special polyfill for fetch support (not provided by babel-polyfill)
-// require('fetch-ie8')
+require('fetch-ie8')
 
 // function from lodash for allowing us to combine multiple API responses into a
 // single 'table'
