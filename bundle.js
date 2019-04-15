@@ -29,7 +29,7 @@ define(String.prototype, "padRight", "".padEnd);
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"core-js/fn/regexp/escape":2,"core-js/shim":330,"regenerator-runtime/runtime":333}],2:[function(require,module,exports){
+},{"core-js/fn/regexp/escape":2,"core-js/shim":330,"regenerator-runtime/runtime":332}],2:[function(require,module,exports){
 require('../../modules/core.regexp.escape');
 module.exports = require('../../modules/_core').RegExp.escape;
 
@@ -7209,426 +7209,6 @@ require('./modules/web.dom.iterable');
 module.exports = require('./modules/_core');
 
 },{"./modules/_core":24,"./modules/es6.array.copy-within":133,"./modules/es6.array.every":134,"./modules/es6.array.fill":135,"./modules/es6.array.filter":136,"./modules/es6.array.find":138,"./modules/es6.array.find-index":137,"./modules/es6.array.for-each":139,"./modules/es6.array.from":140,"./modules/es6.array.index-of":141,"./modules/es6.array.is-array":142,"./modules/es6.array.iterator":143,"./modules/es6.array.join":144,"./modules/es6.array.last-index-of":145,"./modules/es6.array.map":146,"./modules/es6.array.of":147,"./modules/es6.array.reduce":149,"./modules/es6.array.reduce-right":148,"./modules/es6.array.slice":150,"./modules/es6.array.some":151,"./modules/es6.array.sort":152,"./modules/es6.array.species":153,"./modules/es6.date.now":154,"./modules/es6.date.to-iso-string":155,"./modules/es6.date.to-json":156,"./modules/es6.date.to-primitive":157,"./modules/es6.date.to-string":158,"./modules/es6.function.bind":159,"./modules/es6.function.has-instance":160,"./modules/es6.function.name":161,"./modules/es6.map":162,"./modules/es6.math.acosh":163,"./modules/es6.math.asinh":164,"./modules/es6.math.atanh":165,"./modules/es6.math.cbrt":166,"./modules/es6.math.clz32":167,"./modules/es6.math.cosh":168,"./modules/es6.math.expm1":169,"./modules/es6.math.fround":170,"./modules/es6.math.hypot":171,"./modules/es6.math.imul":172,"./modules/es6.math.log10":173,"./modules/es6.math.log1p":174,"./modules/es6.math.log2":175,"./modules/es6.math.sign":176,"./modules/es6.math.sinh":177,"./modules/es6.math.tanh":178,"./modules/es6.math.trunc":179,"./modules/es6.number.constructor":180,"./modules/es6.number.epsilon":181,"./modules/es6.number.is-finite":182,"./modules/es6.number.is-integer":183,"./modules/es6.number.is-nan":184,"./modules/es6.number.is-safe-integer":185,"./modules/es6.number.max-safe-integer":186,"./modules/es6.number.min-safe-integer":187,"./modules/es6.number.parse-float":188,"./modules/es6.number.parse-int":189,"./modules/es6.number.to-fixed":190,"./modules/es6.number.to-precision":191,"./modules/es6.object.assign":192,"./modules/es6.object.create":193,"./modules/es6.object.define-properties":194,"./modules/es6.object.define-property":195,"./modules/es6.object.freeze":196,"./modules/es6.object.get-own-property-descriptor":197,"./modules/es6.object.get-own-property-names":198,"./modules/es6.object.get-prototype-of":199,"./modules/es6.object.is":203,"./modules/es6.object.is-extensible":200,"./modules/es6.object.is-frozen":201,"./modules/es6.object.is-sealed":202,"./modules/es6.object.keys":204,"./modules/es6.object.prevent-extensions":205,"./modules/es6.object.seal":206,"./modules/es6.object.set-prototype-of":207,"./modules/es6.object.to-string":208,"./modules/es6.parse-float":209,"./modules/es6.parse-int":210,"./modules/es6.promise":211,"./modules/es6.reflect.apply":212,"./modules/es6.reflect.construct":213,"./modules/es6.reflect.define-property":214,"./modules/es6.reflect.delete-property":215,"./modules/es6.reflect.enumerate":216,"./modules/es6.reflect.get":219,"./modules/es6.reflect.get-own-property-descriptor":217,"./modules/es6.reflect.get-prototype-of":218,"./modules/es6.reflect.has":220,"./modules/es6.reflect.is-extensible":221,"./modules/es6.reflect.own-keys":222,"./modules/es6.reflect.prevent-extensions":223,"./modules/es6.reflect.set":225,"./modules/es6.reflect.set-prototype-of":224,"./modules/es6.regexp.constructor":226,"./modules/es6.regexp.exec":227,"./modules/es6.regexp.flags":228,"./modules/es6.regexp.match":229,"./modules/es6.regexp.replace":230,"./modules/es6.regexp.search":231,"./modules/es6.regexp.split":232,"./modules/es6.regexp.to-string":233,"./modules/es6.set":234,"./modules/es6.string.anchor":235,"./modules/es6.string.big":236,"./modules/es6.string.blink":237,"./modules/es6.string.bold":238,"./modules/es6.string.code-point-at":239,"./modules/es6.string.ends-with":240,"./modules/es6.string.fixed":241,"./modules/es6.string.fontcolor":242,"./modules/es6.string.fontsize":243,"./modules/es6.string.from-code-point":244,"./modules/es6.string.includes":245,"./modules/es6.string.italics":246,"./modules/es6.string.iterator":247,"./modules/es6.string.link":248,"./modules/es6.string.raw":249,"./modules/es6.string.repeat":250,"./modules/es6.string.small":251,"./modules/es6.string.starts-with":252,"./modules/es6.string.strike":253,"./modules/es6.string.sub":254,"./modules/es6.string.sup":255,"./modules/es6.string.trim":256,"./modules/es6.symbol":257,"./modules/es6.typed.array-buffer":258,"./modules/es6.typed.data-view":259,"./modules/es6.typed.float32-array":260,"./modules/es6.typed.float64-array":261,"./modules/es6.typed.int16-array":262,"./modules/es6.typed.int32-array":263,"./modules/es6.typed.int8-array":264,"./modules/es6.typed.uint16-array":265,"./modules/es6.typed.uint32-array":266,"./modules/es6.typed.uint8-array":267,"./modules/es6.typed.uint8-clamped-array":268,"./modules/es6.weak-map":269,"./modules/es6.weak-set":270,"./modules/es7.array.flat-map":271,"./modules/es7.array.flatten":272,"./modules/es7.array.includes":273,"./modules/es7.asap":274,"./modules/es7.error.is-error":275,"./modules/es7.global":276,"./modules/es7.map.from":277,"./modules/es7.map.of":278,"./modules/es7.map.to-json":279,"./modules/es7.math.clamp":280,"./modules/es7.math.deg-per-rad":281,"./modules/es7.math.degrees":282,"./modules/es7.math.fscale":283,"./modules/es7.math.iaddh":284,"./modules/es7.math.imulh":285,"./modules/es7.math.isubh":286,"./modules/es7.math.rad-per-deg":287,"./modules/es7.math.radians":288,"./modules/es7.math.scale":289,"./modules/es7.math.signbit":290,"./modules/es7.math.umulh":291,"./modules/es7.object.define-getter":292,"./modules/es7.object.define-setter":293,"./modules/es7.object.entries":294,"./modules/es7.object.get-own-property-descriptors":295,"./modules/es7.object.lookup-getter":296,"./modules/es7.object.lookup-setter":297,"./modules/es7.object.values":298,"./modules/es7.observable":299,"./modules/es7.promise.finally":300,"./modules/es7.promise.try":301,"./modules/es7.reflect.define-metadata":302,"./modules/es7.reflect.delete-metadata":303,"./modules/es7.reflect.get-metadata":305,"./modules/es7.reflect.get-metadata-keys":304,"./modules/es7.reflect.get-own-metadata":307,"./modules/es7.reflect.get-own-metadata-keys":306,"./modules/es7.reflect.has-metadata":308,"./modules/es7.reflect.has-own-metadata":309,"./modules/es7.reflect.metadata":310,"./modules/es7.set.from":311,"./modules/es7.set.of":312,"./modules/es7.set.to-json":313,"./modules/es7.string.at":314,"./modules/es7.string.match-all":315,"./modules/es7.string.pad-end":316,"./modules/es7.string.pad-start":317,"./modules/es7.string.trim-left":318,"./modules/es7.string.trim-right":319,"./modules/es7.symbol.async-iterator":320,"./modules/es7.symbol.observable":321,"./modules/es7.system.global":322,"./modules/es7.weak-map.from":323,"./modules/es7.weak-map.of":324,"./modules/es7.weak-set.from":325,"./modules/es7.weak-set.of":326,"./modules/web.dom.iterable":327,"./modules/web.immediate":328,"./modules/web.timers":329}],331:[function(require,module,exports){
-(function(self) {
-  'use strict';
-
-  // if __disableNativeFetch is set to true, the it will always polyfill fetch
-  // with Ajax.
-  if (!self.__disableNativeFetch && self.fetch) {
-    return
-  }
-
-  function normalizeName(name) {
-    if (typeof name !== 'string') {
-      name = String(name)
-    }
-    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
-      throw new TypeError('Invalid character in header field name')
-    }
-    return name.toLowerCase()
-  }
-
-  function normalizeValue(value) {
-    if (typeof value !== 'string') {
-      value = String(value)
-    }
-    return value
-  }
-
-  function Headers(headers) {
-    this.map = {}
-
-    if (headers instanceof Headers) {
-      headers.forEach(function(value, name) {
-        this.append(name, value)
-      }, this)
-
-    } else if (headers) {
-      Object.getOwnPropertyNames(headers).forEach(function(name) {
-        this.append(name, headers[name])
-      }, this)
-    }
-  }
-
-  Headers.prototype.append = function(name, value) {
-    name = normalizeName(name)
-    value = normalizeValue(value)
-    var list = this.map[name]
-    if (!list) {
-      list = []
-      this.map[name] = list
-    }
-    list.push(value)
-  }
-
-  Headers.prototype['delete'] = function(name) {
-    delete this.map[normalizeName(name)]
-  }
-
-  Headers.prototype.get = function(name) {
-    var values = this.map[normalizeName(name)]
-    return values ? values[0] : null
-  }
-
-  Headers.prototype.getAll = function(name) {
-    return this.map[normalizeName(name)] || []
-  }
-
-  Headers.prototype.has = function(name) {
-    return this.map.hasOwnProperty(normalizeName(name))
-  }
-
-  Headers.prototype.set = function(name, value) {
-    this.map[normalizeName(name)] = [normalizeValue(value)]
-  }
-
-  Headers.prototype.forEach = function(callback, thisArg) {
-    Object.getOwnPropertyNames(this.map).forEach(function(name) {
-      this.map[name].forEach(function(value) {
-        callback.call(thisArg, value, name, this)
-      }, this)
-    }, this)
-  }
-
-  function consumed(body) {
-    if (body.bodyUsed) {
-      return Promise.reject(new TypeError('Already read'))
-    }
-    body.bodyUsed = true
-  }
-
-  function fileReaderReady(reader) {
-    return new Promise(function(resolve, reject) {
-      reader.onload = function() {
-        resolve(reader.result)
-      }
-      reader.onerror = function() {
-        reject(reader.error)
-      }
-    })
-  }
-
-  function readBlobAsArrayBuffer(blob) {
-    var reader = new FileReader()
-    reader.readAsArrayBuffer(blob)
-    return fileReaderReady(reader)
-  }
-
-  function readBlobAsText(blob, options) {
-    var reader = new FileReader()
-    var contentType = options.headers.map['content-type'] ? options.headers.map['content-type'].toString() : ''
-    var regex = /charset\=[0-9a-zA-Z\-\_]*;?/
-    var _charset = blob.type.match(regex) || contentType.match(regex)
-    var args = [blob]
-
-    if(_charset) {
-      args.push(_charset[0].replace(/^charset\=/, '').replace(/;$/, ''))
-    }
-
-    reader.readAsText.apply(reader, args)
-    return fileReaderReady(reader)
-  }
-
-  var support = {
-    blob: 'FileReader' in self && 'Blob' in self && (function() {
-      try {
-        new Blob();
-        return true
-      } catch(e) {
-        return false
-      }
-    })(),
-    formData: 'FormData' in self,
-    arrayBuffer: 'ArrayBuffer' in self
-  }
-
-  function Body() {
-    this.bodyUsed = false
-
-
-    this._initBody = function(body, options) {
-      this._bodyInit = body
-      if (typeof body === 'string') {
-        this._bodyText = body
-      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
-        this._bodyBlob = body
-        this._options = options
-      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
-        this._bodyFormData = body
-      } else if (!body) {
-        this._bodyText = ''
-      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
-        // Only support ArrayBuffers for POST method.
-        // Receiving ArrayBuffers happens via Blobs, instead.
-      } else {
-        throw new Error('unsupported BodyInit type')
-      }
-    }
-
-    if (support.blob) {
-      this.blob = function() {
-        var rejected = consumed(this)
-        if (rejected) {
-          return rejected
-        }
-
-        if (this._bodyBlob) {
-          return Promise.resolve(this._bodyBlob)
-        } else if (this._bodyFormData) {
-          throw new Error('could not read FormData body as blob')
-        } else {
-          return Promise.resolve(new Blob([this._bodyText]))
-        }
-      }
-
-      this.arrayBuffer = function() {
-        return this.blob().then(readBlobAsArrayBuffer)
-      }
-
-      this.text = function() {
-        var rejected = consumed(this)
-        if (rejected) {
-          return rejected
-        }
-
-        if (this._bodyBlob) {
-          return readBlobAsText(this._bodyBlob, this._options)
-        } else if (this._bodyFormData) {
-          throw new Error('could not read FormData body as text')
-        } else {
-          return Promise.resolve(this._bodyText)
-        }
-      }
-    } else {
-      this.text = function() {
-        var rejected = consumed(this)
-        return rejected ? rejected : Promise.resolve(this._bodyText)
-      }
-    }
-
-    if (support.formData) {
-      this.formData = function() {
-        return this.text().then(decode)
-      }
-    }
-
-    this.json = function() {
-      return this.text().then(JSON.parse)
-    }
-
-    return this
-  }
-
-  // HTTP methods whose capitalization should be normalized
-  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
-
-  function normalizeMethod(method) {
-    var upcased = method.toUpperCase()
-    return (methods.indexOf(upcased) > -1) ? upcased : method
-  }
-
-  function Request(input, options) {
-    options = options || {}
-    var body = options.body
-    if (Request.prototype.isPrototypeOf(input)) {
-      if (input.bodyUsed) {
-        throw new TypeError('Already read')
-      }
-      this.url = input.url
-      this.credentials = input.credentials
-      if (!options.headers) {
-        this.headers = new Headers(input.headers)
-      }
-      this.method = input.method
-      this.mode = input.mode
-      if (!body) {
-        body = input._bodyInit
-        input.bodyUsed = true
-      }
-    } else {
-      this.url = input
-    }
-
-    this.credentials = options.credentials || this.credentials || 'omit'
-    if (options.headers || !this.headers) {
-      this.headers = new Headers(options.headers)
-    }
-    this.method = normalizeMethod(options.method || this.method || 'GET')
-    this.mode = options.mode || this.mode || null
-    this.referrer = null
-
-    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
-      throw new TypeError('Body not allowed for GET or HEAD requests')
-    }
-    this._initBody(body, options)
-  }
-
-  Request.prototype.clone = function() {
-    return new Request(this)
-  }
-
-  function decode(body) {
-    var form = new FormData()
-    body.trim().split('&').forEach(function(bytes) {
-      if (bytes) {
-        var split = bytes.split('=')
-        var name = split.shift().replace(/\+/g, ' ')
-        var value = split.join('=').replace(/\+/g, ' ')
-        form.append(decodeURIComponent(name), decodeURIComponent(value))
-      }
-    })
-    return form
-  }
-
-  function headers(xhr) {
-    var head = new Headers()
-    var pairs = xhr.getAllResponseHeaders().trim().split('\n')
-    pairs.forEach(function(header) {
-      var split = header.trim().split(':')
-      var key = split.shift().trim()
-      var value = split.join(':').trim()
-      head.append(key, value)
-    })
-    return head
-  }
-
-  Body.call(Request.prototype)
-
-  function Response(bodyInit, options) {
-    if (!options) {
-      options = {}
-    }
-
-    this._initBody(bodyInit, options)
-    this.type = 'default'
-    this.status = options.status
-    this.ok = this.status >= 200 && this.status < 300
-    this.statusText = options.statusText
-    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
-    this.url = options.url || ''
-  }
-
-  Body.call(Response.prototype)
-
-  Response.prototype.clone = function() {
-    return new Response(this._bodyInit, {
-      status: this.status,
-      statusText: this.statusText,
-      headers: new Headers(this.headers),
-      url: this.url
-    })
-  }
-
-  Response.error = function() {
-    var response = new Response(null, {status: 0, statusText: ''})
-    response.type = 'error'
-    return response
-  }
-
-  var redirectStatuses = [301, 302, 303, 307, 308]
-
-  Response.redirect = function(url, status) {
-    if (redirectStatuses.indexOf(status) === -1) {
-      throw new RangeError('Invalid status code')
-    }
-
-    return new Response(null, {status: status, headers: {location: url}})
-  }
-
-  self.Headers = Headers;
-  self.Request = Request;
-  self.Response = Response;
-
-  self.fetch = function(input, init) {
-    return new Promise(function(resolve, reject) {
-      var request
-      if (Request.prototype.isPrototypeOf(input) && !init) {
-        request = input
-      } else {
-        request = new Request(input, init)
-      }
-
-      var xhr = new XMLHttpRequest()
-
-      function responseURL() {
-        if ('responseURL' in xhr) {
-          return xhr.responseURL
-        }
-
-        // Avoid security warnings on getResponseHeader when not allowed by CORS
-        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-          return xhr.getResponseHeader('X-Request-URL')
-        }
-
-        return;
-      }
-
-      var __onLoadHandled = false;
-
-      function onload() {
-        if (xhr.readyState !== 4) {
-          return
-        }
-        var status = (xhr.status === 1223) ? 204 : xhr.status
-        if (status < 100 || status > 599) {
-          if (__onLoadHandled) { return; } else { __onLoadHandled = true; }
-          reject(new TypeError('Network request failed'))
-          return
-        }
-        var options = {
-          status: status,
-          statusText: xhr.statusText,
-          headers: headers(xhr),
-          url: responseURL()
-        }
-        var body = 'response' in xhr ? xhr.response : xhr.responseText;
-
-        if (__onLoadHandled) { return; } else { __onLoadHandled = true; }
-        resolve(new Response(body, options))
-      }
-      xhr.onreadystatechange = onload;
-      xhr.onload = onload;
-      xhr.onerror = function() {
-        if (__onLoadHandled) { return; } else { __onLoadHandled = true; }
-        reject(new TypeError('Network request failed'))
-      }
-
-      xhr.open(request.method, request.url, true)
-
-      // `withCredentials` should be setted after calling `.open` in IE10
-      // http://stackoverflow.com/a/19667959/1219343
-      try {
-        if (request.credentials === 'include') {
-          if ('withCredentials' in xhr) {
-            xhr.withCredentials = true;
-          } else {
-            console && console.warn && console.warn('withCredentials is not supported, you can ignore this warning');
-          }
-        }
-      } catch (e) {
-        console && console.warn && console.warn('set withCredentials error:' + e);
-      }
-
-      if ('responseType' in xhr && support.blob) {
-        xhr.responseType = 'blob'
-      }
-
-      request.headers.forEach(function(value, name) {
-        xhr.setRequestHeader(name, value)
-      })
-
-      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
-    })
-  }
-  self.fetch.polyfill = true
-
-  // Support CommonJS
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = self.fetch;
-  }
-})(typeof self !== 'undefined' ? self : this);
-
-},{}],332:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -8009,7 +7589,7 @@ function isObjectLike(value) {
 
 module.exports = zip;
 
-},{}],333:[function(require,module,exports){
+},{}],332:[function(require,module,exports){
 (function (global){
 /**
  * Copyright (c) 2014, Facebook, Inc.
@@ -8749,7 +8329,7 @@ module.exports = zip;
 );
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],334:[function(require,module,exports){
+},{}],333:[function(require,module,exports){
 "use strict";
 
 var _lodash = _interopRequireDefault(require("lodash.zip"));
@@ -8761,15 +8341,30 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 // require('es6-promise').polyfill();
-require('babel-polyfill');
 
-require('fetch-ie8');
+/*
+Tableau's internal browser is old. In order to make dealing with multiple
+asynchronous API calls, waiting for them and processing them *in order*, we use
+a combination of browserify (with babelify) and some polyfills
+
+Using the CLI:
+
+browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-env ] ]
+
+ */
+// Polyfills
+require('babel-polyfill'); // special polyfill for fetch support (not provided by babel-polyfill)
+// require('fetch-ie8')
+// function from lodash for allowing us to combine multiple API responses into a
+// single 'table'
+
 
 (function () {
   // Create the connector object
   var myConnector = tableau.makeConnector(); // Define the schema
 
   myConnector.getSchema = function (schemaCallback) {
+    // for multiple tables... TODO
     // Rates are float types, so breaking out into separate tables
     // let rate_schema = [{
     //   id: "name",
@@ -8801,7 +8396,7 @@ require('fetch-ie8');
     //   alias: "Rates",
     //   columns: rate_schema
     // };
-    // Counts are integers, a separate table
+    // counts schema
     var count_schema = [{
       id: "name",
       alias: "Name of Metric",
@@ -8818,7 +8413,8 @@ require('fetch-ie8');
       id: "three_wk",
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["int"]
-    }];
+    }]; // counts schema object
+
     var counts = {
       id: "counts",
       alias: "Counts",
@@ -8840,35 +8436,52 @@ require('fetch-ie8');
 
 
   myConnector.getData = function (table, doneCallback) {
+    // account number
+    var account = "11723"; // parse the string passed between Tableau lifecycle phases to get the user
+    // supplied data into our calls
+
     var cd_data = JSON.parse(tableau.connectionData);
-    var account = "11723";
     var key = cd_data.key;
-    var end = cd_data.end_date; // Latest date
+    var end = cd_data.end_date; // Latest date from user input
 
-    var end_date = new Date(end);
-    var month = end_date.getUTCMonth() + 1; //jan = 0
+    var end_date = new Date(end); // function for creating dates formatted for Granicus API
 
-    var day = end_date.getUTCDate();
-    var year = end_date.getUTCFullYear();
-    var new_date = year + "-" + month + "-" + day; // Week ago date
+    var makeDate = function makeDate(days_ago) {
+      // create date from number of 'days_ago' from
+      var date = new Date(new Date().setDate(end_date.getDate() - days_ago));
+      var month = date.getUTCMonth() + 1; //jan = 0
 
-    var wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
-    var wks_1_month = wks_1.getUTCMonth() + 1;
-    var wks_1_day = wks_1.getUTCDate();
-    var wks_1_year = wks_1.getUTCFullYear();
-    var wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day; // 2 Weeks ago date
+      var day = date.getUTCDate();
+      var year = date.getUTCFullYear();
+      return "".concat(year, "-").concat(month, "-").concat(day);
+    };
 
-    var wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
-    var wks_2_month = wks_2.getUTCMonth() + 1;
-    var wks_2_day = wks_2.getUTCDate();
-    var wks_2_year = wks_2.getUTCFullYear();
-    var wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day; // 3 weeks ago date
-
-    var wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
-    var wks_3_month = wks_3.getUTCMonth() + 1;
-    var wks_3_day = wks_3.getUTCDate();
-    var wks_3_year = wks_3.getUTCFullYear();
-    var wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day; // let allTimeStartDate = "2000-01-01";
+    var new_date = makeDate(0);
+    var wks_1_date = makeDate(7);
+    var wks_2_date = makeDate(14);
+    var wks_3_date = makeDate(21); // const month = end_date.getUTCMonth() + 1; //jan = 0
+    // const day = end_date.getUTCDate();
+    // const year = end_date.getUTCFullYear();
+    // const new_date = year + "-" + month + "-" + day;
+    // // Week ago date
+    // const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
+    // const wks_1_month = wks_1.getUTCMonth() + 1;
+    // const wks_1_day = wks_1.getUTCDate();
+    // const wks_1_year = wks_1.getUTCFullYear();
+    // const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
+    // // 2 Weeks ago date
+    // const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
+    // const wks_2_month = wks_2.getUTCMonth() + 1;
+    // const wks_2_day = wks_2.getUTCDate();
+    // const wks_2_year = wks_2.getUTCFullYear();
+    // const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
+    // // 3 weeks ago date
+    // const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
+    // const wks_3_month = wks_3.getUTCMonth() + 1;
+    // const wks_3_day = wks_3.getUTCDate();
+    // const wks_3_year = wks_3.getUTCFullYear();
+    // const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
+    // let allTimeStartDate = "2000-01-01";
 
     var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
     var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
@@ -8980,72 +8593,28 @@ require('fetch-ie8');
       }));
       doneCallback();
     });
-  }; // if (table.tableInfo.id == "counts") {
+  }; // for multiple tables... TODO
+  // if (table.tableInfo.id == "counts") {
   // }
-  //   req.onload = function () {
-  //     let res = req.response
-  //     let jn = JSON.parse(res)
-  //     tableau.log("resp: " + jn);
-  //     // FOR ARRAY:
-  //     // table.appendRows(
-  //     //     jn.map(function(result) {
-  //     //         return {
-  //     //             "total_subscribers" : result.total_subscribers,
-  //     //             "deleted_subscribers" : result.deleted_subscribers,
-  //     //             "direct_subscribers" : result.direct_subscribers
-  //     //         };
-  //     //     })
-  //     // )
-  //     // FOR OBJECT:
-  //     table.appendRows(
-  //       [{
-  //         "total_subscribers": jn.total_subscribers,
-  //         "deleted_subscribers": jn.deleted_subscribers,
-  //         "direct_subscribers": jn.direct_subscribers
-  //       }]
-  //     )
-  //     doneCallback()
-  //   }
-  //   req.send()
-  //   // fetch(apiCall,
-  //   //     {
-  //   //         method: "GET",
-  //   //         headers: myHeaders
-  //   //     })
-  //   //     .then(function(r) { 
-  //   //         return r.json()
-  //   //     })
-  //   //     .then(function(j) { 
-  //   //     tableau.log("resp: " + j);
-  //   //     table.appendRows(
-  //   //     j.map(function(result) {
-  //   //         return {
-  //   //             "total_subscribers" : result.total_subscribers,
-  //   //             "deleted_subscribers" : result.deleted_subscribers,
-  //   //             "direct_subscribers" : result.direct_subscribers
-  //   //         };
-  //   //     })
-  //   //     )
-  //   //     doneCallback();
-  //   // })
-  // };
 
 
   tableau.registerConnector(myConnector); // Create event listeners for when the user submits the form
 
   $(document).ready(function () {
     $("#submitButton").click(function () {
+      // Get user input and store it in an object
       var pass = {
         key: $('#apiKey').val().trim(),
         end_date: $('#end_date').val().trim()
-      };
-      tableau.connectionData = JSON.stringify(pass);
-      tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
+      }; // Tableau requires that `connectionData` be a string
 
-      tableau.submit(); // tableau.connectionData = JSON.stringify(pass);
-      // tableau.submit(); // This sends the connector object to Tableau
+      tableau.connectionData = JSON.stringify(pass); // This will be the data source name in Tableau
+
+      tableau.connectionName = "Granicus WDC"; // Completes the 'interactive phase'
+
+      tableau.submit();
     });
   });
 })();
 
-},{"babel-polyfill":1,"fetch-ie8":331,"lodash.zip":332}]},{},[334]);
+},{"babel-polyfill":1,"lodash.zip":331}]},{},[333]);
