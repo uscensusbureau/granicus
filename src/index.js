@@ -1,7 +1,23 @@
 // require('es6-promise').polyfill();
-require('babel-polyfill');
-require('fetch-ie8')
 
+/*
+Tableau's internal browser is old. In order to make dealing with multiple
+asynchronous API calls, waiting for them and processing them *in order*, we use
+a combination of browserify (with babelify) and some polyfills
+
+Using the CLI:
+
+browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-env ] ]
+
+ */
+
+// Polyfills
+require('babel-polyfill');
+// special polyfill for fetch support (not provided by babel-polyfill)
+// require('fetch-ie8')
+
+// function from lodash for allowing us to combine multiple API responses into a
+// single 'table'
 import zip from "lodash.zip"
 
 (function () {
@@ -11,6 +27,8 @@ import zip from "lodash.zip"
   
   // Define the schema
   myConnector.getSchema = function (schemaCallback) {
+    
+    // for multiple tables... TODO
     
     // Rates are float types, so breaking out into separate tables
     // let rate_schema = [{
@@ -45,7 +63,7 @@ import zip from "lodash.zip"
     //   columns: rate_schema
     // };
     
-    // Counts are integers, a separate table
+    // counts schema
     let count_schema = [{
       id: "name",
       alias: "Name of Metric",
@@ -68,7 +86,7 @@ import zip from "lodash.zip"
       },
     
     ];
-    
+    // counts schema object
     let counts = {
       id: "counts",
       alias: "Counts",
@@ -92,36 +110,56 @@ import zip from "lodash.zip"
     // }
   
   myConnector.getData = function (table, doneCallback) {
-    let cd_data= JSON.parse(tableau.connectionData);
+    // account number
     let account = "11723";
+    
+    // parse the string passed between Tableau lifecycle phases to get the user
+    // supplied data into our calls
+    let cd_data= JSON.parse(tableau.connectionData);
     let key = cd_data.key
     let end = cd_data.end_date
+    
+    
   
-    // Latest date
+    // Latest date from user input
     const end_date = new Date(end);
-  
-    const month = end_date.getUTCMonth() + 1; //jan = 0
-    const day = end_date.getUTCDate();
-    const year = end_date.getUTCFullYear();
-    const new_date = year + "-" + month + "-" + day;
-    // Week ago date
-    const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
-    const wks_1_month = wks_1.getUTCMonth() + 1;
-    const wks_1_day = wks_1.getUTCDate();
-    const wks_1_year = wks_1.getUTCFullYear();
-    const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
-    // 2 Weeks ago date
-    const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
-    const wks_2_month = wks_2.getUTCMonth() + 1;
-    const wks_2_day = wks_2.getUTCDate();
-    const wks_2_year = wks_2.getUTCFullYear();
-    const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
-    // 3 weeks ago date
-    const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
-    const wks_3_month = wks_3.getUTCMonth() + 1;
-    const wks_3_day = wks_3.getUTCDate();
-    const wks_3_year = wks_3.getUTCFullYear();
-    const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
+    
+    // function for creating dates formatted for Granicus API
+    const makeDate = (days_ago) => {
+      // create date from number of 'days_ago' from
+      const date = new Date(new Date().setDate(end_date.getDate() - days_ago));
+      const month = date.getUTCMonth() + 1; //jan = 0
+      const day = date.getUTCDate();
+      const year = date.getUTCFullYear();
+      return `${year}-${month}-${day}`
+    }
+    
+    const new_date = makeDate(0)
+    const wks_1_date = makeDate(7)
+    const wks_2_date = makeDate(14)
+    const wks_3_date = makeDate(21)
+    // const month = end_date.getUTCMonth() + 1; //jan = 0
+    // const day = end_date.getUTCDate();
+    // const year = end_date.getUTCFullYear();
+    // const new_date = year + "-" + month + "-" + day;
+    // // Week ago date
+    // const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
+    // const wks_1_month = wks_1.getUTCMonth() + 1;
+    // const wks_1_day = wks_1.getUTCDate();
+    // const wks_1_year = wks_1.getUTCFullYear();
+    // const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
+    // // 2 Weeks ago date
+    // const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
+    // const wks_2_month = wks_2.getUTCMonth() + 1;
+    // const wks_2_day = wks_2.getUTCDate();
+    // const wks_2_year = wks_2.getUTCFullYear();
+    // const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
+    // // 3 weeks ago date
+    // const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
+    // const wks_3_month = wks_3.getUTCMonth() + 1;
+    // const wks_3_day = wks_3.getUTCDate();
+    // const wks_3_year = wks_3.getUTCFullYear();
+    // const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
   
     // let allTimeStartDate = "2000-01-01";
   
@@ -186,59 +224,11 @@ import zip from "lodash.zip"
     
     
   };
-    
+    // for multiple tables... TODO
     // if (table.tableInfo.id == "counts") {
     
     // }
   
-  //   req.onload = function () {
-  //     let res = req.response
-  //     let jn = JSON.parse(res)
-  //     tableau.log("resp: " + jn);
-  //     // FOR ARRAY:
-  //     // table.appendRows(
-  //     //     jn.map(function(result) {
-  //     //         return {
-  //     //             "total_subscribers" : result.total_subscribers,
-  //     //             "deleted_subscribers" : result.deleted_subscribers,
-  //     //             "direct_subscribers" : result.direct_subscribers
-  //     //         };
-  //     //     })
-  //     // )
-  //     // FOR OBJECT:
-  //     table.appendRows(
-  //       [{
-  //         "total_subscribers": jn.total_subscribers,
-  //         "deleted_subscribers": jn.deleted_subscribers,
-  //         "direct_subscribers": jn.direct_subscribers
-  //       }]
-  //     )
-  //     doneCallback()
-  //   }
-  
-  //   req.send()
-  //   // fetch(apiCall,
-  //   //     {
-  //   //         method: "GET",
-  //   //         headers: myHeaders
-  //   //     })
-  //   //     .then(function(r) { 
-  //   //         return r.json()
-  //   //     })
-  //   //     .then(function(j) { 
-  //   //     tableau.log("resp: " + j);
-  //   //     table.appendRows(
-  //   //     j.map(function(result) {
-  //   //         return {
-  //   //             "total_subscribers" : result.total_subscribers,
-  //   //             "deleted_subscribers" : result.deleted_subscribers,
-  //   //             "direct_subscribers" : result.direct_subscribers
-  //   //         };
-  //   //     })
-  //   //     )
-  //   //     doneCallback();
-  //   // })
-  // };
   
   tableau.registerConnector(myConnector);
   
@@ -246,24 +236,20 @@ import zip from "lodash.zip"
   $(document).ready(function () {
     $("#submitButton").click(function () {
       
+      // Get user input and store it in an object
       let pass = {
         key: $('#apiKey').val().trim(),
         end_date: $('#end_date').val().trim()
       };
       
+      // Tableau requires that `connectionData` be a string
       tableau.connectionData = JSON.stringify(pass);
-      tableau.connectionName = "Granicus WDC"; // This will be the data source name in Tableau
+      
+      // This will be the data source name in Tableau
+      tableau.connectionName = "Granicus WDC";
+      
+      // Completes the 'interactive phase'
       tableau.submit()
-    
-      
-      
-      
-      
-      // tableau.connectionData = JSON.stringify(pass);
-      
-      
-      // tableau.submit(); // This sends the connector object to Tableau
-      
     })
   })
 })();
