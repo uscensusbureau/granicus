@@ -162,8 +162,12 @@ import zip from "lodash.zip"
     // const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
   
     // let allTimeStartDate = "2000-01-01";
-  
+    
     let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
+    
+    // Bulletins summary url:
+    
+    let bull_sum_url = "reports/bulletins/summary"
   
     let bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}`;
     let bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}`;
@@ -182,8 +186,9 @@ import zip from "lodash.zip"
       const results = calls.map(async url => {
       
         tableau.log("api call: " + url);
-      
-        const response = await window.fetch(url, {
+  
+        // const response = await window.fetch(url, {
+        const response = await fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',

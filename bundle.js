@@ -8483,7 +8483,9 @@ require('babel-polyfill'); // special polyfill for fetch support (not provided b
     // const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
     // let allTimeStartDate = "2000-01-01";
 
-    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
+    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/"; // Bulletins summary url:
+
+    var bull_sum_url = "reports/bulletins/summary";
     var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
     var bulletin_summary_2wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_2_date, "&end_date=").concat(wks_1_date);
     var bulletin_summary_3wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_3_date, "&end_date=").concat(wks_2_date); // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
@@ -8513,9 +8515,10 @@ require('babel-polyfill'); // special polyfill for fetch support (not provided b
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
-                            tableau.log("api call: " + url);
+                            tableau.log("api call: " + url); // const response = await window.fetch(url, {
+
                             _context.next = 3;
-                            return window.fetch(url, {
+                            return fetch(url, {
                               method: "GET",
                               headers: {
                                 'Content-Type': 'application/json',
