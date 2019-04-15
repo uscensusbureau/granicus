@@ -96,18 +96,7 @@ import zip from "lodash.zip"
     schemaCallback([counts]);
   };
   
-    // if (table.tableInfo.id == "counts") {
-    //   table.appendRows(
-    //     zipped.map( k => ({
-    //         "name":  k[0],
-    //         "this_wk": k[1],
-    //         "prev_wk": k[2],
-    //         "three_wk": k[3]
-    //       })
-    //     )
-    //   );
-    //   doneCallback()
-    // }
+
   
   myConnector.getData = function (table, doneCallback) {
     // account number
@@ -138,28 +127,7 @@ import zip from "lodash.zip"
     const wks_1_date = makeDate(7)
     const wks_2_date = makeDate(14)
     const wks_3_date = makeDate(21)
-    // const month = end_date.getUTCMonth() + 1; //jan = 0
-    // const day = end_date.getUTCDate();
-    // const year = end_date.getUTCFullYear();
-    // const new_date = year + "-" + month + "-" + day;
-    // // Week ago date
-    // const wks_1 = new Date(new Date().setDate(end_date.getDate() - 7));
-    // const wks_1_month = wks_1.getUTCMonth() + 1;
-    // const wks_1_day = wks_1.getUTCDate();
-    // const wks_1_year = wks_1.getUTCFullYear();
-    // const wks_1_date = wks_1_year + "-" + wks_1_month + "-" + wks_1_day;
-    // // 2 Weeks ago date
-    // const wks_2 = new Date(new Date().setDate(end_date.getDate() - 14));
-    // const wks_2_month = wks_2.getUTCMonth() + 1;
-    // const wks_2_day = wks_2.getUTCDate();
-    // const wks_2_year = wks_2.getUTCFullYear();
-    // const wks_2_date = wks_2_year + "-" + wks_2_month + "-" + wks_2_day;
-    // // 3 weeks ago date
-    // const wks_3 = new Date(new Date().setDate(end_date.getDate() - 21));
-    // const wks_3_month = wks_3.getUTCMonth() + 1;
-    // const wks_3_day = wks_3.getUTCDate();
-    // const wks_3_year = wks_3.getUTCFullYear();
-    // const wks_3_date = wks_3_year + "-" + wks_3_month + "-" + wks_3_day;
+ 
   
     // let allTimeStartDate = "2000-01-01";
     
@@ -221,6 +189,22 @@ import zip from "lodash.zip"
         )
       );
       doneCallback()
+  
+    // for multiple tables... TODO
+      // if (table.tableInfo.id == "counts") {
+      //   table.appendRows(
+      //     zipped.map( k => ({
+      //         "name":  k[0],
+      //         "this_wk": k[1],
+      //         "prev_wk": k[2],
+      //         "three_wk": k[3]
+      //       })
+      //     )
+      //   );
+      //   doneCallback()
+      // }
+      
+      
     })
     
     
@@ -229,12 +213,7 @@ import zip from "lodash.zip"
     
     
   };
-    // for multiple tables... TODO
-    // if (table.tableInfo.id == "counts") {
-    
-    // }
-  
-  
+
   tableau.registerConnector(myConnector);
   
   // Create event listeners for when the user submits the form
