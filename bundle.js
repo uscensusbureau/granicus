@@ -8785,40 +8785,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
   var myConnector = tableau.makeConnector(); // Define the schema
 
   myConnector.getSchema = function (schemaCallback) {
-    // for multiple tables... TODO
-    // Rates are float types, so breaking out into separate tables
-    // let rate_schema = [{
-    //   id: "name",
-    //   alias: "Name of Metric",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "prev_wk",
-    //   alias: "Previous Week",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "this_wk",
-    //   alias: "This Week",
-    //   dataType: tableau.dataTypeEnm.float
-    // },
-    // {
-    //   id: "delta_1",
-    //   alias: "Delta One Week",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "delta_2",
-    //   alias: "Delta Two Weeks",
-    //   dataType: tableau.dataTypeEnum.float
-    // }]
-    // let rates = {
-    //   id: "rates",
-    //   alias: "Rates",
-    //   columns: rate_schema
-    // };
-    // counts schema
-    var count_schema = [{
+    var summary_schema = [{
       id: "name",
       alias: "Name of Metric",
       dataType: tableau.dataTypeEnum.string
@@ -8834,14 +8801,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       id: "three_wk",
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["int"]
-    }]; // counts schema object
-
-    var counts = {
-      id: "counts",
-      alias: "Counts",
-      columns: count_schema
+    }];
+    var bulletins = {
+      id: "bulletins",
+      alias: "Bulletins Table",
+      columns: summary_schema
     };
-    schemaCallback([counts]);
+    var subscribers = {
+      id: "subscribers",
+      alias: "Subscribers Table",
+      columns: summary_schema
+    };
+    schemaCallback([bulletins, subscribers]);
   };
 
   myConnector.getData = function (table, doneCallback) {
@@ -8872,13 +8843,22 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
     var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/"; // Bulletins summary url:
 
-    var bull_sum_url = "reports/bulletins/summary";
-    var bulletin_summary_1wk = base_url + "reports/bulletins/summary?start_date=".concat(wks_1_date, "&end_date=").concat(new_date);
-    var bulletin_summary_2wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_2_date, "&end_date=").concat(wks_1_date);
-    var bulletin_summary_3wks = base_url + "reports/bulletins/summary?start_date=".concat(wks_3_date, "&end_date=").concat(wks_2_date); // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
-    // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
+    var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
 
-    var call_list = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
+    var SSURL = "reports/subscriber_activity/summary";
+
+    var makeURL = function makeURL(extURL, startDate, endDate) {
+      return "".concat(base_url).concat(extURL, "?start_date=").concat(startDate, "&end_date=").concat(endDate);
+    };
+
+    var bulletin_summary_1wk = makeURL(BSURL, wks_1_date, new_date);
+    var bulletin_summary_2wks = makeURL(BSURL, wks_2_date, wks_1_date);
+    var bulletin_summary_3wks = makeURL(BSURL, wks_3_date, wks_2_date);
+    var subscriber_summary_1wk = makeURL(SSURL, wks_1_date, new_date);
+    var subscriber_summary_2wks = makeURL(SSURL, wks_2_date, wks_1_date);
+    var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
+    var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
+    var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks];
 
     var get_data =
     /*#__PURE__*/
@@ -8970,31 +8950,50 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    get_data(call_list).then(function (result) {
-      tableau.log("data_dump: " + result);
-      console.log("data_dump: " + result);
-      table.appendRows(result.map(function (k) {
-        return {
-          "name": k[0],
-          "this_wk": k[1],
-          "prev_wk": k[2],
-          "three_wk": k[3]
-        };
-      }));
-      doneCallback(); // for multiple tables... TODO
-      // if (table.tableInfo.id == "counts") {
-      //   table.appendRows(
-      //     zipped.map( k => ({
-      //         "name":  k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   );
-      //   doneCallback()
-      // }
-    });
+    if (table.tableInfo.id == "bulletins") {
+      get_data(callList1).then(function (result) {
+        // tableau.log("data_dump: " + result);
+        // console.log("data_dump: " + result);
+        table.appendRows(result.map(function (k) {
+          return {
+            "name": k[0],
+            "this_wk": k[1],
+            "prev_wk": k[2],
+            "three_wk": k[3]
+          };
+        }));
+        doneCallback();
+      });
+    }
+
+    if (table.tableInfo.id == "subscribers") {
+      get_data(callList2).then(function (result) {
+        // tableau.log("data_dump: " + result);
+        // console.log("data_dump: " + result);
+        table.appendRows(result.map(function (k) {
+          return {
+            "name": k[0],
+            "this_wk": k[1],
+            "prev_wk": k[2],
+            "three_wk": k[3]
+          };
+        }));
+        doneCallback();
+      });
+    } // for multiple tables... TODO
+    // if (table.tableInfo.id == "counts") {
+    //   table.appendRows(
+    //     zipped.map( k => ({
+    //         "name":  k[0],
+    //         "this_wk": k[1],
+    //         "prev_wk": k[2],
+    //         "three_wk": k[3]
+    //       })
+    //     )
+    //   );
+    //   doneCallback()
+    // }
+
   };
 
   tableau.registerConnector(myConnector); // Create event listeners for when the user submits the form

@@ -28,47 +28,12 @@ import zip from "lodash.zip"
   // Define the schema
   myConnector.getSchema = function (schemaCallback) {
     
-    // for multiple tables... TODO
-    
-    // Rates are float types, so breaking out into separate tables
-    // let rate_schema = [{
-    //   id: "name",
-    //   alias: "Name of Metric",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "prev_wk",
-    //   alias: "Previous Week",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "this_wk",
-    //   alias: "This Week",
-    //   dataType: tableau.dataTypeEnm.float
-    // },
-    // {
-    //   id: "delta_1",
-    //   alias: "Delta One Week",
-    //   dataType: tableau.dataTypeEnum.float
-    // },
-    // {
-    //   id: "delta_2",
-    //   alias: "Delta Two Weeks",
-    //   dataType: tableau.dataTypeEnum.float
-    // }]
-    
-    // let rates = {
-    //   id: "rates",
-    //   alias: "Rates",
-    //   columns: rate_schema
-    // };
-    
-    // counts schema
-    let count_schema = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    },
+    let summary_schema = [
+      {
+        id: "name",
+        alias: "Name of Metric",
+        dataType: tableau.dataTypeEnum.string
+      },
       {
         id: "this_wk",
         alias: "This Week",
@@ -84,16 +49,21 @@ import zip from "lodash.zip"
         alias: "Three Weeks Ago",
         dataType: tableau.dataTypeEnum.int
       },
-    
     ];
-    // counts schema object
-    let counts = {
-      id: "counts",
-      alias: "Counts",
-      columns: count_schema
+
+    let bulletins = {
+      id: "bulletins",
+      alias: "Bulletins Table",
+      columns: summary_schema
+    };
+  
+    let subscribers = {
+      id: "subscribers",
+      alias: "Subscribers Table",
+      columns: summary_schema
     };
     
-    schemaCallback([counts]);
+    schemaCallback([bulletins, subscribers]);
   };
   
 
@@ -134,21 +104,32 @@ import zip from "lodash.zip"
     let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
     
     // Bulletins summary url:
+    let BSURL = "reports/bulletins/summary"
+    // Subscriber summary url:
+    let SSURL = "reports/subscriber_activity/summary"
     
-    let bull_sum_url = "reports/bulletins/summary"
+    let makeURL = (extURL, startDate, endDate) => `${base_url}${extURL}?start_date=${startDate}&end_date=${endDate}`
   
-    let bulletin_summary_1wk = base_url + `reports/bulletins/summary?start_date=${wks_1_date}&end_date=${new_date}`;
-    let bulletin_summary_2wks = base_url + `reports/bulletins/summary?start_date=${wks_2_date}&end_date=${wks_1_date}`;
-    let bulletin_summary_3wks = base_url + `reports/bulletins/summary?start_date=${wks_3_date}&end_date=${wks_2_date}`;
+    let bulletin_summary_1wk = makeURL(BSURL, wks_1_date, new_date)
+    let bulletin_summary_2wks = makeURL(BSURL, wks_2_date, wks_1_date)
+    let bulletin_summary_3wks = makeURL(BSURL, wks_3_date, wks_2_date)
   
-    // let subcriber_summary_1wk = base_url + `reports/subscriber_activity/summary?start_date=${wks_1_date}&end_date=${new_date}`
-    // let subcriber_summary_2wks = base_url + `reports/subscriber_activity/summary?start_date=${wks_2_date}&end_date=${new_date}`
-  
-    let call_list = [
+    let subscriber_summary_1wk = makeURL(SSURL, wks_1_date, new_date)
+    let subscriber_summary_2wks = makeURL(SSURL, wks_2_date, wks_1_date)
+    let subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date)
+    
+    let callList1 = [
       bulletin_summary_1wk,
       bulletin_summary_2wks,
       bulletin_summary_3wks
     ];
+  
+    let callList2 = [
+      subscriber_summary_1wk,
+      subscriber_summary_2wks,
+      subscriber_summary_3wks
+    ];
+    
   
     const get_data = async calls => {
       const results = calls.map(async url => {
@@ -176,43 +157,57 @@ import zip from "lodash.zip"
       return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
     };
   
-    get_data(call_list).then(function (result) {
-      tableau.log("data_dump: " + result);
-      console.log("data_dump: " + result);
-      table.appendRows(
-        result.map(k => ({
-            "name": k[0],
-            "this_wk": k[1],
-            "prev_wk": k[2],
-            "three_wk": k[3]
-          })
+    if (table.tableInfo.id == "bulletins") {
+      get_data(callList1)
+      .then( result => {
+        // tableau.log("data_dump: " + result);
+        // console.log("data_dump: " + result);
+        table.appendRows(
+          result.map(k => ({
+              "name": k[0],
+              "this_wk": k[1],
+              "prev_wk": k[2],
+              "three_wk": k[3]
+            })
+          )
         )
-      );
-      doneCallback()
-  
-    // for multiple tables... TODO
-      // if (table.tableInfo.id == "counts") {
-      //   table.appendRows(
-      //     zipped.map( k => ({
-      //         "name":  k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   );
-      //   doneCallback()
-      // }
-      
-      
-    })
+        doneCallback()
+      })
+    }
     
-    
-    
-    
-    
-    
-  };
+    if (table.tableInfo.id == "subscribers") {
+      get_data(callList2)
+        .then( result => {
+          // tableau.log("data_dump: " + result);
+          // console.log("data_dump: " + result);
+          table.appendRows(
+            result.map(k => ({
+                "name": k[0],
+                "this_wk": k[1],
+                "prev_wk": k[2],
+                "three_wk": k[3]
+              })
+            )
+          )
+          doneCallback()
+        })
+    }
+
+  // for multiple tables... TODO
+    // if (table.tableInfo.id == "counts") {
+    //   table.appendRows(
+    //     zipped.map( k => ({
+    //         "name":  k[0],
+    //         "this_wk": k[1],
+    //         "prev_wk": k[2],
+    //         "three_wk": k[3]
+    //       })
+    //     )
+    //   );
+    //   doneCallback()
+    // }
+  }
+
 
   tableau.registerConnector(myConnector);
   
