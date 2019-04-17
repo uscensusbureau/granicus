@@ -50,29 +50,29 @@ import zip from "lodash.zip"
         dataType: tableau.dataTypeEnum.int
       },
     ];
-  
-    let summary_schema2 = [
-      {
-        id: "name",
-        alias: "Name of Metric",
-        dataType: tableau.dataTypeEnum.string
-      },
-      {
-        id: "this_wk",
-        alias: "This Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "prev_wk",
-        alias: "Previous Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "three_wk",
-        alias: "Three Weeks Ago",
-        dataType: tableau.dataTypeEnum.int
-      },
-    ];
+    //
+    // let summary_schema2 = [
+    //   {
+    //     id: "name",
+    //     alias: "Name of Metric",
+    //     dataType: tableau.dataTypeEnum.string
+    //   },
+    //   {
+    //     id: "this_wk",
+    //     alias: "This Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "prev_wk",
+    //     alias: "Previous Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "three_wk",
+    //     alias: "Three Weeks Ago",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    // ];
 
     let bulletins = {
       id: "bulletins",
@@ -83,7 +83,7 @@ import zip from "lodash.zip"
     let subscribers = {
       id: "subscribers",
       alias: "Subscribers Table",
-      columns: summary_schema2
+      columns: summary_schema
     };
     
     schemaCallback([bulletins, subscribers]);

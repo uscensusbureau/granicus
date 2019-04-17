@@ -8801,24 +8801,30 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       id: "three_wk",
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["int"]
-    }];
-    var summary_schema2 = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["int"]
-    }];
+    }]; //
+    // let summary_schema2 = [
+    //   {
+    //     id: "name",
+    //     alias: "Name of Metric",
+    //     dataType: tableau.dataTypeEnum.string
+    //   },
+    //   {
+    //     id: "this_wk",
+    //     alias: "This Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "prev_wk",
+    //     alias: "Previous Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "three_wk",
+    //     alias: "Three Weeks Ago",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    // ];
+
     var bulletins = {
       id: "bulletins",
       alias: "Bulletins Table",
@@ -8827,7 +8833,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var subscribers = {
       id: "subscribers",
       alias: "Subscribers Table",
-      columns: summary_schema2
+      columns: summary_schema
     };
     schemaCallback([bulletins, subscribers]);
   };
