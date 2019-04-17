@@ -177,6 +177,12 @@ import zip from "lodash.zip"
       const wk1_vals = await Object.values(dump[0]);
       const wk2_vals = await Object.values(dump[1]);
       const wk3_vals = await Object.values(dump[2]);
+      if (table.tableInfo.id === "bulletins") {
+        keys_.push("open_rate")
+        wk1_vals.push(dump[0].opens_count / dump[0].total_delivered)
+        wk2_vals.push(dump[1].opens_count / dump[1].total_delivered)
+        wk3_vals.push(dump[2].opens_count / dump[2].total_delivered)
+      }
       return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
     };
   
@@ -215,20 +221,7 @@ import zip from "lodash.zip"
         doneCallback()
       })
     }
-
-  // for multiple tables... TODO
-    // if (table.tableInfo.id == "counts") {
-    //   table.appendRows(
-    //     zipped.map( k => ({
-    //         "name":  k[0],
-    //         "this_wk": k[1],
-    //         "prev_wk": k[2],
-    //         "three_wk": k[3]
-    //       })
-    //     )
-    //   );
-    //   doneCallback()
-    // }
+    
   }
 
 

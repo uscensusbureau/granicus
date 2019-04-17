@@ -8952,9 +8952,17 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
               case 15:
                 wk3_vals = _context2.sent;
+
+                if (table.tableInfo.id === "bulletins") {
+                  keys_.push("open_rate");
+                  wk1_vals.push(dump[0].opens_count / dump[0].total_delivered);
+                  wk2_vals.push(dump[1].opens_count / dump[1].total_delivered);
+                  wk3_vals.push(dump[2].opens_count / dump[2].total_delivered);
+                }
+
                 return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 17:
+              case 18:
               case "end":
                 return _context2.stop();
             }
@@ -8997,20 +9005,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
         }));
         doneCallback();
       });
-    } // for multiple tables... TODO
-    // if (table.tableInfo.id == "counts") {
-    //   table.appendRows(
-    //     zipped.map( k => ({
-    //         "name":  k[0],
-    //         "this_wk": k[1],
-    //         "prev_wk": k[2],
-    //         "three_wk": k[3]
-    //       })
-    //     )
-    //   );
-    //   doneCallback()
-    // }
-
+    }
   };
 
   tableau.registerConnector(myConnector); // Create event listeners for when the user submits the form
