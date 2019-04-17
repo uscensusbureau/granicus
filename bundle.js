@@ -8950,7 +8950,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    if (table.tableInfo.id == "bulletins") {
+    if (table.tableInfo.id === "bulletins") {
       get_data(callList1).then(function (result) {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);
@@ -8966,7 +8966,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       });
     }
 
-    if (table.tableInfo.id == "subscribers") {
+    if (table.tableInfo.id === "subscribers") {
       get_data(callList2).then(function (result) {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);

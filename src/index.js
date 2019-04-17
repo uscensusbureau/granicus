@@ -157,7 +157,7 @@ import zip from "lodash.zip"
       return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
     };
   
-    if (table.tableInfo.id == "bulletins") {
+    if (table.tableInfo.id === "bulletins") {
       get_data(callList1)
       .then( result => {
         // tableau.log("data_dump: " + result);
@@ -175,22 +175,22 @@ import zip from "lodash.zip"
       })
     }
     
-    if (table.tableInfo.id == "subscribers") {
+    if (table.tableInfo.id === "subscribers") {
       get_data(callList2)
-        .then( result => {
-          // tableau.log("data_dump: " + result);
-          // console.log("data_dump: " + result);
-          table.appendRows(
-            result.map(k => ({
-                "name": k[0],
-                "this_wk": k[1],
-                "prev_wk": k[2],
-                "three_wk": k[3]
-              })
-            )
+      .then( result => {
+        // tableau.log("data_dump: " + result);
+        // console.log("data_dump: " + result);
+        table.appendRows(
+          result.map(k => ({
+              "name": k[0],
+              "this_wk": k[1],
+              "prev_wk": k[2],
+              "three_wk": k[3]
+            })
           )
-          doneCallback()
-        })
+        )
+        doneCallback()
+      })
     }
 
   // for multiple tables... TODO
