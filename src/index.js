@@ -179,9 +179,9 @@ import zip from "lodash.zip"
       const wk3_vals = await Object.values(dump[2]);
       if (table.tableInfo.id === "bulletins") {
         keys_.push("open_rate")
-        wk1_vals.push(dump[0].opens_count / dump[0].total_delivered)
-        wk2_vals.push(dump[1].opens_count / dump[1].total_delivered)
-        wk3_vals.push(dump[2].opens_count / dump[2].total_delivered)
+        wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"])
+        wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"])
+        wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"])
       }
       return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
     };
