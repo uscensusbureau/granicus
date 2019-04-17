@@ -160,7 +160,7 @@ import zip from "lodash.zip"
         tableau.log("api call: " + url);
   
         // const response = await window.fetch(url, {
-        const response = await fetch(url, {
+        const response = await window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',

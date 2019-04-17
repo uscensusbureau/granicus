@@ -8902,7 +8902,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             tableau.log("api call: " + url); // const response = await window.fetch(url, {
 
                             _context.next = 3;
-                            return fetch(url, {
+                            return window.fetch(url, {
                               method: "GET",
                               headers: {
                                 'Content-Type': 'application/json',
