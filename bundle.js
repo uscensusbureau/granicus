@@ -8838,7 +8838,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     }];
     var bulletin_rates = {
       id: "bulletin_rates",
-      alias: "Bulletins Table",
+      alias: "Bulletin Rates Table",
       columns: rates_schema
     };
     var bulletins = {
@@ -8851,7 +8851,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       alias: "Subscribers Table",
       columns: summary_schema2
     };
-    schemaCallback([bulletins, subscribers]);
+    schemaCallback([bulletins, bulletin_rates, subscribers]);
   };
 
   myConnector.getData = function (table, doneCallback) {

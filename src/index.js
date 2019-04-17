@@ -98,7 +98,7 @@ import zip from "lodash.zip"
   
     let bulletin_rates = {
       id: "bulletin_rates",
-      alias: "Bulletins Table",
+      alias: "Bulletin Rates Table",
       columns: rates_schema
     };
     
@@ -114,7 +114,7 @@ import zip from "lodash.zip"
       columns: summary_schema2
     };
     
-    schemaCallback([bulletins, subscribers]);
+    schemaCallback([bulletins, bulletin_rates, subscribers]);
   };
   
 
