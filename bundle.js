@@ -8785,6 +8785,23 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
   var myConnector = tableau.makeConnector(); // Define the schema
 
   myConnector.getSchema = function (schemaCallback) {
+    var rates_schema = [{
+      id: "name",
+      alias: "Name of Metric",
+      dataType: tableau.dataTypeEnum.string
+    }, {
+      id: "this_wk",
+      alias: "This Week",
+      dataType: tableau.dataTypeEnum["float"]
+    }, {
+      id: "prev_wk",
+      alias: "Previous Week",
+      dataType: tableau.dataTypeEnum["float"]
+    }, {
+      id: "three_wk",
+      alias: "Three Weeks Ago",
+      dataType: tableau.dataTypeEnum["float"]
+    }];
     var summary_schema = [{
       id: "name",
       alias: "Name of Metric",
@@ -8819,6 +8836,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["int"]
     }];
+    var bulletin_rates = {
+      id: "bulletin_rates",
+      alias: "Bulletins Table",
+      columns: rates_schema
+    };
     var bulletins = {
       id: "bulletins",
       alias: "Bulletins Table",
@@ -8883,7 +8905,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(calls) {
-        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
+        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals, _keys_, _wk1_vals, _wk2_vals, _wk3_vals;
+
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -8932,37 +8955,46 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
               case 3:
                 dump = _context2.sent;
-                _context2.next = 6;
-                return Object.keys(dump[0]);
 
-              case 6:
-                keys_ = _context2.sent;
-                _context2.next = 9;
-                return Object.values(dump[0]);
-
-              case 9:
-                wk1_vals = _context2.sent;
-                _context2.next = 12;
-                return Object.values(dump[1]);
-
-              case 12:
-                wk2_vals = _context2.sent;
-                _context2.next = 15;
-                return Object.values(dump[2]);
-
-              case 15:
-                wk3_vals = _context2.sent;
-
-                if (table.tableInfo.id === "bulletins") {
-                  keys_.push("open_rate");
-                  wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"]);
-                  wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"]);
-                  wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"]);
+                if (!(table.tableInfo.id === "bulletin_rates")) {
+                  _context2.next = 16;
+                  break;
                 }
 
+                keys_ = [];
+                wk1_vals = [];
+                wk2_vals = [];
+                wk3_vals = [];
+                keys_.push("open_rate");
+                wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"]);
+                wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"]);
+                wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"]);
                 return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
+              case 16:
+                _context2.next = 18;
+                return Object.keys(dump[0]);
+
               case 18:
+                _keys_ = _context2.sent;
+                _context2.next = 21;
+                return Object.values(dump[0]);
+
+              case 21:
+                _wk1_vals = _context2.sent;
+                _context2.next = 24;
+                return Object.values(dump[1]);
+
+              case 24:
+                _wk2_vals = _context2.sent;
+                _context2.next = 27;
+                return Object.values(dump[2]);
+
+              case 27:
+                _wk3_vals = _context2.sent;
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+
+              case 29:
               case "end":
                 return _context2.stop();
             }
@@ -8976,6 +9008,22 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     }();
 
     if (table.tableInfo.id === "bulletins") {
+      get_data(callList1).then(function (result) {
+        // tableau.log("data_dump: " + result);
+        // console.log("data_dump: " + result);
+        table.appendRows(result.map(function (k) {
+          return {
+            "name": k[0],
+            "this_wk": k[1],
+            "prev_wk": k[2],
+            "three_wk": k[3]
+          };
+        }));
+        doneCallback();
+      });
+    }
+
+    if (table.tableInfo.id === "bulletin_rates") {
       get_data(callList1).then(function (result) {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);

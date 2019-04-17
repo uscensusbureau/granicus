@@ -27,6 +27,28 @@ import zip from "lodash.zip"
   
   // Define the schema
   myConnector.getSchema = function (schemaCallback) {
+    let rates_schema = [
+      {
+        id: "name",
+        alias: "Name of Metric",
+        dataType: tableau.dataTypeEnum.string
+      },
+      {
+        id: "this_wk",
+        alias: "This Week",
+        dataType: tableau.dataTypeEnum.float
+      },
+      {
+        id: "prev_wk",
+        alias: "Previous Week",
+        dataType: tableau.dataTypeEnum.float
+      },
+      {
+        id: "three_wk",
+        alias: "Three Weeks Ago",
+        dataType: tableau.dataTypeEnum.float
+      },
+    ];
     
     let summary_schema = [
       {
@@ -73,7 +95,13 @@ import zip from "lodash.zip"
         dataType: tableau.dataTypeEnum.int
       },
     ];
-
+  
+    let bulletin_rates = {
+      id: "bulletin_rates",
+      alias: "Bulletins Table",
+      columns: rates_schema
+    };
+    
     let bulletins = {
       id: "bulletins",
       alias: "Bulletins Table",
@@ -173,17 +201,29 @@ import zip from "lodash.zip"
       });
     
       const dump = await Promise.all(results);
-      const keys_ = await Object.keys(dump[0]);
-      const wk1_vals = await Object.values(dump[0]);
-      const wk2_vals = await Object.values(dump[1]);
-      const wk3_vals = await Object.values(dump[2]);
-      if (table.tableInfo.id === "bulletins") {
+      
+      // control logic for derived/calculated fields
+      if (table.tableInfo.id === "bulletin_rates") {
+        let keys_ = []
+        let wk1_vals = []
+        let wk2_vals = []
+        let wk3_vals = []
+        
         keys_.push("open_rate")
         wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"])
         wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"])
         wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"])
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+        
+      } else {
+        const keys_ = await Object.keys(dump[0]);
+        const wk1_vals = await Object.values(dump[0]);
+        const wk2_vals = await Object.values(dump[1]);
+        const wk3_vals = await Object.values(dump[2]);
+        
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
-      return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      
     };
   
     if (table.tableInfo.id === "bulletins") {
@@ -203,6 +243,24 @@ import zip from "lodash.zip"
         doneCallback()
       })
     }
+  
+    if (table.tableInfo.id === "bulletin_rates") {
+      get_data(callList1)
+        .then( result => {
+          // tableau.log("data_dump: " + result);
+          // console.log("data_dump: " + result);
+          table.appendRows(
+            result.map(k => ({
+                "name": k[0],
+                "this_wk": k[1],
+                "prev_wk": k[2],
+                "three_wk": k[3]
+              })
+            )
+          )
+          doneCallback()
+        })
+    }
     
     if (table.tableInfo.id === "subscribers") {
       get_data(callList2)
@@ -221,6 +279,7 @@ import zip from "lodash.zip"
         doneCallback()
       })
     }
+    
     
   }
 
