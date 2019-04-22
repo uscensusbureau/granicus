@@ -9124,35 +9124,89 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     }();
 
     if (table.tableInfo.id === "bulletins") {
-      get_data(callList1).then(function (result) {
-        // tableau.log("data_dump: " + result);
-        // console.log("data_dump: " + result);
-        table.appendRows(result.map(function (k) {
-          return {
-            "name": k[0],
-            "this_wk": k[1],
-            "prev_wk": k[2],
-            "three_wk": k[3]
-          };
+      get_data(callList1).then(
+      /*#__PURE__*/
+      function () {
+        var _ref5 = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee5(result) {
+          return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+              switch (_context5.prev = _context5.next) {
+                case 0:
+                  _context5.t0 = table;
+                  _context5.next = 3;
+                  return result.map(function (k) {
+                    return {
+                      "name": k[0],
+                      "this_wk": k[1],
+                      "prev_wk": k[2],
+                      "three_wk": k[3]
+                    };
+                  });
+
+                case 3:
+                  _context5.t1 = _context5.sent;
+
+                  _context5.t0.appendRows.call(_context5.t0, _context5.t1);
+
+                  doneCallback();
+
+                case 6:
+                case "end":
+                  return _context5.stop();
+              }
+            }
+          }, _callee5);
         }));
-        doneCallback();
-      });
+
+        return function (_x8) {
+          return _ref5.apply(this, arguments);
+        };
+      }());
     }
 
     if (table.tableInfo.id === "bulletin_rates") {
-      get_data(callList1).then(function (result) {
-        // tableau.log("data_dump: " + result);
-        // console.log("data_dump: " + result);
-        table.appendRows(result.map(function (k) {
-          return {
-            "name": k[0],
-            "this_wk": k[1],
-            "prev_wk": k[2],
-            "three_wk": k[3]
-          };
+      get_data(callList1).then(
+      /*#__PURE__*/
+      function () {
+        var _ref6 = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee6(result) {
+          return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+              switch (_context6.prev = _context6.next) {
+                case 0:
+                  _context6.t0 = table;
+                  _context6.next = 3;
+                  return result.map(function (k) {
+                    return {
+                      "name": k[0],
+                      "this_wk": k[1],
+                      "prev_wk": k[2],
+                      "three_wk": k[3]
+                    };
+                  });
+
+                case 3:
+                  _context6.t1 = _context6.sent;
+
+                  _context6.t0.appendRows.call(_context6.t0, _context6.t1);
+
+                  doneCallback();
+
+                case 6:
+                case "end":
+                  return _context6.stop();
+              }
+            }
+          }, _callee6);
         }));
-        doneCallback();
-      });
+
+        return function (_x9) {
+          return _ref6.apply(this, arguments);
+        };
+      }());
     }
 
     if (table.tableInfo.id === "subscribers") {

@@ -260,11 +260,11 @@ import zip from "lodash.zip"
   
     if (table.tableInfo.id === "bulletins") {
       get_data(callList1)
-      .then( result => {
+      .then( async result => {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);
         table.appendRows(
-          result.map(k => ({
+          await result.map(k => ({
               "name": k[0],
               "this_wk": k[1],
               "prev_wk": k[2],
@@ -278,11 +278,11 @@ import zip from "lodash.zip"
   
     if (table.tableInfo.id === "bulletin_rates") {
       get_data(callList1)
-        .then( result => {
+        .then( async result => {
           // tableau.log("data_dump: " + result);
           // console.log("data_dump: " + result);
           table.appendRows(
-            result.map(k => ({
+            await result.map(k => ({
                 "name": k[0],
                 "this_wk": k[1],
                 "prev_wk": k[2],
