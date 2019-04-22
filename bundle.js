@@ -8961,14 +8961,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 function () {
                   var _ref3 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee2(col, numProp, denomProp) {
+                  regeneratorRuntime.mark(function _callee2(source, col, numProp, denomProp) {
                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
                             console.log("in makeRate");
-                            console.log("after await: " + dump[col][numProp]);
-                            return _context2.abrupt("return", dump[col][numProp] / dump[col][denomProp]);
+                            console.log("after await: " + source[col][numProp]);
+                            return _context2.abrupt("return", source[col][numProp] / source[col][denomProp]);
 
                           case 3:
                           case "end":
@@ -8978,7 +8978,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     }, _callee2);
                   }));
 
-                  return function makeRate(_x3, _x4, _x5) {
+                  return function makeRate(_x3, _x4, _x5, _x6) {
                     return _ref3.apply(this, arguments);
                   };
                 }();
@@ -8988,7 +8988,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 function () {
                   var _ref4 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee3(col) {
+                  regeneratorRuntime.mark(function _callee3(source, col) {
                     var _len,
                         counts,
                         _key,
@@ -9000,12 +9000,12 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                           case 0:
                             console.log("in makeSum");
 
-                            for (_len = _args3.length, counts = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                              counts[_key - 1] = _args3[_key];
+                            for (_len = _args3.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+                              counts[_key - 2] = _args3[_key];
                             }
 
                             counts.reduce(function (a, b) {
-                              return dump[col][a] + dump[col][b], 0;
+                              return source[col][a] + source[col][b], 0;
                             });
 
                           case 3:
@@ -9016,7 +9016,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     }, _callee3);
                   }));
 
-                  return function makeSum(_x6) {
+                  return function makeSum(_x7, _x8) {
                     return _ref4.apply(this, arguments);
                   };
                 }(); // control logic for derived/calculated fields
@@ -9037,9 +9037,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 };
 
                 keys_.push("open_rate");
-                pushOpenRates(wk1_vals, 0);
-                pushOpenRates(wk2_vals, 1);
-                pushOpenRates(wk3_vals, 2);
+                pushOpenRates(dump, wk1_vals, 0);
+                pushOpenRates(dump, wk2_vals, 1);
+                pushOpenRates(dump, wk3_vals, 2);
                 return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 19:
@@ -9075,9 +9075,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                 _keys_.push("total_digital_impressions");
 
-                pushTgiSums(_wk1_vals, 0);
-                pushTgiSums(_wk2_vals, 1);
-                pushTgiSums(_wk3_vals, 2);
+                pushTgiSums(dump, _wk1_vals, 0);
+                pushTgiSums(dump, _wk2_vals, 1);
+                pushTgiSums(dump, _wk3_vals, 2);
                 return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
               case 40:

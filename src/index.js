@@ -202,18 +202,19 @@ import zip from "lodash.zip"
     
       const dump = await Promise.all(results);
       
-      const makeRate = async (col, numProp, denomProp) => {
+      const makeRate = async (source, col, numProp, denomProp) => {
         console.log("in makeRate")
-        console.log("after await: " + dump[col][numProp])
-        return dump[col][numProp] / dump[col][denomProp]
+        console.log("after await: " + source[col][numProp])
+        return source[col][numProp] / source[col][denomProp]
       } 
 
-      const makeSum = async (col, ...counts) => {
+      const makeSum = async (source, col, ...counts) => {
         console.log("in makeSum")
         counts.reduce((a, b) => {
-          return dump[col][a] + dump[col][b], 0
+          return source[col][a] + source[col][b], 0
         })
       }
+
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         let keys_ = []
@@ -224,9 +225,9 @@ import zip from "lodash.zip"
         const pushOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
-        pushOpenRates(wk1_vals, 0)
-        pushOpenRates(wk2_vals, 1) 
-        pushOpenRates(wk3_vals, 2)
+        pushOpenRates(dump, wk1_vals, 0)
+        pushOpenRates(dump, wk2_vals, 1) 
+        pushOpenRates(dump, wk3_vals, 2)
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else {
@@ -242,9 +243,9 @@ import zip from "lodash.zip"
           
           keys_.push("total_digital_impressions")
 
-          pushTgiSums(wk1_vals, 0)
-          pushTgiSums(wk2_vals, 1)
-          pushTgiSums(wk3_vals, 2)
+          pushTgiSums(dump, wk1_vals, 0)
+          pushTgiSums(dump, wk2_vals, 1)
+          pushTgiSums(dump, wk3_vals, 2)
           return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
         } else {
