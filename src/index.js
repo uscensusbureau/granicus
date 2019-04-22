@@ -202,10 +202,17 @@ import zip from "lodash.zip"
     
       const dump = await Promise.all(results);
       
-      const makeRate = async (col, numProp, denomProp) => await dump[col][numProp] / await dump[col][denomProp]
+      const makeRate = async (col, numProp, denomProp) => {
+        console.log("in makeRate")
+        await dump[col][numProp] / await dump[col][denomProp]
+        console.log("after await: " + await dump[col][numProp])
+      } 
 
-      const makeSum = (col, ...counts) => counts.reduce(async (a, b) => await dump[col][a] + await dump[col][b], 0)
-      
+      const makeSum = (col, ...counts) => {
+        console.log("in makeSum")
+        counts.reduce(async (a, b) => await dump[col][a] + await dump[col][b], 0)
+      }
+
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         let keys_ = []

@@ -8966,19 +8966,29 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            _context2.next = 2;
+                            console.log("in makeRate");
+                            _context2.next = 3;
                             return dump[col][numProp];
 
-                          case 2:
+                          case 3:
                             _context2.t0 = _context2.sent;
-                            _context2.next = 5;
+                            _context2.next = 6;
                             return dump[col][denomProp];
 
-                          case 5:
+                          case 6:
                             _context2.t1 = _context2.sent;
-                            return _context2.abrupt("return", _context2.t0 / _context2.t1);
+                            _context2.t0 / _context2.t1;
+                            _context2.t2 = console;
+                            _context2.next = 11;
+                            return dump[col][numProp];
 
-                          case 7:
+                          case 11:
+                            _context2.t3 = _context2.sent;
+                            _context2.t4 = "after await: " + _context2.t3;
+
+                            _context2.t2.log.call(_context2.t2, _context2.t4);
+
+                          case 14:
                           case "end":
                             return _context2.stop();
                         }
@@ -8992,11 +9002,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 }();
 
                 makeSum = function makeSum(col) {
+                  console.log("in makeSum");
+
                   for (var _len = arguments.length, counts = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                     counts[_key - 1] = arguments[_key];
                   }
 
-                  return counts.reduce(
+                  counts.reduce(
                   /*#__PURE__*/
                   function () {
                     var _ref4 = _asyncToGenerator(
