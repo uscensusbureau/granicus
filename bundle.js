@@ -8898,7 +8898,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
     var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
     var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks];
-    console.log("Iteration 6");
+    console.log("Iteration 7");
 
     var get_data =
     /*#__PURE__*/
@@ -8969,8 +8969,10 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }
 
                   console.log("in makeSum ...counts = " + counts);
-                  console.log("after await: " + source[col]);
-                  return [counts].reduce(function (a, b) {
+                  console.log("after await -> counts.reduce...: " + counts.reduce(function (a, b) {
+                    return source[col][a] + source[col][b];
+                  }, 0));
+                  return counts.reduce(function (a, b) {
                     return source[col][a] + source[col][b];
                   }, 0);
                 }; // control logic for derived/calculated fields
