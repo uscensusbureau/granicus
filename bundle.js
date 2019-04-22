@@ -8967,26 +8967,27 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                         switch (_context2.prev = _context2.next) {
                           case 0:
                             console.log("in makeRate");
-                            _context2.next = 3;
+                            _context2.t0 = console;
+                            _context2.next = 4;
                             return dump[col][numProp];
 
-                          case 3:
-                            _context2.t0 = _context2.sent;
-                            _context2.next = 6;
+                          case 4:
+                            _context2.t1 = _context2.sent;
+                            _context2.t2 = "after await: " + _context2.t1;
+
+                            _context2.t0.log.call(_context2.t0, _context2.t2);
+
+                            _context2.next = 9;
+                            return dump[col][numProp];
+
+                          case 9:
+                            _context2.t3 = _context2.sent;
+                            _context2.next = 12;
                             return dump[col][denomProp];
 
-                          case 6:
-                            _context2.t1 = _context2.sent;
-                            _context2.t0 / _context2.t1;
-                            _context2.t2 = console;
-                            _context2.next = 11;
-                            return dump[col][numProp];
-
-                          case 11:
-                            _context2.t3 = _context2.sent;
-                            _context2.t4 = "after await: " + _context2.t3;
-
-                            _context2.t2.log.call(_context2.t2, _context2.t4);
+                          case 12:
+                            _context2.t4 = _context2.sent;
+                            return _context2.abrupt("return", _context2.t3 / _context2.t4);
 
                           case 14:
                           case "end":
@@ -9028,9 +9029,10 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                             case 5:
                               _context3.t1 = _context3.sent;
-                              return _context3.abrupt("return", _context3.t0 + _context3.t1);
+                              _context3.t0 + _context3.t1;
+                              return _context3.abrupt("return", 0);
 
-                            case 7:
+                            case 8:
                             case "end":
                               return _context3.stop();
                           }
@@ -9041,12 +9043,12 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return function (_x6, _x7) {
                       return _ref4.apply(this, arguments);
                     };
-                  }(), 0);
+                  }());
                 }; // control logic for derived/calculated fields
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context4.next = 19;
+                  _context4.next = 16;
                   break;
                 }
 
@@ -9060,35 +9062,36 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 };
 
                 keys_.push("open_rate");
-                pushOpenRates(wk1_vals, 0);
-                pushOpenRates(wk2_vals, 1);
-                pushOpenRates(wk3_vals, 2);
-                return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                Promise.all([pushOpenRates(wk1_vals, 0), pushOpenRates(wk2_vals, 1), pushOpenRates(wk3_vals, 2)]).then(function () {
+                  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+                });
+                _context4.next = 35;
+                break;
 
-              case 19:
-                _context4.next = 21;
+              case 16:
+                _context4.next = 18;
                 return Object.keys(dump[0]);
 
-              case 21:
+              case 18:
                 _keys_ = _context4.sent;
-                _context4.next = 24;
+                _context4.next = 21;
                 return Object.values(dump[0]);
 
-              case 24:
+              case 21:
                 _wk1_vals = _context4.sent;
-                _context4.next = 27;
+                _context4.next = 24;
                 return Object.values(dump[1]);
 
-              case 27:
+              case 24:
                 _wk2_vals = _context4.sent;
-                _context4.next = 30;
+                _context4.next = 27;
                 return Object.values(dump[2]);
 
-              case 30:
+              case 27:
                 _wk3_vals = _context4.sent;
 
                 if (!(table.tableInfo.id === "bulletins")) {
-                  _context4.next = 40;
+                  _context4.next = 34;
                   break;
                 }
 
@@ -9098,15 +9101,16 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                 _keys_.push("total_digital_impressions");
 
-                pushTgiSums(_wk1_vals, 0);
-                pushTgiSums(_wk2_vals, 1);
-                pushTgiSums(_wk3_vals, 2);
+                Promise.all([pushTgiSums(_wk1_vals, 0), pushTgiSums(_wk2_vals, 1), pushTgiSums(_wk3_vals, 2)]).then(function () {
+                  return (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals);
+                });
+                _context4.next = 35;
+                break;
+
+              case 34:
                 return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 40:
-                return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
-
-              case 41:
+              case 35:
               case "end":
                 return _context4.stop();
             }

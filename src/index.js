@@ -224,12 +224,12 @@ import zip from "lodash.zip"
         const pushOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
-        pushOpenRates(wk1_vals, 0)
-        pushOpenRates(wk2_vals, 1)
-        pushOpenRates(wk3_vals, 2)
+        Promise.all([
+          pushOpenRates(wk1_vals, 0), 
+          pushOpenRates(wk2_vals, 1), 
+          pushOpenRates(wk3_vals, 2)
+        ]).then(() =>  zip(keys_, wk1_vals, wk2_vals, wk3_vals))
 
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-        
       } else {
 
         const keys_    = await Object.keys(dump[0]);
@@ -242,11 +242,12 @@ import zip from "lodash.zip"
           const pushTgiSums = (rows, col) => rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"))
           
           keys_.push("total_digital_impressions")
-          pushTgiSums(wk1_vals, 0)
-          pushTgiSums(wk2_vals, 1)
-          pushTgiSums(wk3_vals, 2)
 
-          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+          Promise.all([
+            pushTgiSums(wk1_vals, 0),
+            pushTgiSums(wk2_vals, 1),
+            pushTgiSums(wk3_vals, 2)
+          ]).then(() => zip(keys_, wk1_vals, wk2_vals, wk3_vals))
 
         } else {
 
