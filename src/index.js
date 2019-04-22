@@ -181,7 +181,8 @@ import zip from "lodash.zip"
       subscriber_summary_3wks
     ];
     
-  
+    console.log("Iteration 1")
+    
     const get_data = async calls => {
       const results = calls.map(async url => {
       
@@ -222,7 +223,7 @@ import zip from "lodash.zip"
         let wk2_vals = []
         let wk3_vals = []
         
-        const pushOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
+        const pushOpenRates = (source, rows, col) => rows.push(makeRate(source, col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
         pushOpenRates(dump, wk1_vals, 0)
@@ -239,7 +240,7 @@ import zip from "lodash.zip"
 
         if (table.tableInfo.id === "bulletins") {
 
-          const pushTgiSums = (rows, col) => rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"))
+          const pushTgiSums = (soucre, rows, col) => rows.push(makeSum(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
           
           keys_.push("total_digital_impressions")
 

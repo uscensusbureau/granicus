@@ -8898,6 +8898,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
     var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
     var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks];
+    console.log("Iteration 1");
 
     var get_data =
     /*#__PURE__*/
@@ -9032,8 +9033,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 wk2_vals = [];
                 wk3_vals = [];
 
-                pushOpenRates = function pushOpenRates(rows, col) {
-                  return rows.push(makeRate(col, "opens_count", "total_delivered"));
+                pushOpenRates = function pushOpenRates(source, rows, col) {
+                  return rows.push(makeRate(source, col, "opens_count", "total_delivered"));
                 };
 
                 keys_.push("open_rate");
@@ -9069,8 +9070,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   break;
                 }
 
-                pushTgiSums = function pushTgiSums(rows, col) {
-                  return rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"));
+                pushTgiSums = function pushTgiSums(soucre, rows, col) {
+                  return rows.push(makeSum(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
                 };
 
                 _keys_.push("total_digital_impressions");
