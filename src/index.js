@@ -202,13 +202,10 @@ import zip from "lodash.zip"
     
       const dump = await Promise.all(results);
       
-      const makeRate = (col, numProp, denomProp) => {
-        dump[col][numProp] / dump[col][denomProp]
-      }
+      const makeRate = async (col, numProp, denomProp) => await dump[col][numProp] / await dump[col][denomProp]
 
-      const makeSum = (col, ...counts) => {
-        counts.reduce((a, b) => dump[col][a] + dump[col][b], 0)
-      }
+      const makeSum = (col, ...counts) => counts.reduce(async (a, b) => await dump[col][a] + await dump[col][b], 0)
+      
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         let keys_ = []
@@ -216,12 +213,12 @@ import zip from "lodash.zip"
         let wk2_vals = []
         let wk3_vals = []
         
-        const addOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
+        const pushOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
-        addOpenRates(wk1_vals, 0)
-        addOpenRates(wk2_vals, 1)
-        addOpenRates(wk3_vals, 2)
+        pushOpenRates(wk1_vals, 0)
+        pushOpenRates(wk2_vals, 1)
+        pushOpenRates(wk3_vals, 2)
 
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
         
@@ -234,12 +231,12 @@ import zip from "lodash.zip"
 
         if (table.tableInfo.id === "bulletins") {
 
-          const addTgiSums = (rows, col) => rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"))
+          const pushTgiSums = (rows, col) => rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"))
           
           keys_.push("total_digital_impressions")
-          addTgiSums(wk1_vals, 0)
-          addTgiSums(wk2_vals, 1)
-          addTgiSums(wk3_vals, 2)
+          pushTgiSums(wk1_vals, 0)
+          pushTgiSums(wk2_vals, 1)
+          pushTgiSums(wk3_vals, 2)
 
           return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
 
