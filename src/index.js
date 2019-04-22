@@ -204,14 +204,14 @@ import zip from "lodash.zip"
       
       const makeRate = async (col, numProp, denomProp) => {
         console.log("in makeRate")
-        console.log("after await: " + await dump[col][numProp])
-        return await dump[col][numProp] / await dump[col][denomProp]
+        console.log("after await: " + dump[col][numProp])
+        return dump[col][numProp] / dump[col][denomProp]
       } 
 
-      const makeSum = (col, ...counts) => {
+      const makeSum = async (col, ...counts) => {
         console.log("in makeSum")
-        counts.reduce(async (a, b) => {
-          return await dump[col][a] + await dump[col][b], 0
+        counts.reduce((a, b) => {
+          return dump[col][a] + dump[col][b], 0
         })
       }
       // control logic for derived/calculated fields
@@ -224,11 +224,10 @@ import zip from "lodash.zip"
         const pushOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
-        Promise.all([
-          pushOpenRates(wk1_vals, 0), 
-          pushOpenRates(wk2_vals, 1), 
-          pushOpenRates(wk3_vals, 2)
-        ]).then(() =>  zip(keys_, wk1_vals, wk2_vals, wk3_vals))
+        pushOpenRates(wk1_vals, 0)
+        pushOpenRates(wk2_vals, 1) 
+        pushOpenRates(wk3_vals, 2)
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else {
 
@@ -243,11 +242,10 @@ import zip from "lodash.zip"
           
           keys_.push("total_digital_impressions")
 
-          Promise.all([
-            pushTgiSums(wk1_vals, 0),
-            pushTgiSums(wk2_vals, 1),
-            pushTgiSums(wk3_vals, 2)
-          ]).then(() => zip(keys_, wk1_vals, wk2_vals, wk3_vals))
+          pushTgiSums(wk1_vals, 0)
+          pushTgiSums(wk2_vals, 1)
+          pushTgiSums(wk3_vals, 2)
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
         } else {
 
@@ -260,11 +258,11 @@ import zip from "lodash.zip"
   
     if (table.tableInfo.id === "bulletins") {
       get_data(callList1)
-      .then( async result => {
+      .then( result => {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);
         table.appendRows(
-          await result.map(k => ({
+          result.map(k => ({
               "name": k[0],
               "this_wk": k[1],
               "prev_wk": k[2],
@@ -278,11 +276,11 @@ import zip from "lodash.zip"
   
     if (table.tableInfo.id === "bulletin_rates") {
       get_data(callList1)
-        .then( async result => {
+        .then( result => {
           // tableau.log("data_dump: " + result);
           // console.log("data_dump: " + result);
           table.appendRows(
-            await result.map(k => ({
+            result.map(k => ({
                 "name": k[0],
                 "this_wk": k[1],
                 "prev_wk": k[2],
