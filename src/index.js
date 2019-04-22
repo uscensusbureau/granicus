@@ -181,7 +181,7 @@ import zip from "lodash.zip"
       subscriber_summary_3wks
     ];
     
-    console.log("Iteration 2")
+    console.log("Iteration 3")
 
     const get_data = async calls => {
       const results = calls.map(async url => {
@@ -203,13 +203,13 @@ import zip from "lodash.zip"
     
       const dump = await Promise.all(results);
       
-      const makeRate = async (source, col, numProp, denomProp) => {
+      const makeRate = (source, col, numProp, denomProp) => {
         console.log("in makeRate")
         console.log("after await: " + source[col][numProp])
         return source[col][numProp] / source[col][denomProp]
       } 
 
-      const makeSum = async (source, col, ...counts) => {
+      const makeSum = (source, col, ...counts) => {
         console.log("in makeSum")
         counts.reduce((a, b) => {
           return source[col][a] + source[col][b], 0
@@ -233,10 +233,10 @@ import zip from "lodash.zip"
 
       } else {
 
-        const keys_    = await Object.keys(dump[0]);
-        const wk1_vals = await Object.values(dump[0]);
-        const wk2_vals = await Object.values(dump[1]);
-        const wk3_vals = await Object.values(dump[2]);
+        const keys_    = Object.keys(dump[0]);
+        const wk1_vals = Object.values(dump[0]);
+        const wk2_vals = Object.values(dump[1]);
+        const wk3_vals = Object.values(dump[2]);
 
         if (table.tableInfo.id === "bulletins") {
 

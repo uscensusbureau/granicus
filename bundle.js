@@ -8898,19 +8898,19 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
     var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks];
     var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks];
-    console.log("Iteration 2");
+    console.log("Iteration 3");
 
     var get_data =
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(calls) {
+      regeneratorRuntime.mark(function _callee2(calls) {
         var results, dump, makeRate, makeSum, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 results = calls.map(
                 /*#__PURE__*/
@@ -8951,80 +8951,33 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return _ref2.apply(this, arguments);
                   };
                 }());
-                _context4.next = 3;
+                _context2.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context4.sent;
+                dump = _context2.sent;
 
-                makeRate =
-                /*#__PURE__*/
-                function () {
-                  var _ref3 = _asyncToGenerator(
-                  /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee2(source, col, numProp, denomProp) {
-                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                      while (1) {
-                        switch (_context2.prev = _context2.next) {
-                          case 0:
-                            console.log("in makeRate");
-                            console.log("after await: " + source[col][numProp]);
-                            return _context2.abrupt("return", source[col][numProp] / source[col][denomProp]);
+                makeRate = function makeRate(source, col, numProp, denomProp) {
+                  console.log("in makeRate");
+                  console.log("after await: " + source[col][numProp]);
+                  return source[col][numProp] / source[col][denomProp];
+                };
 
-                          case 3:
-                          case "end":
-                            return _context2.stop();
-                        }
-                      }
-                    }, _callee2);
-                  }));
+                makeSum = function makeSum(source, col) {
+                  console.log("in makeSum");
 
-                  return function makeRate(_x3, _x4, _x5, _x6) {
-                    return _ref3.apply(this, arguments);
-                  };
-                }();
+                  for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+                    counts[_key - 2] = arguments[_key];
+                  }
 
-                makeSum =
-                /*#__PURE__*/
-                function () {
-                  var _ref4 = _asyncToGenerator(
-                  /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee3(source, col) {
-                    var _len,
-                        counts,
-                        _key,
-                        _args3 = arguments;
-
-                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                      while (1) {
-                        switch (_context3.prev = _context3.next) {
-                          case 0:
-                            console.log("in makeSum");
-
-                            for (_len = _args3.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-                              counts[_key - 2] = _args3[_key];
-                            }
-
-                            counts.reduce(function (a, b) {
-                              return source[col][a] + source[col][b], 0;
-                            });
-
-                          case 3:
-                          case "end":
-                            return _context3.stop();
-                        }
-                      }
-                    }, _callee3);
-                  }));
-
-                  return function makeSum(_x7, _x8) {
-                    return _ref4.apply(this, arguments);
-                  };
-                }(); // control logic for derived/calculated fields
+                  counts.reduce(function (a, b) {
+                    return source[col][a] + source[col][b], 0;
+                  });
+                }; // control logic for derived/calculated fields
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context4.next = 19;
+                  _context2.next = 19;
                   break;
                 }
 
@@ -9041,32 +8994,16 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushOpenRates(dump, wk1_vals, 0);
                 pushOpenRates(dump, wk2_vals, 1);
                 pushOpenRates(dump, wk3_vals, 2);
-                return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 19:
-                _context4.next = 21;
-                return Object.keys(dump[0]);
-
-              case 21:
-                _keys_ = _context4.sent;
-                _context4.next = 24;
-                return Object.values(dump[0]);
-
-              case 24:
-                _wk1_vals = _context4.sent;
-                _context4.next = 27;
-                return Object.values(dump[1]);
-
-              case 27:
-                _wk2_vals = _context4.sent;
-                _context4.next = 30;
-                return Object.values(dump[2]);
-
-              case 30:
-                _wk3_vals = _context4.sent;
+                _keys_ = Object.keys(dump[0]);
+                _wk1_vals = Object.values(dump[0]);
+                _wk2_vals = Object.values(dump[1]);
+                _wk3_vals = Object.values(dump[2]);
 
                 if (!(table.tableInfo.id === "bulletins")) {
-                  _context4.next = 40;
+                  _context2.next = 32;
                   break;
                 }
 
@@ -9079,17 +9016,17 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums(dump, _wk1_vals, 0);
                 pushTgiSums(dump, _wk2_vals, 1);
                 pushTgiSums(dump, _wk3_vals, 2);
-                return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 40:
-                return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+              case 32:
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 41:
+              case 33:
               case "end":
-                return _context4.stop();
+                return _context2.stop();
             }
           }
-        }, _callee4);
+        }, _callee2);
       }));
 
       return function get_data(_x) {
