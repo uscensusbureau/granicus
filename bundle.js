@@ -8905,7 +8905,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(calls) {
-        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals, _keys_, _wk1_vals, _wk2_vals, _wk3_vals;
+        var results, dump, makeRate, makeSum, keys_, wk1_vals, wk2_vals, wk3_vals, addOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, addTgiSums;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -8956,8 +8956,23 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
               case 3:
                 dump = _context2.sent;
 
+                makeRate = function makeRate(col, numProp, denomProp) {
+                  dump[col][numProp] / dump[col][denomProp];
+                };
+
+                makeSum = function makeSum(col) {
+                  for (var _len = arguments.length, counts = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                    counts[_key - 1] = arguments[_key];
+                  }
+
+                  counts.reduce(function (a, b) {
+                    return dump[col][a] + dump[col][b];
+                  }, 0);
+                }; // control logic for derived/calculated fields
+
+
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context2.next = 16;
+                  _context2.next = 19;
                   break;
                 }
 
@@ -8965,36 +8980,59 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 wk1_vals = [];
                 wk2_vals = [];
                 wk3_vals = [];
+
+                addOpenRates = function addOpenRates(rows, col) {
+                  return rows.push(makeRate(col, "opens_count", "total_delivered"));
+                };
+
                 keys_.push("open_rate");
-                wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"]);
-                wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"]);
-                wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"]);
+                addOpenRates(wk1_vals, 0);
+                addOpenRates(wk2_vals, 1);
+                addOpenRates(wk3_vals, 2);
                 return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 16:
-                _context2.next = 18;
+              case 19:
+                _context2.next = 21;
                 return Object.keys(dump[0]);
 
-              case 18:
+              case 21:
                 _keys_ = _context2.sent;
-                _context2.next = 21;
+                _context2.next = 24;
                 return Object.values(dump[0]);
 
-              case 21:
+              case 24:
                 _wk1_vals = _context2.sent;
-                _context2.next = 24;
+                _context2.next = 27;
                 return Object.values(dump[1]);
 
-              case 24:
+              case 27:
                 _wk2_vals = _context2.sent;
-                _context2.next = 27;
+                _context2.next = 30;
                 return Object.values(dump[2]);
 
-              case 27:
+              case 30:
                 _wk3_vals = _context2.sent;
+
+                if (!(table.tableInfo.id === "bulletins")) {
+                  _context2.next = 40;
+                  break;
+                }
+
+                addTgiSums = function addTgiSums(rows, col) {
+                  return rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"));
+                };
+
+                _keys_.push("total_digital_impressions");
+
+                addTgiSums(_wk1_vals, 0);
+                addTgiSums(_wk2_vals, 1);
+                addTgiSums(_wk3_vals, 2);
                 return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 29:
+              case 40:
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+
+              case 41:
               case "end":
                 return _context2.stop();
             }

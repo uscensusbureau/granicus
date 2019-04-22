@@ -202,6 +202,13 @@ import zip from "lodash.zip"
     
       const dump = await Promise.all(results);
       
+      const makeRate = (col, numProp, denomProp) => {
+        dump[col][numProp] / dump[col][denomProp]
+      }
+
+      const makeSum = (col, ...counts) => {
+        counts.reduce((a, b) => dump[col][a] + dump[col][b], 0)
+      }
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         let keys_ = []
@@ -209,19 +216,38 @@ import zip from "lodash.zip"
         let wk2_vals = []
         let wk3_vals = []
         
+        const addOpenRates = (rows, col) => rows.push(makeRate(col, "opens_count", "total_delivered"))
+        
         keys_.push("open_rate")
-        wk1_vals.push(dump[0]["opens_count"] / dump[0]["total_delivered"])
-        wk2_vals.push(dump[1]["opens_count"] / dump[1]["total_delivered"])
-        wk3_vals.push(dump[2]["opens_count"] / dump[2]["total_delivered"])
+        addOpenRates(wk1_vals, 0)
+        addOpenRates(wk2_vals, 1)
+        addOpenRates(wk3_vals, 2)
+
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
         
       } else {
-        const keys_ = await Object.keys(dump[0]);
+
+        const keys_    = await Object.keys(dump[0]);
         const wk1_vals = await Object.values(dump[0]);
         const wk2_vals = await Object.values(dump[1]);
         const wk3_vals = await Object.values(dump[2]);
-        
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+
+        if (table.tableInfo.id === "bulletins") {
+
+          const addTgiSums = (rows, col) => rows.push(makeSum(col, "nonunique_opens_count", "nonunique_clicks_count"))
+          
+          keys_.push("total_digital_impressions")
+          addTgiSums(wk1_vals, 0)
+          addTgiSums(wk2_vals, 1)
+          addTgiSums(wk3_vals, 2)
+
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+
+        } else {
+
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+
+        }
       }
       
     };
