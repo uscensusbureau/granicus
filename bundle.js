@@ -8873,7 +8873,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       alias: "Bulletin Details",
       columns: bulletin_detail
     };
-    schemaCallback([bulletins, bulletin_rates, subscribers]);
+    schemaCallback([bulletins, bulletin_rates, subscribers, bulletin_details]);
   };
 
   myConnector.getData = function (table, doneCallback) {

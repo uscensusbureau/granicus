@@ -143,7 +143,7 @@ import zip from "lodash.zip"
       columns: bulletin_detail
     };
     
-    schemaCallback([bulletins, bulletin_rates, subscribers]);
+    schemaCallback([bulletins, bulletin_rates, subscribers, bulletin_details]);
   };
   
 
