@@ -9053,7 +9053,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 20");
+    console.log("Iteration 21");
 
     var get_data =
     /*#__PURE__*/
@@ -9135,7 +9135,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   console.log("in makeSumFromArr ...counts = " + counts);
                   return source[col].reduce(function (acc, cur) {
                     return counts.reduce(function (a, b) {
-                      return acc + cur[a] + cur[b];
+                      return acc + a + cur[b];
                     }, 0);
                   }, 0);
                 }; // control logic for derived/calculated fields

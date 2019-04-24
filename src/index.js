@@ -267,7 +267,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 20")
+    console.log("Iteration 21")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
@@ -317,7 +317,7 @@ import zip from "lodash.zip"
 
       const makeSumFromArr = (source, col, ...counts) => {
         console.log("in makeSumFromArr ...counts = " + counts)
-        return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + cur[a] + cur[b], 0), 0)
+        return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
       }
 
       // control logic for derived/calculated fields
