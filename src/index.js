@@ -240,7 +240,8 @@ import zip from "lodash.zip"
         if (table.tableInfo.id === "bulletin_details") {
           if (res.ok) {
             let cur = prime.bulletin_activity_details
-            console.log("in bulletin_details... cur = " + cur)
+            console.log("in bulletin_details... cur = ")
+            console.table(cur)
             if (typeof cur === "undefined") {
               console.log("cur == undefined")
               return acc
@@ -250,7 +251,8 @@ import zip from "lodash.zip"
               return last // bulletin details is an array
             } else if (cur.length == 20) {
               let next = acc.concat(cur)
-              console.log("More than 20 results: " + next)
+              console.log("More than 20 results: ")
+              console.table(next)
               fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
             }
           } else {
@@ -265,7 +267,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 18")
+    console.log("Iteration 20")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
@@ -315,7 +317,6 @@ import zip from "lodash.zip"
 
       const makeSumFromArr = (source, col, ...counts) => {
         console.log("in makeSumFromArr ...counts = " + counts)
-        console.log("after await -> source[col].reduce...: " + source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + cur[a] + cur[b], 0), 0))
         return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + cur[a] + cur[b], 0), 0)
       }
 

@@ -8969,29 +8969,30 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             console.log("api call: " + url);
 
                             if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 26;
+                              _context.next = 27;
                               break;
                             }
 
                             if (!res.ok) {
-                              _context.next = 22;
+                              _context.next = 23;
                               break;
                             }
 
                             cur = prime.bulletin_activity_details;
-                            console.log("in bulletin_details... cur = " + cur);
+                            console.log("in bulletin_details... cur = ");
+                            console.table(cur);
 
                             if (!(typeof cur === "undefined")) {
-                              _context.next = 13;
+                              _context.next = 14;
                               break;
                             }
 
                             console.log("cur == undefined");
                             return _context.abrupt("return", acc);
 
-                          case 13:
+                          case 14:
                             if (!(cur.length < 20)) {
-                              _context.next = 19;
+                              _context.next = 20;
                               break;
                             }
 
@@ -8999,29 +9000,30 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             console.log("Less than 20 results: " + last);
                             return _context.abrupt("return", last);
 
-                          case 19:
+                          case 20:
                             if (cur.length == 20) {
                               next = acc.concat(cur);
-                              console.log("More than 20 results: " + next);
+                              console.log("More than 20 results: ");
+                              console.table(next);
                               fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
                             }
 
-                          case 20:
-                            _context.next = 24;
+                          case 21:
+                            _context.next = 25;
                             break;
 
-                          case 22:
+                          case 23:
                             console.log("no results in `next`... acc = " + acc);
                             return _context.abrupt("return", acc);
 
-                          case 24:
-                            _context.next = 27;
+                          case 25:
+                            _context.next = 28;
                             break;
 
-                          case 26:
+                          case 27:
                             return _context.abrupt("return", prime);
 
-                          case 27:
+                          case 28:
                           case "end":
                             return _context.stop();
                         }
@@ -9051,7 +9053,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 18");
+    console.log("Iteration 20");
 
     var get_data =
     /*#__PURE__*/
@@ -9131,11 +9133,6 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }
 
                   console.log("in makeSumFromArr ...counts = " + counts);
-                  console.log("after await -> source[col].reduce...: " + source[col].reduce(function (acc, cur) {
-                    return counts.reduce(function (a, b) {
-                      return acc + cur[a] + cur[b];
-                    }, 0);
-                  }, 0));
                   return source[col].reduce(function (acc, cur) {
                     return counts.reduce(function (a, b) {
                       return acc + cur[a] + cur[b];
