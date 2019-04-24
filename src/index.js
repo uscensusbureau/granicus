@@ -251,7 +251,7 @@ import zip from "lodash.zip"
             } else if (cur.length == 20) {
               let next = acc.concat(cur)
               console.log("More than 20 results: " + next)
-              fetcher(`https://cors-e.herokuapp.com/${prime._links.next.href}`, next)
+              fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
             }
           } else {
             console.log("no results in `next`... acc = " + acc)
@@ -265,7 +265,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 16")
+    console.log("Iteration 17")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
