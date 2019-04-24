@@ -241,7 +241,7 @@ import zip from "lodash.zip"
           if (res.ok) {
             let cur = prime.bulletin_activity_details
             console.log("in bulletin_details... cur = " + cur)
-            if (cur == "undefined") {
+            if (typeof cur === "undefined") {
               console.log("cur == undefined")
               return acc
             } else if (cur.length < 20) {
@@ -265,7 +265,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 15")
+    console.log("Iteration 16")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
@@ -307,11 +307,11 @@ import zip from "lodash.zip"
         return source[col][numProp] / source[col][denomProp]
       } 
 
-      const makeSumFromObj = (source, col, ...counts) => {
-        console.log("in makeSumFromObj ...counts = " + counts)
-        console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
-        return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
-      }
+      // const makeSumFromObj = (source, col, ...counts) => {
+      //   console.log("in makeSumFromObj ...counts = " + counts)
+      //   console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
+      //   return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
+      // }
 
       const makeSumFromArr = (source, col, ...counts) => {
         console.log("in makeSumFromArr ...counts = " + counts)

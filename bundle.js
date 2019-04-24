@@ -8959,7 +8959,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                       var cur = prime.bulletin_activity_details;
                       console.log("in bulletin_details... cur = " + cur);
 
-                      if (cur == "undefined") {
+                      if (typeof cur === "undefined") {
                         console.log("cur == undefined");
                         return acc;
                       } else if (cur.length < 20) {
@@ -8997,7 +8997,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 15");
+    console.log("Iteration 16");
 
     var get_data =
     /*#__PURE__*/
@@ -9005,7 +9005,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3(calls) {
-        var results, dump, makeRateFromObj, makeSumFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2;
+        var results, dump, makeRateFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -9064,25 +9064,16 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   console.log("in makeRateFromObj");
                   console.log("after await: " + source[col][numProp]);
                   return source[col][numProp] / source[col][denomProp];
-                };
+                }; // const makeSumFromObj = (source, col, ...counts) => {
+                //   console.log("in makeSumFromObj ...counts = " + counts)
+                //   console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
+                //   return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
+                // }
 
-                makeSumFromObj = function makeSumFromObj(source, col) {
-                  for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-                    counts[_key - 2] = arguments[_key];
-                  }
-
-                  console.log("in makeSumFromObj ...counts = " + counts);
-                  console.log("after await -> counts.reduce...: " + counts.reduce(function (a, b) {
-                    return source[col][a] + source[col][b];
-                  }, 0));
-                  return counts.reduce(function (a, b) {
-                    return source[col][a] + source[col][b];
-                  }, 0);
-                };
 
                 makeSumFromArr = function makeSumFromArr(source, col) {
-                  for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-                    counts[_key2 - 2] = arguments[_key2];
+                  for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+                    counts[_key - 2] = arguments[_key];
                   }
 
                   console.log("in makeSumFromArr ...counts = " + counts);
@@ -9100,7 +9091,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 20;
+                  _context3.next = 19;
                   break;
                 }
 
@@ -9119,9 +9110,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushOpenRates(dump, wk3_vals, 2);
                 return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 20:
+              case 19:
                 if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 33;
+                  _context3.next = 32;
                   break;
                 }
 
@@ -9141,14 +9132,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums(dump, _wk3_vals, 2);
                 return _context3.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 33:
+              case 32:
                 _keys_2 = Object.keys(dump[0]);
                 _wk1_vals2 = Object.values(dump[0]);
                 _wk2_vals2 = Object.values(dump[1]);
                 _wk3_vals2 = Object.values(dump[2]);
                 return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
 
-              case 38:
+              case 37:
               case "end":
                 return _context3.stop();
             }
