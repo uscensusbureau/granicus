@@ -237,8 +237,8 @@ import zip from "lodash.zip"
         console.log("api call: " + url);
         return [res.json(), res.ok]
       })
-      .then( bundle => {
-        let prime = bundle[0]
+      .then( async bundle => {
+        let prime = await bundle[0]
         console.log("prime:")
         console.table(prime)
         let ok = bundle[1]
@@ -275,7 +275,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 25")
+    console.log("Iteration 26")
 
     const get_data = async calls => {
 
