@@ -8966,7 +8966,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                       } else if (cur.length == 20) {
                         var next = acc.concat(cur);
                         console.log("More than 20 results: " + next);
-                        fetcher(prime._links.next.href, next);
+                        fetcher("https://cors-e.herokuapp.com/".concat(prime._links.next.href), next);
                       }
                     } else {
                       console.log("no results in `next`... acc = " + acc);
@@ -8994,7 +8994,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 13");
+    console.log("Iteration 14");
 
     var get_data =
     /*#__PURE__*/
