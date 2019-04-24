@@ -238,20 +238,22 @@ import zip from "lodash.zip"
         // tableau.log("api call: " + url);
         console.log("api call: " + url);
         if (table.tableInfo.id === "bulletin_details") {
-          let cur = prime.bulletin_activity_details
-          console.log("in bulletin_details... cur = " + cur)
-          if (cur == "undefined") {
+          if (res.ok) {
+            let cur = prime.bulletin_activity_details
+            console.log("in bulletin_details... cur = " + cur)
+            if (cur.length < 20) {
+              let last = acc.concat(cur)
+              console.log("Less than 20 results: " + last)
+              return last // bulletin details is an array
+            } else if (cur.length == 20) {
+              let next = acc.concat(cur)
+              console.log("More than 20 results: " + next)
+              fetcher(prime._links.next.href, next)
+            }
+          } else {
             console.log("no results in `next`... acc = " + acc)
             return acc
-          } else if (cur.length < 20) {
-            let last = acc.concat(cur)
-            console.log("Less than 20 results: " + last)
-            return last // bulletin details is an array
-          } else if (cur.length == 20) {
-            let next = acc.concat(cur)
-            console.log("More than 20 results: " + next)
-            fetcher(prime._links.next.href, next)
-          } 
+          }
         } else {
           return prime // summaries is an object
         }
@@ -260,7 +262,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 11")
+    console.log("Iteration 13")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
