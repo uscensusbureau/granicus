@@ -8935,13 +8935,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(url, acc) {
+      regeneratorRuntime.mark(function _callee2(url, acc) {
         var response;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context.next = 2;
+                _context2.next = 2;
                 return window.fetch(url, {
                   method: "GET",
                   headers: {
@@ -8949,47 +8949,101 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     'Accept': 'application/hal+json',
                     'X-AUTH-TOKEN': key
                   }
-                }).then(function (res) {
-                  var prime = res.json(); // tableau.log("api call: " + url);
+                }).then(
+                /*#__PURE__*/
+                function () {
+                  var _ref2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee(res) {
+                    var prime, cur, last, next;
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            _context.next = 2;
+                            return res.json();
 
-                  console.log("api call: " + url);
+                          case 2:
+                            prime = _context.sent;
+                            // tableau.log("api call: " + url);
+                            console.log("api call: " + url);
 
-                  if (table.tableInfo.id === "bulletin_details") {
-                    if (res.ok) {
-                      var cur = prime.bulletin_activity_details;
-                      console.log("in bulletin_details... cur = " + cur);
+                            if (!(table.tableInfo.id === "bulletin_details")) {
+                              _context.next = 26;
+                              break;
+                            }
 
-                      if (typeof cur === "undefined") {
-                        console.log("cur == undefined");
-                        return acc;
-                      } else if (cur.length < 20) {
-                        var last = acc.concat(cur);
-                        console.log("Less than 20 results: " + last);
-                        return last; // bulletin details is an array
-                      } else if (cur.length == 20) {
-                        var next = acc.concat(cur);
-                        console.log("More than 20 results: " + next);
-                        fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
+                            if (!res.ok) {
+                              _context.next = 22;
+                              break;
+                            }
+
+                            cur = prime.bulletin_activity_details;
+                            console.log("in bulletin_details... cur = " + cur);
+
+                            if (!(typeof cur === "undefined")) {
+                              _context.next = 13;
+                              break;
+                            }
+
+                            console.log("cur == undefined");
+                            return _context.abrupt("return", acc);
+
+                          case 13:
+                            if (!(cur.length < 20)) {
+                              _context.next = 19;
+                              break;
+                            }
+
+                            last = acc.concat(cur);
+                            console.log("Less than 20 results: " + last);
+                            return _context.abrupt("return", last);
+
+                          case 19:
+                            if (cur.length == 20) {
+                              next = acc.concat(cur);
+                              console.log("More than 20 results: " + next);
+                              fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
+                            }
+
+                          case 20:
+                            _context.next = 24;
+                            break;
+
+                          case 22:
+                            console.log("no results in `next`... acc = " + acc);
+                            return _context.abrupt("return", acc);
+
+                          case 24:
+                            _context.next = 27;
+                            break;
+
+                          case 26:
+                            return _context.abrupt("return", prime);
+
+                          case 27:
+                          case "end":
+                            return _context.stop();
+                        }
                       }
-                    } else {
-                      console.log("no results in `next`... acc = " + acc);
-                      return acc;
-                    }
-                  } else {
-                    return prime; // summaries is an object
-                  }
-                });
+                    }, _callee);
+                  }));
+
+                  return function (_x3) {
+                    return _ref2.apply(this, arguments);
+                  };
+                }());
 
               case 2:
-                response = _context.sent;
-                return _context.abrupt("return", response);
+                response = _context2.sent;
+                return _context2.abrupt("return", response);
 
               case 4:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2);
       }));
 
       return function fetcher(_x, _x2) {
@@ -8997,19 +9051,19 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 17");
+    console.log("Iteration 18");
 
     var get_data =
     /*#__PURE__*/
     function () {
-      var _ref2 = _asyncToGenerator(
+      var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(calls) {
+      regeneratorRuntime.mark(function _callee4(calls) {
         var results, dump, makeRateFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 // const results = calls.map(async url => {
                 //   tableau.log("api call: " + url);
@@ -9031,34 +9085,34 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 results = calls.map(
                 /*#__PURE__*/
                 function () {
-                  var _ref3 = _asyncToGenerator(
+                  var _ref4 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee2(url) {
-                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                  regeneratorRuntime.mark(function _callee3(url) {
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
                       while (1) {
-                        switch (_context2.prev = _context2.next) {
+                        switch (_context3.prev = _context3.next) {
                           case 0:
-                            return _context2.abrupt("return", fetcher(url, []));
+                            return _context3.abrupt("return", fetcher(url, []));
 
                           case 1:
                           case "end":
-                            return _context2.stop();
+                            return _context3.stop();
                         }
                       }
-                    }, _callee2);
+                    }, _callee3);
                   }));
 
-                  return function (_x4) {
-                    return _ref3.apply(this, arguments);
+                  return function (_x5) {
+                    return _ref4.apply(this, arguments);
                   };
                 }()); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context3.next = 3;
+                _context4.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context3.sent;
+                dump = _context4.sent;
 
                 makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
                   console.log("in makeRateFromObj");
@@ -9091,7 +9145,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 19;
+                  _context4.next = 19;
                   break;
                 }
 
@@ -9108,11 +9162,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushOpenRates(dump, wk1_vals, 0);
                 pushOpenRates(dump, wk2_vals, 1);
                 pushOpenRates(dump, wk3_vals, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 19:
                 if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 32;
+                  _context4.next = 32;
                   break;
                 }
 
@@ -9130,25 +9184,25 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums(dump, _wk1_vals, 0);
                 pushTgiSums(dump, _wk2_vals, 1);
                 pushTgiSums(dump, _wk3_vals, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+                return _context4.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
               case 32:
                 _keys_2 = Object.keys(dump[0]);
                 _wk1_vals2 = Object.values(dump[0]);
                 _wk2_vals2 = Object.values(dump[1]);
                 _wk3_vals2 = Object.values(dump[2]);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
+                return _context4.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
 
               case 37:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }));
 
-      return function get_data(_x3) {
-        return _ref2.apply(this, arguments);
+      return function get_data(_x4) {
+        return _ref3.apply(this, arguments);
       };
     }();
 

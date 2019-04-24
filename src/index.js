@@ -233,8 +233,8 @@ import zip from "lodash.zip"
           'X-AUTH-TOKEN': key
         }
       })
-      .then(res => {
-        let prime = res.json()
+      .then(async res => {
+        let prime = await res.json()
         // tableau.log("api call: " + url);
         console.log("api call: " + url);
         if (table.tableInfo.id === "bulletin_details") {
@@ -265,7 +265,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 17")
+    console.log("Iteration 18")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
