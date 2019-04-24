@@ -8971,12 +8971,12 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             console.log("ok?:" + res.ok);
 
                             if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 31;
+                              _context.next = 37;
                               break;
                             }
 
                             if (!res.ok) {
-                              _context.next = 26;
+                              _context.next = 32;
                               break;
                             }
 
@@ -9003,31 +9003,35 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             return _context.abrupt("return", last);
 
                           case 23:
-                            if (cur.length == 20) {
-                              next = acc.concat(cur);
-                              console.log("More than 20 results: ");
-                              console.table(next);
-                              console.log("recurring fetcher");
-                              fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
+                            if (!(cur.length == 20)) {
+                              _context.next = 30;
+                              break;
                             }
 
-                          case 24:
-                            _context.next = 29;
+                            next = acc.concat(cur);
+                            console.log("More than 20 results: ");
+                            console.table(next);
+                            console.log("recurring fetcher");
+                            _context.next = 30;
+                            return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
+
+                          case 30:
+                            _context.next = 35;
                             break;
 
-                          case 26:
+                          case 32:
                             console.log("no results in `next`... acc = ");
                             console.table(acc);
                             return _context.abrupt("return", acc);
 
-                          case 29:
-                            _context.next = 32;
+                          case 35:
+                            _context.next = 38;
                             break;
 
-                          case 31:
+                          case 37:
                             return _context.abrupt("return", prime);
 
-                          case 32:
+                          case 38:
                           case "end":
                             return _context.stop();
                         }
@@ -9057,7 +9061,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 27");
+    console.log("Iteration 28");
 
     var get_data =
     /*#__PURE__*/

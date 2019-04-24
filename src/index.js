@@ -256,7 +256,7 @@ import zip from "lodash.zip"
               console.log("More than 20 results: ")
               console.table(next)
               console.log("recurring fetcher")
-              fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
+              await fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
             }
           } else {
             console.log("no results in `next`... acc = ")
@@ -271,7 +271,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 27")
+    console.log("Iteration 28")
 
     const get_data = async calls => {
 
