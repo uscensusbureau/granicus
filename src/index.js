@@ -233,30 +233,33 @@ import zip from "lodash.zip"
           'X-AUTH-TOKEN': key
         }
       })
-      .then(async res => {
-        let prime = await res.json()
-        // tableau.log("api call: " + url);
+      .then( res => {
         console.log("api call: " + url);
+        return res.json()
+      })
+      .then( prime => {
         if (table.tableInfo.id === "bulletin_details") {
           if (res.ok) {
             let cur = prime.bulletin_activity_details
-            console.log("in bulletin_details... cur = ")
-            console.table(cur)
+            console.log("in bulletin_details...")
             if (typeof cur === "undefined") {
               console.log("cur == undefined")
               return acc
             } else if (cur.length < 20) {
               let last = acc.concat(cur)
-              console.log("Less than 20 results: " + last)
+              console.log("Less than 20 results: ")
+              console.table(last)
               return last // bulletin details is an array
             } else if (cur.length == 20) {
               let next = acc.concat(cur)
               console.log("More than 20 results: ")
               console.table(next)
+              console.log("recurring fetcher")
               fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
             }
           } else {
-            console.log("no results in `next`... acc = " + acc)
+            console.log("no results in `next`... acc = ")
+            console.table(acc)
             return acc
           }
         } else {
@@ -267,35 +270,9 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 22")
+    console.log("Iteration 23")
 
     const get_data = async calls => {
-      // const results = calls.map(async url => {
-      
-      //   tableau.log("api call: " + url);
-  
-      //   // const response = await window.fetch(url, {
-      //   const response = await window.fetch(url, {
-      //     method: "GET",
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       'Accept': 'application/hal+json',
-      //       'X-AUTH-TOKEN': key
-      //     }
-      //   });
-      
-      //   let prime = response.json()
-
-
-
-      //  if (table.tableInfo.id === "bulletin_details") {
-
-      //  } else {
-      //    return prime
-      //  }
-       
-
-      // });
 
       const results = calls.map(url => fetcher(url, []))
     
@@ -362,7 +339,7 @@ import zip from "lodash.zip"
 
       } 
       
-    };
+    }
 
     const dataGetter = (urlList) => {
       get_data(urlList)
@@ -384,66 +361,18 @@ import zip from "lodash.zip"
   
     if (table.tableInfo.id === "bulletins") {
       dataGetter(callList1)
-      // get_data(callList1)
-      // .then( result => {
-      //   // tableau.log("data_dump: " + result);
-      //   // console.log("data_dump: " + result);
-      //   table.appendRows(
-      //     result.map(k => ({
-      //         "name": k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   )
-      //   doneCallback()
-      // })
     }
   
     if (table.tableInfo.id === "bulletin_rates") {
       dataGetter(callList1)
-
-      // get_data(callList1)
-      //   .then( result => {
-      //     // tableau.log("data_dump: " + result);
-      //     // console.log("data_dump: " + result);
-      //     table.appendRows(
-      //       result.map(k => ({
-      //           "name": k[0],
-      //           "this_wk": k[1],
-      //           "prev_wk": k[2],
-      //           "three_wk": k[3]
-      //         })
-      //       )
-      //     )
-      //     doneCallback()
-      //   })
     }
     
     if (table.tableInfo.id === "subscribers") {
       dataGetter(callList2)
-
-      // get_data(callList2)
-      // .then( result => {
-      //   // tableau.log("data_dump: " + result);
-      //   // console.log("data_dump: " + result);
-      //   table.appendRows(
-      //     result.map(k => ({
-      //         "name": k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   )
-      //   doneCallback()
-      // })
     }
 
     if (table.tableInfo.id === "bulletin_details") {
       dataGetter(callList3)
-
     }
     
     
@@ -471,7 +400,7 @@ import zip from "lodash.zip"
       // Completes the 'interactive phase'
       tableau.submit()
     })
-  })
+  });
 })();
 
 

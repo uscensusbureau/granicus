@@ -8935,13 +8935,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2(url, acc) {
+      regeneratorRuntime.mark(function _callee(url, acc) {
         var response;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
-                _context2.next = 2;
+                _context.next = 2;
                 return window.fetch(url, {
                   method: "GET",
                   headers: {
@@ -8949,103 +8949,50 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     'Accept': 'application/hal+json',
                     'X-AUTH-TOKEN': key
                   }
-                }).then(
-                /*#__PURE__*/
-                function () {
-                  var _ref2 = _asyncToGenerator(
-                  /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee(res) {
-                    var prime, cur, last, next;
-                    return regeneratorRuntime.wrap(function _callee$(_context) {
-                      while (1) {
-                        switch (_context.prev = _context.next) {
-                          case 0:
-                            _context.next = 2;
-                            return res.json();
+                }).then(function (res) {
+                  console.log("api call: " + url);
+                  return res.json();
+                }).then(function (prime) {
+                  if (table.tableInfo.id === "bulletin_details") {
+                    if (res.ok) {
+                      var cur = prime.bulletin_activity_details;
+                      console.log("in bulletin_details...");
 
-                          case 2:
-                            prime = _context.sent;
-                            // tableau.log("api call: " + url);
-                            console.log("api call: " + url);
-
-                            if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 27;
-                              break;
-                            }
-
-                            if (!res.ok) {
-                              _context.next = 23;
-                              break;
-                            }
-
-                            cur = prime.bulletin_activity_details;
-                            console.log("in bulletin_details... cur = ");
-                            console.table(cur);
-
-                            if (!(typeof cur === "undefined")) {
-                              _context.next = 14;
-                              break;
-                            }
-
-                            console.log("cur == undefined");
-                            return _context.abrupt("return", acc);
-
-                          case 14:
-                            if (!(cur.length < 20)) {
-                              _context.next = 20;
-                              break;
-                            }
-
-                            last = acc.concat(cur);
-                            console.log("Less than 20 results: " + last);
-                            return _context.abrupt("return", last);
-
-                          case 20:
-                            if (cur.length == 20) {
-                              next = acc.concat(cur);
-                              console.log("More than 20 results: ");
-                              console.table(next);
-                              fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
-                            }
-
-                          case 21:
-                            _context.next = 25;
-                            break;
-
-                          case 23:
-                            console.log("no results in `next`... acc = " + acc);
-                            return _context.abrupt("return", acc);
-
-                          case 25:
-                            _context.next = 28;
-                            break;
-
-                          case 27:
-                            return _context.abrupt("return", prime);
-
-                          case 28:
-                          case "end":
-                            return _context.stop();
-                        }
+                      if (typeof cur === "undefined") {
+                        console.log("cur == undefined");
+                        return acc;
+                      } else if (cur.length < 20) {
+                        var last = acc.concat(cur);
+                        console.log("Less than 20 results: ");
+                        console.table(last);
+                        return last; // bulletin details is an array
+                      } else if (cur.length == 20) {
+                        var next = acc.concat(cur);
+                        console.log("More than 20 results: ");
+                        console.table(next);
+                        console.log("recurring fetcher");
+                        fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
                       }
-                    }, _callee);
-                  }));
-
-                  return function (_x3) {
-                    return _ref2.apply(this, arguments);
-                  };
-                }());
+                    } else {
+                      console.log("no results in `next`... acc = ");
+                      console.table(acc);
+                      return acc;
+                    }
+                  } else {
+                    return prime; // summaries is an object
+                  }
+                });
 
               case 2:
-                response = _context2.sent;
-                return _context2.abrupt("return", response);
+                response = _context.sent;
+                return _context.abrupt("return", response);
 
               case 4:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2);
+        }, _callee);
       }));
 
       return function fetcher(_x, _x2) {
@@ -9053,47 +9000,30 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 22");
+    console.log("Iteration 23");
 
     var get_data =
     /*#__PURE__*/
     function () {
-      var _ref3 = _asyncToGenerator(
+      var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(calls) {
+      regeneratorRuntime.mark(function _callee2(calls) {
         var results, dump, makeRateFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                // const results = calls.map(async url => {
-                //   tableau.log("api call: " + url);
-                //   // const response = await window.fetch(url, {
-                //   const response = await window.fetch(url, {
-                //     method: "GET",
-                //     headers: {
-                //       'Content-Type': 'application/json',
-                //       'Accept': 'application/hal+json',
-                //       'X-AUTH-TOKEN': key
-                //     }
-                //   });
-                //   let prime = response.json()
-                //  if (table.tableInfo.id === "bulletin_details") {
-                //  } else {
-                //    return prime
-                //  }
-                // });
                 results = calls.map(function (url) {
                   return fetcher(url, []);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context3.next = 3;
+                _context2.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context3.sent;
+                dump = _context2.sent;
 
                 makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
                   console.log("in makeRateFromObj");
@@ -9121,7 +9051,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 19;
+                  _context2.next = 19;
                   break;
                 }
 
@@ -9138,11 +9068,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushOpenRates(dump, wk1_vals, 0);
                 pushOpenRates(dump, wk2_vals, 1);
                 pushOpenRates(dump, wk3_vals, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context2.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 19:
                 if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 32;
+                  _context2.next = 32;
                   break;
                 }
 
@@ -9160,25 +9090,25 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums(dump, _wk1_vals, 0);
                 pushTgiSums(dump, _wk2_vals, 1);
                 pushTgiSums(dump, _wk3_vals, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
               case 32:
                 _keys_2 = Object.keys(dump[0]);
                 _wk1_vals2 = Object.values(dump[0]);
                 _wk2_vals2 = Object.values(dump[1]);
                 _wk3_vals2 = Object.values(dump[2]);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
+                return _context2.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
 
               case 37:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3);
+        }, _callee2);
       }));
 
-      return function get_data(_x4) {
-        return _ref3.apply(this, arguments);
+      return function get_data(_x3) {
+        return _ref2.apply(this, arguments);
       };
     }();
 
@@ -9199,57 +9129,15 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     };
 
     if (table.tableInfo.id === "bulletins") {
-      dataGetter(callList1); // get_data(callList1)
-      // .then( result => {
-      //   // tableau.log("data_dump: " + result);
-      //   // console.log("data_dump: " + result);
-      //   table.appendRows(
-      //     result.map(k => ({
-      //         "name": k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   )
-      //   doneCallback()
-      // })
+      dataGetter(callList1);
     }
 
     if (table.tableInfo.id === "bulletin_rates") {
-      dataGetter(callList1); // get_data(callList1)
-      //   .then( result => {
-      //     // tableau.log("data_dump: " + result);
-      //     // console.log("data_dump: " + result);
-      //     table.appendRows(
-      //       result.map(k => ({
-      //           "name": k[0],
-      //           "this_wk": k[1],
-      //           "prev_wk": k[2],
-      //           "three_wk": k[3]
-      //         })
-      //       )
-      //     )
-      //     doneCallback()
-      //   })
+      dataGetter(callList1);
     }
 
     if (table.tableInfo.id === "subscribers") {
-      dataGetter(callList2); // get_data(callList2)
-      // .then( result => {
-      //   // tableau.log("data_dump: " + result);
-      //   // console.log("data_dump: " + result);
-      //   table.appendRows(
-      //     result.map(k => ({
-      //         "name": k[0],
-      //         "this_wk": k[1],
-      //         "prev_wk": k[2],
-      //         "three_wk": k[3]
-      //       })
-      //     )
-      //   )
-      //   doneCallback()
-      // })
+      dataGetter(callList2);
     }
 
     if (table.tableInfo.id === "bulletin_details") {
