@@ -8951,10 +8951,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }
                 }).then(function (res) {
                   console.log("api call: " + url);
-                  return res.json();
-                }).then(function (prime) {
+                  return [res.json(), res.ok];
+                }).then(function (bundle) {
+                  var prime = bundle[0];
+                  var ok = bundle[1];
+
                   if (table.tableInfo.id === "bulletin_details") {
-                    if (res.ok) {
+                    if (ok) {
                       var cur = prime.bulletin_activity_details;
                       console.log("in bulletin_details...");
 
@@ -9000,7 +9003,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 23");
+    console.log("Iteration 24");
 
     var get_data =
     /*#__PURE__*/

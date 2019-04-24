@@ -235,11 +235,13 @@ import zip from "lodash.zip"
       })
       .then( res => {
         console.log("api call: " + url);
-        return res.json()
+        return [res.json(), res.ok]
       })
-      .then( prime => {
+      .then( bundle => {
+        let prime = bundle[0]
+        let ok = bundle[1]
         if (table.tableInfo.id === "bulletin_details") {
-          if (res.ok) {
+          if (ok) {
             let cur = prime.bulletin_activity_details
             console.log("in bulletin_details...")
             if (typeof cur === "undefined") {
@@ -270,7 +272,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 23")
+    console.log("Iteration 24")
 
     const get_data = async calls => {
 
