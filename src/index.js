@@ -95,6 +95,29 @@ import zip from "lodash.zip"
         dataType: tableau.dataTypeEnum.int
       },
     ];
+
+    let bulletin_detail = [
+      {
+        id: "name",
+        alias: "Name of Metric",
+        dataType: tableau.dataTypeEnum.string
+      },
+      {
+        id: "this_wk",
+        alias: "This Week",
+        dataType: tableau.dataTypeEnum.int
+      },
+      {
+        id: "prev_wk",
+        alias: "Previous Week",
+        dataType: tableau.dataTypeEnum.int
+      },
+      {
+        id: "three_wk",
+        alias: "Three Weeks Ago",
+        dataType: tableau.dataTypeEnum.int
+      },
+    ];
   
     let bulletin_rates = {
       id: "bulletin_rates",
@@ -112,6 +135,12 @@ import zip from "lodash.zip"
       id: "subscribers",
       alias: "Subscribers Table",
       columns: summary_schema2
+    };
+
+    let bulletin_details = {
+      id: "bulletin_details",
+      alias: "Bulletin Details",
+      columns: bulletin_detail
     };
     
     schemaCallback([bulletins, bulletin_rates, subscribers]);
@@ -158,6 +187,8 @@ import zip from "lodash.zip"
     let BSURL = "reports/bulletins/summary"
     // Subscriber summary url:
     let SSURL = "reports/subscriber_activity/summary"
+    // Bulletins report url:
+    let BURL = "reports/bulletins"
     
     let makeURL = (extURL, startDate, endDate) => `${base_url}${extURL}?start_date=${startDate}&end_date=${endDate}`
   
@@ -168,51 +199,116 @@ import zip from "lodash.zip"
     let subscriber_summary_1wk = makeURL(SSURL, wks_1_date, new_date)
     let subscriber_summary_2wks = makeURL(SSURL, wks_2_date, wks_1_date)
     let subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date)
+      
+    let bulletin_1wk = makeURL(BURL, wks_1_date, new_date)
+    let bulletin_2wk = makeURL(BURL, wks_2_date, wks_1_date)
+    let bulletin_3wk = makeURL(BURL, wks_3_date, wks_2_date)
     
+    // Bulletin Summary
     let callList1 = [
       bulletin_summary_1wk,
       bulletin_summary_2wks,
       bulletin_summary_3wks
     ];
-  
+    // Subscriber Summary
     let callList2 = [
       subscriber_summary_1wk,
       subscriber_summary_2wks,
       subscriber_summary_3wks
     ];
+    // Bulletin Detail
+    let callList3 = [
+      bulletin_1wk,
+      bulletin_2wk,
+      bulletin_3wk
+    ];
     
-    console.log("Iteration 7")
+    // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
+    const fetcher = async (url, acc) => {
+      const response = await window.fetch(url, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/hal+json',
+          'X-AUTH-TOKEN': key
+        }
+      })
+      .then(res => {
+        let prime = res.json()
+        // tableau.log("api call: " + url);
+        console.log("api call: " + url);
+        if (table.tableInfo.id === "bulletin_details") {
+          console.log("in bulletin_details... ")
+          let cur = prime.bulletin_activity_details
+          if (cur.length == 20) {
+            let next = acc.concat(cur)
+            console.log("More than 20 results: " + next)
+            fetcher(prime._links.next.href, next)
+          } else if (cur.length < 20) {
+            let last = acc.concat(cur)
+            console.log("Less than 20 results: " + last)
+            return last // bulletin details is an array
+          }
+        } else {
+          return prime // summaries is an object
+        }
+      })
+      
+      return response
+    }
+
+    console.log("Iteration 9")
 
     const get_data = async calls => {
-      const results = calls.map(async url => {
+      // const results = calls.map(async url => {
       
-        tableau.log("api call: " + url);
+      //   tableau.log("api call: " + url);
   
-        // const response = await window.fetch(url, {
-        const response = await window.fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/hal+json',
-            'X-AUTH-TOKEN': key
-          }
-        });
+      //   // const response = await window.fetch(url, {
+      //   const response = await window.fetch(url, {
+      //     method: "GET",
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       'Accept': 'application/hal+json',
+      //       'X-AUTH-TOKEN': key
+      //     }
+      //   });
       
-        return response.json()
-      });
+      //   let prime = response.json()
+
+
+
+      //  if (table.tableInfo.id === "bulletin_details") {
+
+      //  } else {
+      //    return prime
+      //  }
+       
+
+      // });
+
+      const results = calls.map(async url => fetcher(url, []))
     
+      // For Object results, returns an array of promises containing objects
+      // For Array results, returns an array of promises containing arrays of objects
       const dump = await Promise.all(results);
       
-      const makeRate = (source, col, numProp, denomProp) => {
-        console.log("in makeRate")
+      const makeRateFromObj = (source, col, numProp, denomProp) => {
+        console.log("in makeRateFromObj")
         console.log("after await: " + source[col][numProp])
         return source[col][numProp] / source[col][denomProp]
       } 
 
-      const makeSum = (source, col, ...counts) => {
-        console.log("in makeSum ...counts = " + counts)
+      const makeSumFromObj = (source, col, ...counts) => {
+        console.log("in makeSumFromObj ...counts = " + counts)
         console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
         return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
+      }
+
+      const makeSumFromArr = (source, col, ...counts) => {
+        console.log("in makeSumFromArr ...counts = " + counts)
+        console.log("after await -> source[col].reduce...: " + source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + cur[a] + cur[b], 0), 0))
+        return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + cur[a] + cur[b], 0), 0)
       }
 
       // control logic for derived/calculated fields
@@ -222,12 +318,28 @@ import zip from "lodash.zip"
         let wk2_vals = []
         let wk3_vals = []
         
-        const pushOpenRates = (source, rows, col) => rows.push(makeRate(source, col, "opens_count", "total_delivered"))
+        const pushOpenRates = (source, rows, col) => rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
         
         keys_.push("open_rate")
         pushOpenRates(dump, wk1_vals, 0)
         pushOpenRates(dump, wk2_vals, 1) 
         pushOpenRates(dump, wk3_vals, 2)
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+
+      } else if (table.tableInfo.id === "bulletin_details") {
+        let keys_ = []
+        let wk1_vals = []
+        let wk2_vals = []
+        let wk3_vals = []
+
+        const pushTgiSums = (source, rows, col) => rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
+        
+        keys_.push("total_digital_impressions")
+
+        pushTgiSums(dump, wk1_vals, 0)
+        pushTgiSums(dump, wk2_vals, 1)
+        pushTgiSums(dump, wk3_vals, 2)
+
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else {
@@ -236,29 +348,15 @@ import zip from "lodash.zip"
         const wk1_vals = Object.values(dump[0]);
         const wk2_vals = Object.values(dump[1]);
         const wk3_vals = Object.values(dump[2]);
+        
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
 
-        if (table.tableInfo.id === "bulletins") {
-
-          const pushTgiSums = (source, rows, col) => rows.push(makeSum(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
-          
-          keys_.push("total_digital_impressions")
-
-          pushTgiSums(dump, wk1_vals, 0)
-          pushTgiSums(dump, wk2_vals, 1)
-          pushTgiSums(dump, wk3_vals, 2)
-          return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
-
-        } else {
-
-          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-
-        }
-      }
+      } 
       
     };
-  
-    if (table.tableInfo.id === "bulletins") {
-      get_data(callList1)
+
+    const dataGetter = (urlList) => {
+      get_data(urlList)
       .then( result => {
         // tableau.log("data_dump: " + result);
         // console.log("data_dump: " + result);
@@ -273,42 +371,70 @@ import zip from "lodash.zip"
         )
         doneCallback()
       })
+    }
+  
+    if (table.tableInfo.id === "bulletins") {
+      dataGetter(callList1)
+      // get_data(callList1)
+      // .then( result => {
+      //   // tableau.log("data_dump: " + result);
+      //   // console.log("data_dump: " + result);
+      //   table.appendRows(
+      //     result.map(k => ({
+      //         "name": k[0],
+      //         "this_wk": k[1],
+      //         "prev_wk": k[2],
+      //         "three_wk": k[3]
+      //       })
+      //     )
+      //   )
+      //   doneCallback()
+      // })
     }
   
     if (table.tableInfo.id === "bulletin_rates") {
-      get_data(callList1)
-        .then( result => {
-          // tableau.log("data_dump: " + result);
-          // console.log("data_dump: " + result);
-          table.appendRows(
-            result.map(k => ({
-                "name": k[0],
-                "this_wk": k[1],
-                "prev_wk": k[2],
-                "three_wk": k[3]
-              })
-            )
-          )
-          doneCallback()
-        })
+      dataGetter(callList1)
+
+      // get_data(callList1)
+      //   .then( result => {
+      //     // tableau.log("data_dump: " + result);
+      //     // console.log("data_dump: " + result);
+      //     table.appendRows(
+      //       result.map(k => ({
+      //           "name": k[0],
+      //           "this_wk": k[1],
+      //           "prev_wk": k[2],
+      //           "three_wk": k[3]
+      //         })
+      //       )
+      //     )
+      //     doneCallback()
+      //   })
     }
     
     if (table.tableInfo.id === "subscribers") {
-      get_data(callList2)
-      .then( result => {
-        // tableau.log("data_dump: " + result);
-        // console.log("data_dump: " + result);
-        table.appendRows(
-          result.map(k => ({
-              "name": k[0],
-              "this_wk": k[1],
-              "prev_wk": k[2],
-              "three_wk": k[3]
-            })
-          )
-        )
-        doneCallback()
-      })
+      dataGetter(callList2)
+
+      // get_data(callList2)
+      // .then( result => {
+      //   // tableau.log("data_dump: " + result);
+      //   // console.log("data_dump: " + result);
+      //   table.appendRows(
+      //     result.map(k => ({
+      //         "name": k[0],
+      //         "this_wk": k[1],
+      //         "prev_wk": k[2],
+      //         "three_wk": k[3]
+      //       })
+      //     )
+      //   )
+      //   doneCallback()
+      // })
+    }
+
+    if (table.tableInfo.id === "bulletin_details") {
+      dataGetter(callList3)
+
     }
     
     
