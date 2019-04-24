@@ -239,10 +239,13 @@ import zip from "lodash.zip"
       })
       .then( bundle => {
         let prime = bundle[0]
+        console.log("prime:")
+        console.table(prime)
         let ok = bundle[1]
+        console.log("ok?:" + ok)
         if (table.tableInfo.id === "bulletin_details") {
           if (ok) {
-            let cur = prime.bulletin_activity_details
+            let cur = prime["bulletin_activity_details"]
             console.log("in bulletin_details...")
             if (typeof cur === "undefined") {
               console.log("cur == undefined")
@@ -272,7 +275,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 24")
+    console.log("Iteration 25")
 
     const get_data = async calls => {
 
