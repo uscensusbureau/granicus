@@ -8949,36 +8949,33 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     'Accept': 'application/hal+json',
                     'X-AUTH-TOKEN': key
                   }
-                }).then(function (res) {
-                  console.log("api call: " + url);
-                  return [res.json(), res.ok];
                 }).then(
                 /*#__PURE__*/
                 function () {
                   var _ref2 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee(bundle) {
-                    var prime, ok, cur, last, next;
+                  regeneratorRuntime.mark(function _callee(res) {
+                    var prime, cur, last, next;
                     return regeneratorRuntime.wrap(function _callee$(_context) {
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
                             _context.next = 2;
-                            return bundle[0];
+                            return res.json();
 
                           case 2:
                             prime = _context.sent;
+                            console.log("api call: " + url);
                             console.log("prime:");
                             console.table(prime);
-                            ok = bundle[1];
-                            console.log("ok?:" + ok);
+                            console.log("ok?:" + res.ok);
 
                             if (!(table.tableInfo.id === "bulletin_details")) {
                               _context.next = 31;
                               break;
                             }
 
-                            if (!ok) {
+                            if (!res.ok) {
                               _context.next = 26;
                               break;
                             }
@@ -9060,7 +9057,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 26");
+    console.log("Iteration 27");
 
     var get_data =
     /*#__PURE__*/

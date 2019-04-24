@@ -233,18 +233,14 @@ import zip from "lodash.zip"
           'X-AUTH-TOKEN': key
         }
       })
-      .then( res => {
+      .then( async res => {
+        let prime = await res.json()
         console.log("api call: " + url);
-        return [res.json(), res.ok]
-      })
-      .then( async bundle => {
-        let prime = await bundle[0]
         console.log("prime:")
         console.table(prime)
-        let ok = bundle[1]
-        console.log("ok?:" + ok)
+        console.log("ok?:" + res.ok)
         if (table.tableInfo.id === "bulletin_details") {
-          if (ok) {
+          if (res.ok) {
             let cur = prime["bulletin_activity_details"]
             console.log("in bulletin_details...")
             if (typeof cur === "undefined") {
@@ -275,7 +271,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 26")
+    console.log("Iteration 27")
 
     const get_data = async calls => {
 
