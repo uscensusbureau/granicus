@@ -8958,18 +8958,21 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     var cur = prime.bulletin_activity_details;
                     console.log("in bulletin_details... cur = " + cur);
 
-                    if (cur.length == 20) {
-                      var next = acc.concat(cur);
-                      console.log("More than 20 results: " + next);
-                      fetcher(prime._links.next.href, next);
-                    } else if (cur.length < 20 || cur == "undefined") {
+                    if (cur == "undefined") {
+                      console.log("no results in `next`... acc = " + acc);
+                      return acc;
+                    } else if (cur.length < 20) {
                       var last = acc.concat(cur);
                       console.log("Less than 20 results: " + last);
                       return last; // bulletin details is an array
+                    } else if (cur.length == 20) {
+                      var next = acc.concat(cur);
+                      console.log("More than 20 results: " + next);
+                      fetcher(prime._links.next.href, next);
                     }
                   } else {
-                      return prime; // summaries is an object
-                    }
+                    return prime; // summaries is an object
+                  }
                 });
 
               case 2:
