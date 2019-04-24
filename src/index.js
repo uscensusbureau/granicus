@@ -241,7 +241,10 @@ import zip from "lodash.zip"
           if (res.ok) {
             let cur = prime.bulletin_activity_details
             console.log("in bulletin_details... cur = " + cur)
-            if (cur.length < 20) {
+            if (cur == "undefined") {
+              console.log("cur == undefined")
+              return acc
+            } else if (cur.length < 20) {
               let last = acc.concat(cur)
               console.log("Less than 20 results: " + last)
               return last // bulletin details is an array
@@ -262,7 +265,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 14")
+    console.log("Iteration 15")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {

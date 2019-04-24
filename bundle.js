@@ -8959,7 +8959,10 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                       var cur = prime.bulletin_activity_details;
                       console.log("in bulletin_details... cur = " + cur);
 
-                      if (cur.length < 20) {
+                      if (cur == "undefined") {
+                        console.log("cur == undefined");
+                        return acc;
+                      } else if (cur.length < 20) {
                         var last = acc.concat(cur);
                         console.log("Less than 20 results: " + last);
                         return last; // bulletin details is an array
@@ -8994,7 +8997,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 14");
+    console.log("Iteration 15");
 
     var get_data =
     /*#__PURE__*/
