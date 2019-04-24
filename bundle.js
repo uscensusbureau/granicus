@@ -8955,14 +8955,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   console.log("api call: " + url);
 
                   if (table.tableInfo.id === "bulletin_details") {
-                    console.log("in bulletin_details... ");
                     var cur = prime.bulletin_activity_details;
+                    console.log("in bulletin_details... cur = " + cur);
 
                     if (cur.length == 20) {
                       var next = acc.concat(cur);
                       console.log("More than 20 results: " + next);
                       fetcher(prime._links.next.href, next);
-                    } else if (cur.length < 20) {
+                    } else if (cur.length < 20 || cur == "undefined") {
                       var last = acc.concat(cur);
                       console.log("Less than 20 results: " + last);
                       return last; // bulletin details is an array
@@ -8989,7 +8989,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 9");
+    console.log("Iteration 11");
 
     var get_data =
     /*#__PURE__*/
