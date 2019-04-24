@@ -267,7 +267,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 21")
+    console.log("Iteration 22")
 
     const get_data = async calls => {
       // const results = calls.map(async url => {
@@ -297,7 +297,7 @@ import zip from "lodash.zip"
 
       // });
 
-      const results = calls.map(async url => fetcher(url, []))
+      const results = calls.map(url => fetcher(url, []))
     
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
