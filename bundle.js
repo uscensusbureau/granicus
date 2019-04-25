@@ -9186,7 +9186,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 28");
+    console.log("Iteration 29");
 
     var get_data =
     /*#__PURE__*/
@@ -9289,7 +9289,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
               case 33:
                 if (!(table.tableInfo.id === "subscribers")) {
-                  _context3.next = 45;
+                  _context3.next = 46;
                   break;
                 }
 
@@ -9305,19 +9305,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 _keys_2.push("new_subscribers");
 
                 pushNewSubs(dump, _wk1_vals2, 0);
-                pushNewSubs(dump, _wk2_vals2, 0);
-                pushNewSubs(dump, _wk3_vals2, 0);
-                _context3.next = 50;
-                break;
+                pushNewSubs(dump, _wk2_vals2, 1);
+                pushNewSubs(dump, _wk3_vals2, 2);
+                return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
 
-              case 45:
+              case 46:
                 _keys_3 = Object.keys(dump[0]);
                 _wk1_vals3 = Object.values(dump[0]);
                 _wk2_vals3 = Object.values(dump[1]);
                 _wk3_vals3 = Object.values(dump[2]);
                 return _context3.abrupt("return", (0, _lodash["default"])(_keys_3, _wk1_vals3, _wk2_vals3, _wk3_vals3));
 
-              case 50:
+              case 51:
               case "end":
                 return _context3.stop();
             }

@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 28")
+    console.log("Iteration 29")
 
     const get_data = async calls => {
 
@@ -422,8 +422,10 @@ import zip from "lodash.zip"
 
         keys_.push("new_subscribers")
         pushNewSubs(dump, wk1_vals, 0)
-        pushNewSubs(dump, wk2_vals, 0)
-        pushNewSubs(dump, wk3_vals, 0)
+        pushNewSubs(dump, wk2_vals, 1)
+        pushNewSubs(dump, wk3_vals, 2)
+        
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
         
       } else {
 
