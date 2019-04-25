@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 34")
+    console.log("Iteration 36")
 
     const get_data = async calls => {
 
@@ -457,7 +457,7 @@ import zip from "lodash.zip"
         
         const pushNewSubs = {
           name: "new_subscribers",
-          pusher: (source, wk, col) => wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"))
+          pusher: (source, wk, col) => wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers"))
         }
 
         return augmentDumpNZip(dump, pushNewSubs)

@@ -9184,7 +9184,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 34");
+    console.log("Iteration 36");
 
     var get_data =
     /*#__PURE__*/
@@ -9323,7 +9323,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushNewSubs = {
                   name: "new_subscribers",
                   pusher: function pusher(source, wk, col) {
-                    return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"));
+                    return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers"));
                   }
                 };
                 return _context3.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
