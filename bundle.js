@@ -9184,7 +9184,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 33");
+    console.log("Iteration 34");
 
     var get_data =
     /*#__PURE__*/
@@ -9241,11 +9241,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }, 0);
                 };
 
-                augmentDumpNZip = function augmentDumpNZip(_dump) {
-                  var keys_ = Object.keys(_dump[0]);
-                  var wk1_vals = Object.values(_dump[0]);
-                  var wk2_vals = Object.values(_dump[1]);
-                  var wk3_vals = Object.values(_dump[2]);
+                augmentDumpNZip = function augmentDumpNZip(source) {
+                  var keys_ = Object.keys(source[0]);
+                  var wk1_vals = Object.values(source[0]);
+                  var wk2_vals = Object.values(source[1]);
+                  var wk3_vals = Object.values(source[2]);
                   var wks = [wk1_vals, wk2_vals, wk3_vals];
 
                   for (var _len3 = arguments.length, pushers = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
@@ -9254,24 +9254,25 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                   pushers.map(function (pusher) {
                     return keys_.push(pusher.name);
-                  });
+                  }); // pusher handles a single week
+
                   pushers.map(function (p) {
                     return wks.map(function (wk, i) {
-                      return p.pusher(_dump, wk, i);
+                      return p.pusher(source, wk, i);
                     });
                   });
                   return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
                 };
 
-                createDumpNZIP = function createDumpNZIP() {
+                createDumpNZIP = function createDumpNZIP(source) {
                   var keys_ = [];
                   var wk1_vals = [];
                   var wk2_vals = [];
                   var wk3_vals = [];
                   var wks = [wk1_vals, wk2_vals, wk3_vals];
 
-                  for (var _len4 = arguments.length, pushers = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                    pushers[_key4] = arguments[_key4];
+                  for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                    pushers[_key4 - 1] = arguments[_key4];
                   }
 
                   pushers.map(function (pusher) {
@@ -9279,7 +9280,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   });
                   pushers.map(function (p) {
                     return wks.map(function (wk, i) {
-                      return p.pusher(_dump, wk, i);
+                      return p.pusher(source, wk, i);
                     });
                   });
                   return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
@@ -9297,7 +9298,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
                   }
                 };
-                createDumpNZIP(pushOpenRates); // let keys_ = []
+                createDumpNZIP(dump, pushOpenRates); // let keys_ = []
                 // let wk1_vals = []
                 // let wk2_vals = []
                 // let wk3_vals = []
@@ -9318,13 +9319,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                 pushTgiSums = {
                   name: "total_digital_impressions",
-                  pusher: function pusher(source, rows, col) {
-                    return rows.map(function (row) {
-                      return push(makeSumFromArr(source, row, "nonunique_opens_count", "nonunique_clicks_count"));
-                    });
+                  pusher: function pusher(source, wk, col) {
+                    return wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
                   }
                 };
-                createDumpNZIP(pushTgiSums); // let keys_ = []
+                createDumpNZIP(dump, pushTgiSums); // let keys_ = []
                 // let wk1_vals = []
                 // let wk2_vals = []
                 // let wk3_vals = []
@@ -9384,8 +9383,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
     var dataGetter = function dataGetter(urlList) {
       get_data(urlList).then(function (result) {
-        // tableau.log("data_dump: " + result);
-        // console.log("data_dump: " + result);
+        // tableau.log("datasource: " + result);
+        // console.log("datasource: " + result);
         table.appendRows(result.map(function (k) {
           return {
             "name": k[0],

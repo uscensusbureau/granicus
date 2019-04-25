@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 33")
+    console.log("Iteration 34")
 
     const get_data = async calls => {
 
@@ -383,21 +383,22 @@ import zip from "lodash.zip"
         return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
       }
 
-      const augmentDumpNZip = (_dump, ...pushers) => {
-        const keys_ = Object.keys(_dump[0]);
-        const wk1_vals = Object.values(_dump[0]);
-        const wk2_vals = Object.values(_dump[1]);
-        const wk3_vals = Object.values(_dump[2]);
+      const augmentDumpNZip = (source, ...pushers) => {
+        const keys_ = Object.keys(source[0]);
+        const wk1_vals = Object.values(source[0]);
+        const wk2_vals = Object.values(source[1]);
+        const wk3_vals = Object.values(source[2]);
 
         let wks = [wk1_vals, wk2_vals, wk3_vals]
 
         pushers.map( pusher => keys_.push(pusher.name))
-        pushers.map( p => wks.map((wk, i) => p.pusher(_dump, wk, i)))
+        // pusher handles a single week
+        pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
 
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
 
-      const createDumpNZIP = (...pushers) => {
+      const createDumpNZIP = (source, ...pushers) => {
         const keys_ = [];
         const wk1_vals = []
         const wk2_vals = []
@@ -406,7 +407,7 @@ import zip from "lodash.zip"
         let wks = [wk1_vals, wk2_vals, wk3_vals]
 
         pushers.map( pusher => keys_.push(pusher.name))
-        pushers.map( p => wks.map((wk, i) => p.pusher(_dump, wk, i)))
+        pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
 
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
@@ -418,7 +419,7 @@ import zip from "lodash.zip"
           pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
         }
 
-        createDumpNZIP(pushOpenRates)
+        createDumpNZIP(dump, pushOpenRates)
         // let keys_ = []
         // let wk1_vals = []
         // let wk2_vals = []
@@ -435,10 +436,10 @@ import zip from "lodash.zip"
 
         const pushTgiSums = {
           name: "total_digital_impressions",
-          pusher: (source, rows, col) => rows.map(row => push(makeSumFromArr(source, row, "nonunique_opens_count", "nonunique_clicks_count")))
+          pusher: (source, wk, col) => wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
         }
 
-        createDumpNZIP(pushTgiSums)
+        createDumpNZIP(dump, pushTgiSums)
         // let keys_ = []
         // let wk1_vals = []
         // let wk2_vals = []
@@ -490,8 +491,8 @@ import zip from "lodash.zip"
     const dataGetter = (urlList) => {
       get_data(urlList)
         .then(result => {
-          // tableau.log("data_dump: " + result);
-          // console.log("data_dump: " + result);
+          // tableau.log("datasource: " + result);
+          // console.log("datasource: " + result);
           table.appendRows(
             result.map(k => ({
               "name": k[0],
