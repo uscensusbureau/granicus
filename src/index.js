@@ -419,7 +419,7 @@ import zip from "lodash.zip"
           pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
         }
 
-        createDumpNZIP(dump, pushOpenRates)
+        return createDumpNZIP(dump, pushOpenRates)
         // let keys_ = []
         // let wk1_vals = []
         // let wk2_vals = []
@@ -439,7 +439,7 @@ import zip from "lodash.zip"
           pusher: (source, wk, col) => wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
         }
 
-        createDumpNZIP(dump, pushTgiSums)
+        return createDumpNZIP(dump, pushTgiSums)
         // let keys_ = []
         // let wk1_vals = []
         // let wk2_vals = []
@@ -460,7 +460,7 @@ import zip from "lodash.zip"
           pusher: (source, wk, col) => wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"))
         }
 
-        augmentDumpNZip(dump, pushNewSubs)
+        return augmentDumpNZip(dump, pushNewSubs)
         // const keys_ = Object.keys(dump[0]);
         // const wk1_vals = Object.values(dump[0]);
         // const wk2_vals = Object.values(dump[1]);

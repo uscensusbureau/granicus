@@ -9298,18 +9298,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
                   }
                 };
-                createDumpNZIP(dump, pushOpenRates); // let keys_ = []
-                // let wk1_vals = []
-                // let wk2_vals = []
-                // let wk3_vals = []
-                // keys_.push("open_rate")
-                // pushOpenRates(dump, wk1_vals, 0)
-                // pushOpenRates(dump, wk2_vals, 1)
-                // pushOpenRates(dump, wk3_vals, 2)
-                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
-
-                _context3.next = 29;
-                break;
+                return _context3.abrupt("return", createDumpNZIP(dump, pushOpenRates));
 
               case 14:
                 if (!(table.tableInfo.id === "bulletin_details")) {
@@ -9323,18 +9312,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
                   }
                 };
-                createDumpNZIP(dump, pushTgiSums); // let keys_ = []
-                // let wk1_vals = []
-                // let wk2_vals = []
-                // let wk3_vals = []
-                // keys_.push("total_digital_impressions")
-                // pushTgiSums(dump, wk1_vals, 0)
-                // pushTgiSums(dump, wk2_vals, 1)
-                // pushTgiSums(dump, wk3_vals, 2)
-                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
-
-                _context3.next = 29;
-                break;
+                return _context3.abrupt("return", createDumpNZIP(dump, pushTgiSums));
 
               case 19:
                 if (!(table.tableInfo.id === "subscribers")) {
@@ -9348,18 +9326,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"));
                   }
                 };
-                augmentDumpNZip(dump, pushNewSubs); // const keys_ = Object.keys(dump[0]);
-                // const wk1_vals = Object.values(dump[0]);
-                // const wk2_vals = Object.values(dump[1]);
-                // const wk3_vals = Object.values(dump[2]);
-                // keys_.push("new_subscribers")
-                // pushNewSubs(dump, wk1_vals, 0)
-                // pushNewSubs(dump, wk2_vals, 1)
-                // pushNewSubs(dump, wk3_vals, 2)
-                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-
-                _context3.next = 29;
-                break;
+                return _context3.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
 
               case 24:
                 keys_ = Object.keys(dump[0]);
