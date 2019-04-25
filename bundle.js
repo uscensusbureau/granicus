@@ -9037,14 +9037,12 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks]; // Bulletin Detail
 
     var callList3 = [bulletin_1wk, bulletin_2wk, bulletin_3wk]; // Engagement Rates
-
-    var callList4 = {
-      EplusS_1wk: EplusS_1wk,
-      EplusS_2wk: EplusS_2wk,
-      EplusS_3wk: EplusS_3wk //?
-      // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
-
-    };
+    // let callList4 = {
+    //   EplusS_1wk, 
+    //   EplusS_2wk, 
+    //   EplusS_3wk
+    // } //?
+    // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
 
     var fetcher =
     /*#__PURE__*/
@@ -9186,7 +9184,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 32");
+    console.log("Iteration 33");
 
     var get_data =
     /*#__PURE__*/
@@ -9248,7 +9246,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   var wk1_vals = Object.values(_dump[0]);
                   var wk2_vals = Object.values(_dump[1]);
                   var wk3_vals = Object.values(_dump[2]);
-                  var list = [wk1_vals, wk2_vals, wk3_vals];
+                  var wks = [wk1_vals, wk2_vals, wk3_vals];
 
                   for (var _len3 = arguments.length, pushers = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
                     pushers[_key3 - 1] = arguments[_key3];
@@ -9257,9 +9255,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   pushers.map(function (pusher) {
                     return keys_.push(pusher.name);
                   });
-                  pushers.map(function (p, i) {
-                    return list.map(function (row) {
-                      return p.pusher(_dump, row, i);
+                  pushers.map(function (p) {
+                    return wks.map(function (wk, i) {
+                      return p.pusher(_dump, wk, i);
                     });
                   });
                   return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
@@ -9270,7 +9268,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   var wk1_vals = [];
                   var wk2_vals = [];
                   var wk3_vals = [];
-                  var list = [wk1_vals, wk2_vals, wk3_vals];
+                  var wks = [wk1_vals, wk2_vals, wk3_vals];
 
                   for (var _len4 = arguments.length, pushers = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
                     pushers[_key4] = arguments[_key4];
@@ -9279,9 +9277,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   pushers.map(function (pusher) {
                     return keys_.push(pusher.name);
                   });
-                  pushers.map(function (p, i) {
-                    return list.map(function (row) {
-                      return p.pusher(dump, row, i);
+                  pushers.map(function (p) {
+                    return wks.map(function (wk, i) {
+                      return p.pusher(_dump, wk, i);
                     });
                   });
                   return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
@@ -9295,8 +9293,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                 pushOpenRates = {
                   name: "open_rate",
-                  pusher: function pusher(source, rows, col) {
-                    return rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
+                  pusher: function pusher(source, wk, col) {
+                    return wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
                   }
                 };
                 createDumpNZIP(pushOpenRates); // let keys_ = []
@@ -9321,7 +9319,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums = {
                   name: "total_digital_impressions",
                   pusher: function pusher(source, rows, col) {
-                    return rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
+                    return rows.map(function (row) {
+                      return push(makeSumFromArr(source, row, "nonunique_opens_count", "nonunique_clicks_count"));
+                    });
                   }
                 };
                 createDumpNZIP(pushTgiSums); // let keys_ = []
@@ -9345,8 +9345,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
                 pushNewSubs = {
                   name: "new_subscribers",
-                  pusher: function pusher(source, rows, col) {
-                    return rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"));
+                  pusher: function pusher(source, wk, col) {
+                    return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"));
                   }
                 };
                 augmentDumpNZip(dump, pushNewSubs); // const keys_ = Object.keys(dump[0]);

@@ -297,11 +297,11 @@ import zip from "lodash.zip"
       bulletin_3wk
     ];
     // Engagement Rates
-    let callList4 = {
-      EplusS_1wk, 
-      EplusS_2wk, 
-      EplusS_3wk
-    } //?
+    // let callList4 = {
+    //   EplusS_1wk, 
+    //   EplusS_2wk, 
+    //   EplusS_3wk
+    // } //?
 
 
 
@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 32")
+    console.log("Iteration 33")
 
     const get_data = async calls => {
 
@@ -374,6 +374,7 @@ import zip from "lodash.zip"
       const makeSumFromObj = (source, col, ...counts) => {
         console.log("in makeSumFromObj ...counts = " + counts)
         console.log("after await -> counts.reduce...: " + counts.reduce((acc, cur) => acc + source[col][cur], 0))
+
         return counts.reduce((acc, cur) => acc + source[col][cur], 0)
       }
 
@@ -383,38 +384,38 @@ import zip from "lodash.zip"
       }
 
       const augmentDumpNZip = (_dump, ...pushers) => {
-          const keys_ = Object.keys(_dump[0]);
-          const wk1_vals = Object.values(_dump[0]);
-          const wk2_vals = Object.values(_dump[1]);
-          const wk3_vals = Object.values(_dump[2]);
+        const keys_ = Object.keys(_dump[0]);
+        const wk1_vals = Object.values(_dump[0]);
+        const wk2_vals = Object.values(_dump[1]);
+        const wk3_vals = Object.values(_dump[2]);
 
-          let list = [wk1_vals, wk2_vals, wk3_vals]
+        let wks = [wk1_vals, wk2_vals, wk3_vals]
 
-          pushers.map( pusher => keys_.push(pusher.name))
-          pushers.map( (p, i) => list.map( row => p.pusher(_dump, row, i)))
+        pushers.map( pusher => keys_.push(pusher.name))
+        pushers.map( p => wks.map((wk, i) => p.pusher(_dump, wk, i)))
 
-          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
 
       const createDumpNZIP = (...pushers) => {
-          const keys_ = [];
-          const wk1_vals = []
-          const wk2_vals = []
-          const wk3_vals = []
+        const keys_ = [];
+        const wk1_vals = []
+        const wk2_vals = []
+        const wk3_vals = []
 
-          let list = [wk1_vals, wk2_vals, wk3_vals]
+        let wks = [wk1_vals, wk2_vals, wk3_vals]
 
-          pushers.map( pusher => keys_.push(pusher.name))
-          pushers.map( (p, i) => list.map( row => p.pusher(dump, row, i)))
+        pushers.map( pusher => keys_.push(pusher.name))
+        pushers.map( p => wks.map((wk, i) => p.pusher(_dump, wk, i)))
 
-          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
 
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         const pushOpenRates = {
           name: "open_rate",
-          pusher: (source, rows, col) => rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+          pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
         }
 
         createDumpNZIP(pushOpenRates)
@@ -434,7 +435,7 @@ import zip from "lodash.zip"
 
         const pushTgiSums = {
           name: "total_digital_impressions",
-          pusher: (source, rows, col) => rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
+          pusher: (source, rows, col) => rows.map(row => push(makeSumFromArr(source, row, "nonunique_opens_count", "nonunique_clicks_count")))
         }
 
         createDumpNZIP(pushTgiSums)
@@ -455,7 +456,7 @@ import zip from "lodash.zip"
         
         const pushNewSubs = {
           name: "new_subscribers",
-          pusher: (source, rows, col) => rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"))
+          pusher: (source, wk, col) => wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "network_subscribers"))
         }
 
         augmentDumpNZip(dump, pushNewSubs)
