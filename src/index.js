@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 30")
+    console.log("Iteration 32")
 
     const get_data = async calls => {
 
@@ -373,7 +373,7 @@ import zip from "lodash.zip"
 
       const makeSumFromObj = (source, col, ...counts) => {
         console.log("in makeSumFromObj ...counts = " + counts)
-        console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
+        console.log("after await -> counts.reduce...: " + counts.reduce((acc, cur) => acc + source[col][cur], 0))
         return counts.reduce((acc, cur) => acc + source[col][cur], 0)
       }
 
@@ -382,16 +382,16 @@ import zip from "lodash.zip"
         return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
       }
 
-      const augmentDumpNZip = (...pushers) => {
-          const keys_ = Object.keys(dump[0]);
-          const wk1_vals = Object.values(dump[0]);
-          const wk2_vals = Object.values(dump[1]);
-          const wk3_vals = Object.values(dump[2]);
+      const augmentDumpNZip = (_dump, ...pushers) => {
+          const keys_ = Object.keys(_dump[0]);
+          const wk1_vals = Object.values(_dump[0]);
+          const wk2_vals = Object.values(_dump[1]);
+          const wk3_vals = Object.values(_dump[2]);
 
           let list = [wk1_vals, wk2_vals, wk3_vals]
 
           pushers.map( pusher => keys_.push(pusher.name))
-          pushers.map( (p, i) => list.map( row => p.pusher(dump, row, i)))
+          pushers.map( (p, i) => list.map( row => p.pusher(_dump, row, i)))
 
           return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
       }
@@ -458,7 +458,7 @@ import zip from "lodash.zip"
           pusher: (source, rows, col) => rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"))
         }
 
-        augmentDumpNZip(pushNewSubs)
+        augmentDumpNZip(dump, pushNewSubs)
         // const keys_ = Object.keys(dump[0]);
         // const wk1_vals = Object.values(dump[0]);
         // const wk2_vals = Object.values(dump[1]);

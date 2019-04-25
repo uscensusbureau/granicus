@@ -9186,7 +9186,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 30");
+    console.log("Iteration 32");
 
     var get_data =
     /*#__PURE__*/
@@ -9222,8 +9222,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }
 
                   console.log("in makeSumFromObj ...counts = " + counts);
-                  console.log("after await -> counts.reduce...: " + counts.reduce(function (a, b) {
-                    return source[col][a] + source[col][b];
+                  console.log("after await -> counts.reduce...: " + counts.reduce(function (acc, cur) {
+                    return acc + source[col][cur];
                   }, 0));
                   return counts.reduce(function (acc, cur) {
                     return acc + source[col][cur];
@@ -9243,15 +9243,15 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   }, 0);
                 };
 
-                augmentDumpNZip = function augmentDumpNZip() {
-                  var keys_ = Object.keys(dump[0]);
-                  var wk1_vals = Object.values(dump[0]);
-                  var wk2_vals = Object.values(dump[1]);
-                  var wk3_vals = Object.values(dump[2]);
+                augmentDumpNZip = function augmentDumpNZip(_dump) {
+                  var keys_ = Object.keys(_dump[0]);
+                  var wk1_vals = Object.values(_dump[0]);
+                  var wk2_vals = Object.values(_dump[1]);
+                  var wk3_vals = Object.values(_dump[2]);
                   var list = [wk1_vals, wk2_vals, wk3_vals];
 
-                  for (var _len3 = arguments.length, pushers = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                    pushers[_key3] = arguments[_key3];
+                  for (var _len3 = arguments.length, pushers = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+                    pushers[_key3 - 1] = arguments[_key3];
                   }
 
                   pushers.map(function (pusher) {
@@ -9259,7 +9259,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   });
                   pushers.map(function (p, i) {
                     return list.map(function (row) {
-                      return p.pusher(dump, row, i);
+                      return p.pusher(_dump, row, i);
                     });
                   });
                   return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
@@ -9349,7 +9349,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"));
                   }
                 };
-                augmentDumpNZip(pushNewSubs); // const keys_ = Object.keys(dump[0]);
+                augmentDumpNZip(dump, pushNewSubs); // const keys_ = Object.keys(dump[0]);
                 // const wk1_vals = Object.values(dump[0]);
                 // const wk2_vals = Object.values(dump[1]);
                 // const wk3_vals = Object.values(dump[2]);
