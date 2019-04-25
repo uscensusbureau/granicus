@@ -8835,24 +8835,51 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       id: "three_wk",
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["int"]
-    }];
-    var bulletin_detail = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["int"]
-    }];
+    }]; // let bulletin_detail = [
+    //   {
+    //     id: "name",
+    //     alias: "Name of Metric",
+    //     dataType: tableau.dataTypeEnum.string
+    //   },
+    //   {
+    //     id: "this_wk",
+    //     alias: "This Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "prev_wk",
+    //     alias: "Previous Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "three_wk",
+    //     alias: "Three Weeks Ago",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    // ];
+    // let engagement_schema = [
+    //   {
+    //     id: "name",
+    //     alias: "Name of Metric",
+    //     dataType: tableau.dataTypeEnum.string
+    //   },
+    //   {
+    //     id: "this_wk",
+    //     alias: "This Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "prev_wk",
+    //     alias: "Previous Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "three_wk",
+    //     alias: "Three Weeks Ago",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    // ];
+
     var bulletin_rates = {
       id: "bulletin_rates",
       alias: "Bulletin Rates Table",
@@ -8867,13 +8894,20 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       id: "subscribers",
       alias: "Subscribers Table",
       columns: summary_schema2
-    };
-    var bulletin_details = {
-      id: "bulletin_details",
-      alias: "Bulletin Details",
-      columns: bulletin_detail
-    };
-    schemaCallback([bulletins, bulletin_rates, subscribers, bulletin_details]);
+    }; // let bulletin_details = {
+    //   id: "bulletin_details",
+    //   alias: "Bulletin Details",
+    //   columns: bulletin_detail
+    // };
+    // let engagement = {
+    //   id: "engagement",
+    //   alias: "Engagement + Subscribers",
+    //   columns: engagement_schema
+    // };
+
+    schemaCallback([bulletins, bulletin_rates, subscribers
+    /*, engagement, bulletin_details */
+    ]);
   };
 
   myConnector.getData = function (table, doneCallback) {
@@ -8900,15 +8934,36 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var new_date = makeDate(0);
     var wks_1_date = makeDate(7);
     var wks_2_date = makeDate(14);
-    var wks_3_date = makeDate(21); // let allTimeStartDate = "2000-01-01";
+    var wks_3_date = makeDate(21); // TODO TOPIC IDS
 
+    var topics = {
+      "America Counts": "USCENSUS_11939",
+      "Census Academy": "USCENSUS_11971",
+      "Census Jobs": "USCENSUS_11941",
+      "Census Partnerships": "USCENSUS_11958",
+      "Census Updates": "USCENSUS_11926",
+      "Census Updates for Business": "USCENSUS_11927",
+      "Data Visualization Newsletter": "USCENSUS_11932",
+      "Statistics in Schools": "USCENSUS_11940",
+      "Stats for Stories": "USCENSUS_11960" // let allTimeStartDate = "2000-01-01";
+
+    };
     var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/"; // Bulletins summary url:
 
     var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
 
     var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
 
-    var BURL = "reports/bulletins";
+    var BURL = "reports/bulletins"; // Engagement rate url
+
+    var makeEURL = function makeEURL(topicID) {
+      return "reports/topics/".concat(topicID);
+    }; // Total Subscriptions
+
+
+    var makeTSURL = function makeTSURL(topicID) {
+      return "topics/".concat(topicID, "/engagement_rate");
+    };
 
     var makeURL = function makeURL(extURL, startDate, endDate) {
       return "".concat(base_url).concat(extURL, "?start_date=").concat(startDate, "&end_date=").concat(endDate);
@@ -8922,13 +8977,74 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
     var bulletin_1wk = makeURL(BURL, wks_1_date, new_date);
     var bulletin_2wk = makeURL(BURL, wks_2_date, wks_1_date);
-    var bulletin_3wk = makeURL(BURL, wks_3_date, wks_2_date); // Bulletin Summary
+    var bulletin_3wk = makeURL(BURL, wks_3_date, wks_2_date);
+
+    var makeEngagement_1wk = function makeEngagement_1wk(topicID) {
+      return makeURL(makeEURL(topicID), wks_1_date, new_date);
+    };
+
+    var makeEngagement_2wk = function makeEngagement_2wk(topicID) {
+      return makeURL(makeEURL(topicID), wks_2_date, wks_1_date);
+    };
+
+    var makeEngagement_3wk = function makeEngagement_3wk(topicID) {
+      return makeURL(makeEURL(topicID), wks_3_date, wks_2_date);
+    };
+
+    var makeSubscriptions_1wk = function makeSubscriptions_1wk(topicID) {
+      return makeURL(makeTSURL(topicID), wks_1_date, new_date);
+    };
+
+    var makeSubscriptions_2wk = function makeSubscriptions_2wk(topicID) {
+      return makeURL(makeTSURL(topicID), wks_2_date, wks_1_date);
+    };
+
+    var makeSubscriptions_3wk = function makeSubscriptions_3wk(topicID) {
+      return makeURL(makeTSURL(topicID), wks_3_date, wks_2_date);
+    };
+
+    var engage_1wk = Object.values(topics).map(function (topic) {
+      return makeEngagement_1wk(topic);
+    });
+    var subscr_1wk = Object.values(topics).map(function (topic) {
+      return makeSubscriptions_1wk(topic);
+    });
+    var engage_2wk = Object.values(topics).map(function (topic) {
+      return makeEngagement_2wk(topic);
+    });
+    var subscr_2wk = Object.values(topics).map(function (topic) {
+      return makeSubscriptions_2wk(topic);
+    });
+    var engage_3wk = Object.values(topics).map(function (topic) {
+      return makeEngagement_3wk(topic);
+    });
+    var subscr_3wk = Object.values(topics).map(function (topic) {
+      return makeSubscriptions_3wk(topic);
+    });
+
+    var interleave = function interleave(arr1, arr2) {
+      return arr1.reduce(function (acc, cur, i) {
+        return acc.concat(cur, arr2[i]);
+      }, []);
+    };
+
+    var EplusS_1wk = interleave(engage_1wk, subscr_1wk);
+    var EplusS_2wk = interleave(engage_2wk, subscr_2wk);
+    var EplusS_3wk = interleave(engage_3wk, subscr_3wk); // Bulletin Summary
 
     var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks]; // Subscriber Summary
 
     var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks]; // Bulletin Detail
 
-    var callList3 = [bulletin_1wk, bulletin_2wk, bulletin_3wk]; // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
+    var callList3 = [bulletin_1wk, bulletin_2wk, bulletin_3wk]; // Engagement Rates
+
+    var callList4 = {
+      EplusS_1wk: EplusS_1wk,
+      EplusS_2wk: EplusS_2wk,
+      EplusS_3wk: EplusS_3wk //?
+      // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
+
+    };
 
     var fetcher =
     /*#__PURE__*/
@@ -8971,7 +9087,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             console.log("ok?:" + res.ok);
 
                             if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 37;
+                              _context.next = 40;
                               break;
                             }
 
@@ -9016,22 +9132,31 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
 
                           case 30:
-                            _context.next = 35;
+                            _context.next = 38;
                             break;
 
                           case 32:
+                            if (!(table.tableInfo.id === "bulletin_details")) {
+                              _context.next = 35;
+                              break;
+                            }
+
+                            _context.next = 38;
+                            break;
+
+                          case 35:
                             console.log("no results in `next`... acc = ");
                             console.table(acc);
                             return _context.abrupt("return", acc);
 
-                          case 35:
-                            _context.next = 38;
+                          case 38:
+                            _context.next = 41;
                             break;
 
-                          case 37:
+                          case 40:
                             return _context.abrupt("return", prime);
 
-                          case 38:
+                          case 41:
                           case "end":
                             return _context.stop();
                         }
@@ -9069,7 +9194,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3(calls) {
-        var results, dump, makeRateFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2;
+        var results, dump, makeRateFromObj, makeSumFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2, pushNewSubs, _keys_3, _wk1_vals3, _wk2_vals3, _wk3_vals3;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -9090,16 +9215,25 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   console.log("in makeRateFromObj");
                   console.log("after await: " + source[col][numProp]);
                   return source[col][numProp] / source[col][denomProp];
-                }; // const makeSumFromObj = (source, col, ...counts) => {
-                //   console.log("in makeSumFromObj ...counts = " + counts)
-                //   console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
-                //   return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
-                // }
+                };
 
-
-                makeSumFromArr = function makeSumFromArr(source, col) {
+                makeSumFromObj = function makeSumFromObj(source, col) {
                   for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
                     counts[_key - 2] = arguments[_key];
+                  }
+
+                  console.log("in makeSumFromObj ...counts = " + counts);
+                  console.log("after await -> counts.reduce...: " + counts.reduce(function (a, b) {
+                    return source[col][a] + source[col][b];
+                  }, 0));
+                  return counts.reduce(function (a, b) {
+                    return source[col][a] + source[col][b];
+                  }, 0);
+                };
+
+                makeSumFromArr = function makeSumFromArr(source, col) {
+                  for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+                    counts[_key2 - 2] = arguments[_key2];
                   }
 
                   console.log("in makeSumFromArr ...counts = " + counts);
@@ -9112,7 +9246,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 19;
+                  _context3.next = 20;
                   break;
                 }
 
@@ -9131,9 +9265,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushOpenRates(dump, wk3_vals, 2);
                 return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 19:
+              case 20:
                 if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 32;
+                  _context3.next = 33;
                   break;
                 }
 
@@ -9153,14 +9287,37 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                 pushTgiSums(dump, _wk3_vals, 2);
                 return _context3.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
 
-              case 32:
+              case 33:
+                if (!(table.tableInfo.id === "subscribers")) {
+                  _context3.next = 45;
+                  break;
+                }
+
                 _keys_2 = Object.keys(dump[0]);
                 _wk1_vals2 = Object.values(dump[0]);
                 _wk2_vals2 = Object.values(dump[1]);
                 _wk3_vals2 = Object.values(dump[2]);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
 
-              case 37:
+                pushNewSubs = function pushNewSubs(source, rows, col) {
+                  return rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"));
+                };
+
+                _keys_2.push("new_subscribers");
+
+                pushNewSubs(dump, _wk1_vals2, 0);
+                pushNewSubs(dump, _wk2_vals2, 0);
+                pushNewSubs(dump, _wk3_vals2, 0);
+                _context3.next = 50;
+                break;
+
+              case 45:
+                _keys_3 = Object.keys(dump[0]);
+                _wk1_vals3 = Object.values(dump[0]);
+                _wk2_vals3 = Object.values(dump[1]);
+                _wk3_vals3 = Object.values(dump[2]);
+                return _context3.abrupt("return", (0, _lodash["default"])(_keys_3, _wk1_vals3, _wk2_vals3, _wk3_vals3));
+
+              case 50:
               case "end":
                 return _context3.stop();
             }

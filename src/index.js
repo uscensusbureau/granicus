@@ -119,28 +119,28 @@ import zip from "lodash.zip"
     //   },
     // ];
 
-    let engagement_schema = [
-      {
-        id: "name",
-        alias: "Name of Metric",
-        dataType: tableau.dataTypeEnum.string
-      },
-      {
-        id: "this_wk",
-        alias: "This Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "prev_wk",
-        alias: "Previous Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "three_wk",
-        alias: "Three Weeks Ago",
-        dataType: tableau.dataTypeEnum.int
-      },
-    ];
+    // let engagement_schema = [
+    //   {
+    //     id: "name",
+    //     alias: "Name of Metric",
+    //     dataType: tableau.dataTypeEnum.string
+    //   },
+    //   {
+    //     id: "this_wk",
+    //     alias: "This Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "prev_wk",
+    //     alias: "Previous Week",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    //   {
+    //     id: "three_wk",
+    //     alias: "Three Weeks Ago",
+    //     dataType: tableau.dataTypeEnum.int
+    //   },
+    // ];
 
     let bulletin_rates = {
       id: "bulletin_rates",
@@ -160,17 +160,20 @@ import zip from "lodash.zip"
       columns: summary_schema2
     };
 
-    let bulletin_details = {
-      id: "bulletin_details",
-      alias: "Bulletin Details",
-      columns: bulletin_detail
-    };
+    // let bulletin_details = {
+    //   id: "bulletin_details",
+    //   alias: "Bulletin Details",
+    //   columns: bulletin_detail
+    // };
 
-    let engagement = {
-      id: "engagement",
-      alias: "Engagement + Subscribers",
-      columns: engagement_schema
-    };
+    // let engagement = {
+    //   id: "engagement",
+    //   alias: "Engagement + Subscribers",
+    //   columns: engagement_schema
+    // };
+
+
+
 
     schemaCallback([bulletins, bulletin_rates, subscribers /*, engagement, bulletin_details */ ]);
   };
@@ -368,11 +371,11 @@ import zip from "lodash.zip"
         return source[col][numProp] / source[col][denomProp]
       }
 
-      // const makeSumFromObj = (source, col, ...counts) => {
-      //   console.log("in makeSumFromObj ...counts = " + counts)
-      //   console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
-      //   return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
-      // }
+      const makeSumFromObj = (source, col, ...counts) => {
+        console.log("in makeSumFromObj ...counts = " + counts)
+        console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
+        return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
+      }
 
       const makeSumFromArr = (source, col, ...counts) => {
         console.log("in makeSumFromArr ...counts = " + counts)
@@ -403,13 +406,25 @@ import zip from "lodash.zip"
         const pushTgiSums = (source, rows, col) => rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
 
         keys_.push("total_digital_impressions")
-
         pushTgiSums(dump, wk1_vals, 0)
         pushTgiSums(dump, wk2_vals, 1)
         pushTgiSums(dump, wk3_vals, 2)
 
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
+      } else if (table.tableInfo.id === "subscribers") {
+        const keys_ = Object.keys(dump[0]);
+        const wk1_vals = Object.values(dump[0]);
+        const wk2_vals = Object.values(dump[1]);
+        const wk3_vals = Object.values(dump[2]);
+        
+        const pushNewSubs = (source, rows, col) => rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"))
+
+        keys_.push("new_subscribers")
+        pushNewSubs(dump, wk1_vals, 0)
+        pushNewSubs(dump, wk2_vals, 0)
+        pushNewSubs(dump, wk3_vals, 0)
+        
       } else {
 
         const keys_ = Object.keys(dump[0]);
