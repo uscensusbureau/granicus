@@ -9186,7 +9186,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       };
     }();
 
-    console.log("Iteration 29");
+    console.log("Iteration 30");
 
     var get_data =
     /*#__PURE__*/
@@ -9225,8 +9225,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                   console.log("after await -> counts.reduce...: " + counts.reduce(function (a, b) {
                     return source[col][a] + source[col][b];
                   }, 0));
-                  return counts.reduce(function (a, b) {
-                    return source[col][a] + source[col][b];
+                  return counts.reduce(function (acc, cur) {
+                    return acc + source[col][cur];
                   }, 0);
                 };
 

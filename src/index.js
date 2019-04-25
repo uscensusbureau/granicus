@@ -355,7 +355,7 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 29")
+    console.log("Iteration 30")
 
     const get_data = async calls => {
 
@@ -374,7 +374,7 @@ import zip from "lodash.zip"
       const makeSumFromObj = (source, col, ...counts) => {
         console.log("in makeSumFromObj ...counts = " + counts)
         console.log("after await -> counts.reduce...: " + counts.reduce((a, b) => source[col][a] + source[col][b], 0))
-        return counts.reduce((a, b) => source[col][a] + source[col][b], 0)
+        return counts.reduce((acc, cur) => acc + source[col][cur], 0)
       }
 
       const makeSumFromArr = (source, col, ...counts) => {
