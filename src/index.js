@@ -382,50 +382,96 @@ import zip from "lodash.zip"
         return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
       }
 
+      const augmentDumpNZip = (...pushers) => {
+          const keys_ = Object.keys(dump[0]);
+          const wk1_vals = Object.values(dump[0]);
+          const wk2_vals = Object.values(dump[1]);
+          const wk3_vals = Object.values(dump[2]);
+
+          let list = [wk1_vals, wk2_vals, wk3_vals]
+
+          pushers.map( pusher => keys_.push(pusher.name))
+          pushers.map( (p, i) => list.map( row => p.pusher(dump, row, i)))
+
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      }
+
+      const createDumpNZIP = (...pushers) => {
+          const keys_ = [];
+          const wk1_vals = []
+          const wk2_vals = []
+          const wk3_vals = []
+
+          let list = [wk1_vals, wk2_vals, wk3_vals]
+
+          pushers.map( pusher => keys_.push(pusher.name))
+          pushers.map( (p, i) => list.map( row => p.pusher(dump, row, i)))
+
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      }
+
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
-        let keys_ = []
-        let wk1_vals = []
-        let wk2_vals = []
-        let wk3_vals = []
+        const pushOpenRates = {
+          name: "open_rate",
+          pusher: (source, rows, col) => rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+        }
 
-        const pushOpenRates = (source, rows, col) => rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+        createDumpNZIP(pushOpenRates)
+        // let keys_ = []
+        // let wk1_vals = []
+        // let wk2_vals = []
+        // let wk3_vals = []
 
-        keys_.push("open_rate")
-        pushOpenRates(dump, wk1_vals, 0)
-        pushOpenRates(dump, wk2_vals, 1)
-        pushOpenRates(dump, wk3_vals, 2)
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+
+        // keys_.push("open_rate")
+        // pushOpenRates(dump, wk1_vals, 0)
+        // pushOpenRates(dump, wk2_vals, 1)
+        // pushOpenRates(dump, wk3_vals, 2)
+        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else if (table.tableInfo.id === "bulletin_details") {
-        let keys_ = []
-        let wk1_vals = []
-        let wk2_vals = []
-        let wk3_vals = []
 
-        const pushTgiSums = (source, rows, col) => rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
+        const pushTgiSums = {
+          name: "total_digital_impressions",
+          pusher: (source, rows, col) => rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
+        }
 
-        keys_.push("total_digital_impressions")
-        pushTgiSums(dump, wk1_vals, 0)
-        pushTgiSums(dump, wk2_vals, 1)
-        pushTgiSums(dump, wk3_vals, 2)
+        createDumpNZIP(pushTgiSums)
+        // let keys_ = []
+        // let wk1_vals = []
+        // let wk2_vals = []
+        // let wk3_vals = []
 
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+
+        // keys_.push("total_digital_impressions")
+        // pushTgiSums(dump, wk1_vals, 0)
+        // pushTgiSums(dump, wk2_vals, 1)
+        // pushTgiSums(dump, wk3_vals, 2)
+
+        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else if (table.tableInfo.id === "subscribers") {
-        const keys_ = Object.keys(dump[0]);
-        const wk1_vals = Object.values(dump[0]);
-        const wk2_vals = Object.values(dump[1]);
-        const wk3_vals = Object.values(dump[2]);
         
-        const pushNewSubs = (source, rows, col) => rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"))
+        const pushNewSubs = {
+          name: "new_subscribers",
+          pusher: (source, rows, col) => rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"))
+        }
 
-        keys_.push("new_subscribers")
-        pushNewSubs(dump, wk1_vals, 0)
-        pushNewSubs(dump, wk2_vals, 1)
-        pushNewSubs(dump, wk3_vals, 2)
+        augmentDumpNZip(pushNewSubs)
+        // const keys_ = Object.keys(dump[0]);
+        // const wk1_vals = Object.values(dump[0]);
+        // const wk2_vals = Object.values(dump[1]);
+        // const wk3_vals = Object.values(dump[2]);
         
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+        
+
+        // keys_.push("new_subscribers")
+        // pushNewSubs(dump, wk1_vals, 0)
+        // pushNewSubs(dump, wk2_vals, 1)
+        // pushNewSubs(dump, wk3_vals, 2)
+
+        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
         
       } else {
 

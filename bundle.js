@@ -9194,8 +9194,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3(calls) {
-        var results, dump, makeRateFromObj, makeSumFromObj, makeSumFromArr, keys_, wk1_vals, wk2_vals, wk3_vals, pushOpenRates, _keys_, _wk1_vals, _wk2_vals, _wk3_vals, pushTgiSums, _keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2, pushNewSubs, _keys_3, _wk1_vals3, _wk2_vals3, _wk3_vals3;
-
+        var results, dump, makeRateFromObj, makeSumFromObj, makeSumFromArr, augmentDumpNZip, createDumpNZIP, pushOpenRates, pushTgiSums, pushNewSubs, keys_, wk1_vals, wk2_vals, wk3_vals;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -9242,81 +9241,135 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                       return acc + a + cur[b];
                     }, 0);
                   }, 0);
+                };
+
+                augmentDumpNZip = function augmentDumpNZip() {
+                  var keys_ = Object.keys(dump[0]);
+                  var wk1_vals = Object.values(dump[0]);
+                  var wk2_vals = Object.values(dump[1]);
+                  var wk3_vals = Object.values(dump[2]);
+                  var list = [wk1_vals, wk2_vals, wk3_vals];
+
+                  for (var _len3 = arguments.length, pushers = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                    pushers[_key3] = arguments[_key3];
+                  }
+
+                  pushers.map(function (pusher) {
+                    return keys_.push(pusher.name);
+                  });
+                  pushers.map(function (p, i) {
+                    return list.map(function (row) {
+                      return p.pusher(dump, row, i);
+                    });
+                  });
+                  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+                };
+
+                createDumpNZIP = function createDumpNZIP() {
+                  var keys_ = [];
+                  var wk1_vals = [];
+                  var wk2_vals = [];
+                  var wk3_vals = [];
+                  var list = [wk1_vals, wk2_vals, wk3_vals];
+
+                  for (var _len4 = arguments.length, pushers = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                    pushers[_key4] = arguments[_key4];
+                  }
+
+                  pushers.map(function (pusher) {
+                    return keys_.push(pusher.name);
+                  });
+                  pushers.map(function (p, i) {
+                    return list.map(function (row) {
+                      return p.pusher(dump, row, i);
+                    });
+                  });
+                  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
                 }; // control logic for derived/calculated fields
 
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 20;
+                  _context3.next = 14;
                   break;
                 }
 
-                keys_ = [];
-                wk1_vals = [];
-                wk2_vals = [];
-                wk3_vals = [];
-
-                pushOpenRates = function pushOpenRates(source, rows, col) {
-                  return rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
+                pushOpenRates = {
+                  name: "open_rate",
+                  pusher: function pusher(source, rows, col) {
+                    return rows.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
+                  }
                 };
+                createDumpNZIP(pushOpenRates); // let keys_ = []
+                // let wk1_vals = []
+                // let wk2_vals = []
+                // let wk3_vals = []
+                // keys_.push("open_rate")
+                // pushOpenRates(dump, wk1_vals, 0)
+                // pushOpenRates(dump, wk2_vals, 1)
+                // pushOpenRates(dump, wk3_vals, 2)
+                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
-                keys_.push("open_rate");
-                pushOpenRates(dump, wk1_vals, 0);
-                pushOpenRates(dump, wk2_vals, 1);
-                pushOpenRates(dump, wk3_vals, 2);
+                _context3.next = 29;
+                break;
+
+              case 14:
+                if (!(table.tableInfo.id === "bulletin_details")) {
+                  _context3.next = 19;
+                  break;
+                }
+
+                pushTgiSums = {
+                  name: "total_digital_impressions",
+                  pusher: function pusher(source, rows, col) {
+                    return rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
+                  }
+                };
+                createDumpNZIP(pushTgiSums); // let keys_ = []
+                // let wk1_vals = []
+                // let wk2_vals = []
+                // let wk3_vals = []
+                // keys_.push("total_digital_impressions")
+                // pushTgiSums(dump, wk1_vals, 0)
+                // pushTgiSums(dump, wk2_vals, 1)
+                // pushTgiSums(dump, wk3_vals, 2)
+                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
+
+                _context3.next = 29;
+                break;
+
+              case 19:
+                if (!(table.tableInfo.id === "subscribers")) {
+                  _context3.next = 24;
+                  break;
+                }
+
+                pushNewSubs = {
+                  name: "new_subscribers",
+                  pusher: function pusher(source, rows, col) {
+                    return rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"));
+                  }
+                };
+                augmentDumpNZip(pushNewSubs); // const keys_ = Object.keys(dump[0]);
+                // const wk1_vals = Object.values(dump[0]);
+                // const wk2_vals = Object.values(dump[1]);
+                // const wk3_vals = Object.values(dump[2]);
+                // keys_.push("new_subscribers")
+                // pushNewSubs(dump, wk1_vals, 0)
+                // pushNewSubs(dump, wk2_vals, 1)
+                // pushNewSubs(dump, wk3_vals, 2)
+                // return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+
+                _context3.next = 29;
+                break;
+
+              case 24:
+                keys_ = Object.keys(dump[0]);
+                wk1_vals = Object.values(dump[0]);
+                wk2_vals = Object.values(dump[1]);
+                wk3_vals = Object.values(dump[2]);
                 return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 20:
-                if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 33;
-                  break;
-                }
-
-                _keys_ = [];
-                _wk1_vals = [];
-                _wk2_vals = [];
-                _wk3_vals = [];
-
-                pushTgiSums = function pushTgiSums(source, rows, col) {
-                  return rows.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
-                };
-
-                _keys_.push("total_digital_impressions");
-
-                pushTgiSums(dump, _wk1_vals, 0);
-                pushTgiSums(dump, _wk2_vals, 1);
-                pushTgiSums(dump, _wk3_vals, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_, _wk1_vals, _wk2_vals, _wk3_vals));
-
-              case 33:
-                if (!(table.tableInfo.id === "subscribers")) {
-                  _context3.next = 46;
-                  break;
-                }
-
-                _keys_2 = Object.keys(dump[0]);
-                _wk1_vals2 = Object.values(dump[0]);
-                _wk2_vals2 = Object.values(dump[1]);
-                _wk3_vals2 = Object.values(dump[2]);
-
-                pushNewSubs = function pushNewSubs(source, rows, col) {
-                  return rows.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers"));
-                };
-
-                _keys_2.push("new_subscribers");
-
-                pushNewSubs(dump, _wk1_vals2, 0);
-                pushNewSubs(dump, _wk2_vals2, 1);
-                pushNewSubs(dump, _wk3_vals2, 2);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_2, _wk1_vals2, _wk2_vals2, _wk3_vals2));
-
-              case 46:
-                _keys_3 = Object.keys(dump[0]);
-                _wk1_vals3 = Object.values(dump[0]);
-                _wk2_vals3 = Object.values(dump[1]);
-                _wk3_vals3 = Object.values(dump[2]);
-                return _context3.abrupt("return", (0, _lodash["default"])(_keys_3, _wk1_vals3, _wk2_vals3, _wk3_vals3));
-
-              case 51:
+              case 29:
               case "end":
                 return _context3.stop();
             }
