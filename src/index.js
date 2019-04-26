@@ -332,8 +332,8 @@ import zip from "lodash.zip"
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
     const arrayFetcher = async (urls) => {
-      const response = await urls.reduce((acc, url, i) => {
-        window.fetch(url, {
+      const response = await urls.reduce(async (acc, url, i) => {
+        await window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -346,7 +346,6 @@ import zip from "lodash.zip"
           let prime = await res.json()
           console.log("prime:")
           console.table(prime)
-          console.log("urls.length: " + urls.length)
           // odds are engagement rate and evens are topic summaries
           if (i % 2 === 0) { // if even = topic summaries
             let todo = {}
@@ -375,7 +374,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 47")
+    console.log("Iteration 48")
     
     /* =================================
     General Purpose Derivative Functions
