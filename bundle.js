@@ -9023,7 +9023,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
     var subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14); // Bulletin Detail
     // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
-    // Engagement Rates
+    // Engagement Rates = Array of arrays of URLS
 
     var topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk];
     /* =================================
@@ -9038,7 +9038,6 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(url, acc) {
-        var response;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -9147,10 +9146,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 }());
 
               case 2:
-                response = _context2.sent;
-                return _context2.abrupt("return", response);
+                return _context2.abrupt("return", _context2.sent);
 
-              case 4:
+              case 3:
               case "end":
                 return _context2.stop();
             }
@@ -9169,13 +9167,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     function () {
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee5(urls, acc) {
-        var responses, payload;
+      regeneratorRuntime.mark(function _callee5(urls, acc_) {
+        var acc, responses, payload;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                _context5.next = 2;
+                acc = acc_;
+                _context5.next = 3;
                 return urls.map(
                 /*#__PURE__*/
                 function () {
@@ -9211,38 +9210,43 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                                       case 2:
                                         prime = _context3.sent;
-                                        console.log("url is an Array:");
+                                        console.log("prime:");
                                         console.table(prime);
+                                        console.log("urls.length: " + urls.length);
 
                                         if (!(urls.length === i + 1)) {
-                                          _context3.next = 13;
+                                          _context3.next = 16;
                                           break;
                                         }
 
                                         todo = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
-                                        console.log("topic: " + todo);
-                                        console.log("\n            =======================\n            DONE\n            =======================\n            ");
+                                        console.log("topic: ");
+                                        console.table(todo);
+                                        console.log("acc:");
                                         console.table(acc);
+                                        console.log("\n            =======================\n            DONE\n            =======================\n            ");
                                         return _context3.abrupt("return", Object.assign(acc, todo));
 
-                                      case 13:
+                                      case 16:
                                         // odds are engagement rate and evens are topic summaries
                                         if (i % 2 === 0) {
                                           // if even = topic summaries
                                           _todo2 = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
-                                          console.log("topic: " + _todo2);
+                                          console.log("topic: ");
+                                          console.table(_todo2);
                                           console.log("acc:");
                                           console.table(acc);
                                           Object.assign(acc, _todo2);
                                         } else {
                                           _todo4 = _defineProperty({}, "".concat(prime.name, " Engagement Rate"), prime.engagement_rate);
-                                          console.log("engagement: " + _todo4);
+                                          console.log("engagement: ");
+                                          console.table(_todo4);
                                           console.log("acc:");
                                           console.table(acc);
                                           Object.assign(acc, _todo4);
                                         }
 
-                                      case 14:
+                                      case 17:
                                       case "end":
                                         return _context3.stop();
                                     }
@@ -9271,18 +9275,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                   };
                 }());
 
-              case 2:
+              case 3:
                 responses = _context5.sent;
-                _context5.next = 5;
+                _context5.next = 6;
                 return Promise.all(responses);
 
-              case 5:
+              case 6:
                 payload = _context5.sent;
                 console.log("payload:");
                 console.table(payload);
                 return _context5.abrupt("return", payload);
 
-              case 9:
+              case 10:
               case "end":
                 return _context5.stop();
             }
@@ -9295,7 +9299,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 39");
+    console.log("Iteration 40");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9478,8 +9482,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                results = calls.map(function (url) {
-                  return arrayFetcher(url, {});
+                results = calls.map(function (urls) {
+                  return arrayFetcher(urls, {});
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
@@ -9490,7 +9494,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 dump = _context7.sent;
 
                 if (!(table.tableInfo.id === "topics")) {
-                  _context7.next = 10;
+                  _context7.next = 11;
                   break;
                 }
 
@@ -9499,13 +9503,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
                 // }
                 // return createDumpNZIP(dump, pushOpenRates)
+                console.log("\n        =====================\n        COMPLETE\n        =====================");
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
                 return _context7.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 10:
+              case 11:
               case "end":
                 return _context7.stop();
             }
