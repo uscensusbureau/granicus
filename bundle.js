@@ -8756,8 +8756,6 @@ var _lodash = _interopRequireDefault(require("lodash.zip"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -9188,7 +9186,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     var _ref4 = _asyncToGenerator(
                     /*#__PURE__*/
                     regeneratorRuntime.mark(function _callee3(res) {
-                      var prime, todo, _todo2;
+                      var prime, todo, _todo;
 
                       return regeneratorRuntime.wrap(function _callee3$(_context3) {
                         while (1) {
@@ -9204,27 +9202,31 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               console.log("urls.length: " + urls.length); // odds are engagement rate and evens are topic summaries
 
                               if (!(i % 2 === 0)) {
-                                _context3.next = 15;
+                                _context3.next = 16;
                                 break;
                               }
 
                               // if even = topic summaries
-                              todo = _defineProperty({}, "".concat(prime["name"], " Subscribers"), prime["total_subscriptions_to_date"]);
+                              todo = {};
+                              todo["".concat(prime["name"], " Subscribers")] = prime["total_subscriptions_to_date"]; // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
+
                               console.log("topic: ");
                               console.table(todo);
                               console.log("acc:");
                               console.table(acc);
                               return _context3.abrupt("return", Object.assign(acc, todo));
 
-                            case 15:
-                              _todo2 = _defineProperty({}, "".concat(prime["name"], " Engagement Rate"), prime["engagement_rate"]);
+                            case 16:
+                              _todo = {};
+                              _todo["".concat(prime["name"], " Engagement Rate")] = prime["total_subscriptions_to_date"]; // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
+
                               console.log("engagement: ");
-                              console.table(_todo2);
+                              console.table(_todo);
                               console.log("acc:");
                               console.table(acc);
-                              return _context3.abrupt("return", Object.assign(acc, _todo2));
+                              return _context3.abrupt("return", Object.assign(acc, _todo));
 
-                            case 21:
+                            case 23:
                             case "end":
                               return _context3.stop();
                           }
@@ -9258,7 +9260,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 45");
+    console.log("Iteration 46");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
