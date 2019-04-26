@@ -9104,7 +9104,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                             return _context.abrupt("return", last);
 
                           case 23:
-                            if (!(cur.length == 20)) {
+                            if (!(cur.length === 20)) {
                               _context.next = 30;
                               break;
                             }
@@ -9299,7 +9299,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 40");
+    console.log("Iteration 41");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9476,25 +9476,50 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     function () {
       var _ref7 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee7(calls) {
+      regeneratorRuntime.mark(function _callee8(calls) {
         var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                results = calls.map(function (urls) {
-                  return arrayFetcher(urls, {});
-                }); // For Object results, returns an array of promises containing objects
+                results = calls.map(
+                /*#__PURE__*/
+                function () {
+                  var _ref8 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee7(urls) {
+                    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                      while (1) {
+                        switch (_context7.prev = _context7.next) {
+                          case 0:
+                            _context7.next = 2;
+                            return arrayFetcher(urls, {});
+
+                          case 2:
+                            return _context7.abrupt("return", _context7.sent);
+
+                          case 3:
+                          case "end":
+                            return _context7.stop();
+                        }
+                      }
+                    }, _callee7);
+                  }));
+
+                  return function (_x11) {
+                    return _ref8.apply(this, arguments);
+                  };
+                }()); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context7.next = 3;
+                _context8.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context7.sent;
+                dump = _context8.sent;
 
                 if (!(table.tableInfo.id === "topics")) {
-                  _context7.next = 11;
+                  _context8.next = 11;
                   break;
                 }
 
@@ -9508,14 +9533,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
-                return _context7.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context8.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 11:
               case "end":
-                return _context7.stop();
+                return _context8.stop();
             }
           }
-        }, _callee7);
+        }, _callee8);
       }));
 
       return function get_dataArr(_x10) {

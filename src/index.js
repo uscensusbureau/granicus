@@ -312,7 +312,7 @@ import zip from "lodash.zip"
               console.log("Less than 20 results: ")
               console.table(last)
               return last // bulletin details is an array
-            } else if (cur.length == 20) {
+            } else if (cur.length === 20) {
               let next = acc.concat(cur)
               console.log("More than 20 results: ")
               console.table(next)
@@ -386,7 +386,7 @@ import zip from "lodash.zip"
       return payload
     }
   
-    console.log("Iteration 40")
+    console.log("Iteration 41")
     
     /* =================================
     General Purpose Derivative Functions
@@ -502,7 +502,7 @@ import zip from "lodash.zip"
 
     const get_dataArr = async calls => {
 
-      const results = calls.map(urls => arrayFetcher(urls, {}))
+      const results = calls.map(async urls => await arrayFetcher(urls, {}))
 
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
