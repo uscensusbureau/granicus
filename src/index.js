@@ -331,9 +331,8 @@ import zip from "lodash.zip"
     }
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
-    const arrayFetcher = async (urls, acc_) => {
-      let acc = acc_
-      const responses = await urls.map( async (url, i) => {
+    const arrayFetcher = async (urls) => {
+      const response = await urls.reduce( async (acc, url, i) => {
         return await window.fetch(url, {
           method: "GET",
           headers: {
@@ -347,46 +346,31 @@ import zip from "lodash.zip"
           console.log("prime:")
           console.table(prime)
           console.log("urls.length: " + urls.length)
-          if (urls.length === i + 1) {
+          // odds are engagement rate and evens are topic summaries
+          if (i % 2 === 0) { // if even = topic summaries
             let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
             console.log("topic: ")
             console.table(todo)
             console.log("acc:")
             console.table(acc)
-            console.log(`
-            =======================
-            DONE
-            =======================
-            `)
-            return Object.assign(acc, todo)
+            Object.assign(acc, todo)
           } else {
-            // odds are engagement rate and evens are topic summaries
-            if (i % 2 === 0) { // if even = topic summaries
-              let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
-              console.log("topic: ")
-              console.table(todo)
-              console.log("acc:")
-              console.table(acc)
-              Object.assign(acc, todo)
-            } else {
-              let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
-              console.log("engagement: ")
-              console.table(todo)
-              console.log("acc:")
-              console.table(acc)
-              Object.assign(acc, todo)
-            }
+            let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
+            console.log("engagement: ")
+            console.table(todo)
+            console.log("acc:")
+            console.table(acc)
+            Object.assign(acc, todo)
           }
         })
       })
       // will be an array of Promises containing objects
-      const payload = await Promise.all(responses)
       console.log("payload:")
-      console.table(payload)
-      return payload
+      console.table(response)
+      return response
     }
   
-    console.log("Iteration 41")
+    console.log("Iteration 43")
     
     /* =================================
     General Purpose Derivative Functions
@@ -502,7 +486,7 @@ import zip from "lodash.zip"
 
     const get_dataArr = async calls => {
 
-      const results = calls.map(async urls => await arrayFetcher(urls, {}))
+      const results = calls.map(async urls => await arrayFetcher(urls))
 
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
@@ -577,7 +561,7 @@ import zip from "lodash.zip"
       dataGetter(bulletinsCallList)
     } else if (table.tableInfo.id === "subscribers") {
       dataGetter(subscribersCallList)
-    } else if (table.tableInfo.id == "topics") {
+    } else if (table.tableInfo.id === "topics") {
       arrDataGetter(topicsCallList)
     }
     // else if (table.tableInfo.id === "bulletin_details") {
