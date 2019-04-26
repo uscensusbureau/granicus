@@ -9209,7 +9209,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               }
 
                               // if even = topic summaries
-                              todo = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
+                              todo = _defineProperty({}, "".concat(prime["name"], " Subscribers"), prime["total_subscriptions_to_date"]);
                               console.log("topic: ");
                               console.table(todo);
                               console.log("acc:");
@@ -9217,7 +9217,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               return _context3.abrupt("return", Object.assign(acc, todo));
 
                             case 15:
-                              _todo2 = _defineProperty({}, "".concat(prime.name, " Engagement Rate"), prime.engagement_rate);
+                              _todo2 = _defineProperty({}, "".concat(prime["name"], " Engagement Rate"), prime["engagement_rate"]);
                               console.log("engagement: ");
                               console.table(_todo2);
                               console.log("acc:");
@@ -9258,7 +9258,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 43");
+    console.log("Iteration 45");
     /* =================================
     General Purpose Derivative Functions
     ================================== */

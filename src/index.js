@@ -349,14 +349,14 @@ import zip from "lodash.zip"
           console.log("urls.length: " + urls.length)
           // odds are engagement rate and evens are topic summaries
           if (i % 2 === 0) { // if even = topic summaries
-            let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
+            let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
             console.log("topic: ")
             console.table(todo)
             console.log("acc:")
             console.table(acc)
             return Object.assign(acc, todo)
           } else {
-            let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
+            let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
             console.log("engagement: ")
             console.table(todo)
             console.log("acc:")
@@ -371,7 +371,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 43")
+    console.log("Iteration 45")
     
     /* =================================
     General Purpose Derivative Functions
