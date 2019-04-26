@@ -332,8 +332,8 @@ import zip from "lodash.zip"
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
     const arrayFetcher = async (urls) => {
-      const response = await urls.reduce( async (acc, url, i) => {
-        return await window.fetch(url, {
+      const response = await urls.reduce((acc, url, i) => {
+        window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -342,6 +342,7 @@ import zip from "lodash.zip"
           }
         })
         .then(async res => {
+          
           let prime = await res.json()
           console.log("prime:")
           console.table(prime)
@@ -353,17 +354,17 @@ import zip from "lodash.zip"
             console.table(todo)
             console.log("acc:")
             console.table(acc)
-            Object.assign(acc, todo)
+            return Object.assign(acc, todo)
           } else {
             let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
             console.log("engagement: ")
             console.table(todo)
             console.log("acc:")
             console.table(acc)
-            Object.assign(acc, todo)
+            return Object.assign(acc, todo)
           }
         })
-      })
+      }, {})
       // will be an array of Promises containing objects
       console.log("payload:")
       console.table(response)
