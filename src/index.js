@@ -351,14 +351,32 @@ import zip from "lodash.zip"
           let prime = await res.json()
           console.log("url is an Array:")
           console.table(prime)
-
-          // odds are engagement rate and evens are topic summaries
-          if (i % 2 === 0) { // if even = topic summaries
+          
+          if (urls.length === i + 1) {
             let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
-            Object.assign(acc, todo)
+            console.log("topic: " + todo)
+            console.log(`
+            =======================
+            DONE
+            =======================
+            `)
+            console.table(acc)
+            return Object.assign(acc, todo)
           } else {
-            let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
-            Object.assign(acc, todo)
+            // odds are engagement rate and evens are topic summaries
+            if (i % 2 === 0) { // if even = topic summaries
+              let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
+              console.log("topic: " + todo)
+              console.log("acc:")
+              console.table(acc)
+              Object.assign(acc, todo)
+            } else {
+              let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
+              console.log("engagement: " + todo)
+              console.log("acc:")
+              console.table(acc)
+              Object.assign(acc, todo)
+            }
           }
         })
       })
@@ -368,12 +386,14 @@ import zip from "lodash.zip"
       console.table(payload)
       return payload
     }
-      
+  
+    console.log("Iteration 39")
+    
     /* =================================
     General Purpose Derivative Functions
     ================================== */ 
 
-    console.log("Iteration 38")
+
 
     const makeRateFromObj = (source, col, numProp, denomProp) => {
       console.log("in makeRateFromObj")

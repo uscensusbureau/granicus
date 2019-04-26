@@ -9200,7 +9200,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               var _ref5 = _asyncToGenerator(
                               /*#__PURE__*/
                               regeneratorRuntime.mark(function _callee3(res) {
-                                var prime, todo, _todo2;
+                                var prime, todo, _todo2, _todo4;
 
                                 return regeneratorRuntime.wrap(function _callee3$(_context3) {
                                   while (1) {
@@ -9212,18 +9212,37 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                                       case 2:
                                         prime = _context3.sent;
                                         console.log("url is an Array:");
-                                        console.table(prime); // odds are engagement rate and evens are topic summaries
+                                        console.table(prime);
 
-                                        if (i % 2 === 0) {
-                                          // if even = topic summaries
-                                          todo = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
-                                          Object.assign(acc, todo);
-                                        } else {
-                                          _todo2 = _defineProperty({}, "".concat(prime.name, " Engagement Rate"), prime.engagement_rate);
-                                          Object.assign(acc, _todo2);
+                                        if (!(urls.length === i + 1)) {
+                                          _context3.next = 13;
+                                          break;
                                         }
 
-                                      case 6:
+                                        todo = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
+                                        console.log("topic: " + todo);
+                                        console.log("\n            =======================\n            DONE\n            =======================\n            ");
+                                        console.table(acc);
+                                        return _context3.abrupt("return", Object.assign(acc, todo));
+
+                                      case 13:
+                                        // odds are engagement rate and evens are topic summaries
+                                        if (i % 2 === 0) {
+                                          // if even = topic summaries
+                                          _todo2 = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
+                                          console.log("topic: " + _todo2);
+                                          console.log("acc:");
+                                          console.table(acc);
+                                          Object.assign(acc, _todo2);
+                                        } else {
+                                          _todo4 = _defineProperty({}, "".concat(prime.name, " Engagement Rate"), prime.engagement_rate);
+                                          console.log("engagement: " + _todo4);
+                                          console.log("acc:");
+                                          console.table(acc);
+                                          Object.assign(acc, _todo4);
+                                        }
+
+                                      case 14:
                                       case "end":
                                         return _context3.stop();
                                     }
@@ -9275,12 +9294,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         return _ref3.apply(this, arguments);
       };
     }();
+
+    console.log("Iteration 39");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
-
-
-    console.log("Iteration 38");
 
     var makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
       console.log("in makeRateFromObj");
