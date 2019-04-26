@@ -11,21 +11,24 @@ browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-e
 
  */
 
-// Polyfills
+/* =================================
+Polyfills and library functions
+================================== */ 
+
 require('babel-polyfill');
 // special polyfill for fetch support (not provided by babel-polyfill)
 require('fetch-ie8')
-
-// function from lodash for allowing us to combine multiple API responses into a
-// single 'table'
+// function from lodash for allowing us to combine parallel arrays into a single 'table'
 import zip from "lodash.zip"
 
 (function () {
   // Create the connector object
   let myConnector = tableau.makeConnector();
 
+  /* =================================
+  Schemas
+  ================================== */ 
 
-  // Define the schema
   myConnector.getSchema = function (schemaCallback) {
     let rates_schema = [
       {
@@ -119,28 +122,32 @@ import zip from "lodash.zip"
     //   },
     // ];
 
-    // let engagement_schema = [
-    //   {
-    //     id: "name",
-    //     alias: "Name of Metric",
-    //     dataType: tableau.dataTypeEnum.string
-    //   },
-    //   {
-    //     id: "this_wk",
-    //     alias: "This Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "prev_wk",
-    //     alias: "Previous Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "three_wk",
-    //     alias: "Three Weeks Ago",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    // ];
+    let topics_schema = [
+      {
+        id: "name",
+        alias: "Name of Metric",
+        dataType: tableau.dataTypeEnum.string
+      },
+      {
+        id: "this_wk",
+        alias: "This Week",
+        dataType: tableau.dataTypeEnum.int
+      },
+      {
+        id: "prev_wk",
+        alias: "Previous Week",
+        dataType: tableau.dataTypeEnum.int
+      },
+      {
+        id: "three_wk",
+        alias: "Three Weeks Ago",
+        dataType: tableau.dataTypeEnum.int
+      },
+    ];
+
+    /* =================================
+    Schema Representatives
+    ================================== */ 
 
     let bulletin_rates = {
       id: "bulletin_rates",
@@ -166,34 +173,52 @@ import zip from "lodash.zip"
     //   columns: bulletin_detail
     // };
 
-    // let engagement = {
-    //   id: "engagement",
-    //   alias: "Engagement + Subscribers",
-    //   columns: engagement_schema
-    // };
+    let topics = {
+      id: "topics",
+      alias: "Topic Engagement + Subscribers",
+      columns: topics_schema
+    };
 
-
-
-
-    schemaCallback([bulletins, bulletin_rates, subscribers /*, engagement, bulletin_details */ ]);
+    schemaCallback([bulletins, bulletin_rates, subscribers, topics /*, engagement, bulletin_details */ ]);
   };
 
 
 
   myConnector.getData = function (table, doneCallback) {
     // account number
-    let account = "11723";
+    const account = "11723";
 
-    // parse the string passed between Tableau lifecycle phases to get the user
-    // supplied data into our calls
-    let cd_data = JSON.parse(tableau.connectionData);
-    let key = cd_data.key
-    let end = cd_data.end_date
+    /* =================================
+    Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData 
+    ================================== */ 
 
+    const cd_data = JSON.parse(tableau.connectionData);
+    const key = cd_data.key
+    const _end = cd_data.end_date
+    
+    /* =================================
+    Topics List
+    ================================== */ 
+    
+    const topics = {
+      // "America Counts"                : "USCENSUS_11939",
+      // "Census Academy"                : "USCENSUS_11971",
+      // "Census Jobs"                   : "USCENSUS_11941",
+      // "Census Partnerships"           : "USCENSUS_11958",
+      // "Census Updates"                : "USCENSUS_11926",
+      // "Census Updates for Business"   : "USCENSUS_11927",
+      // "Data Visualization Newsletter" : "USCENSUS_11932",
+      // "Statistics in Schools"         : "USCENSUS_11940",
+      // "Stats for Stories"             : "USCENSUS_11960"
+      "State Data Center Leads": "42162" // only one currently visible... rest TODO
+    }
 
+    /* =================================
+    URL Creating Functions
+    ================================== */ 
 
     // Latest date from user input
-    const end_date = new Date(end);
+    const end_date = new Date(_end);
 
     // function for creating dates formatted for Granicus API
     const makeDate = (days_ago) => {
@@ -205,108 +230,66 @@ import zip from "lodash.zip"
       return `${year}-${month}-${day}`
     }
 
-    const new_date = makeDate(0)
-    const wks_1_date = makeDate(7)
-    const wks_2_date = makeDate(14)
-    const wks_3_date = makeDate(21)
+    const makeURLDateRange = (end, start) => `start_date=${makeDate(start)}&end_date=${makeDate(end)}`
 
-    // TODO TOPIC IDS
-
-    let topics = {
-      "America Counts"                : "USCENSUS_11939",
-      "Census Academy"                : "USCENSUS_11971",
-      "Census Jobs"                   : "USCENSUS_11941",
-      "Census Partnerships"           : "USCENSUS_11958",
-      "Census Updates"                : "USCENSUS_11926",
-      "Census Updates for Business"   : "USCENSUS_11927",
-      "Data Visualization Newsletter" : "USCENSUS_11932",
-      "Statistics in Schools"         : "USCENSUS_11940",
-      "Stats for Stories"             : "USCENSUS_11960"
-    }
-    
-
-
-    // let allTimeStartDate = "2000-01-01";
-
-    let base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/";
+    const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/`;
 
     // Bulletins summary url:
-    let BSURL = "reports/bulletins/summary"
+    const BSURL = "reports/bulletins/summary"
     // Subscriber summary url:
-    let SSURL = "reports/subscriber_activity/summary"
+    const SSURL = "reports/subscriber_activity/summary"
     // Bulletins report url:
-    let BURL = "reports/bulletins"
+    const BURL = "reports/bulletins"
+    // Topic Summary
+    const makeTopicURL = topicID => `reports/topics/${topicID}`
     // Engagement rate url
-    let makeEURL = topicID => `reports/topics/${topicID}`
-    // Total Subscriptions
-    let makeTSURL = topicID => `topics/${topicID}/engagement_rate`
+    const makeEngageURL = topicID => `reports/topics/${topicID}/engagement_rate`
 
-    let makeURL = (extURL, startDate, endDate) => `${base_url}${extURL}?start_date=${startDate}&end_date=${endDate}`
+    const makeURL = (extURL, _end, _start) => `${base_url}${extURL}?${makeURLDateRange(_end, _start)}`
 
-    
-    let bulletin_summary_1wk = makeURL(BSURL, wks_1_date, new_date)
-    let bulletin_summary_2wks = makeURL(BSURL, wks_2_date, wks_1_date)
-    let bulletin_summary_3wks = makeURL(BSURL, wks_3_date, wks_2_date)
+    const makeWklyURLArr = (str, ...days) => days.map( day => makeURL(str, day, day + 7))
+  
+    const makeWkFnArr = (_topics, func, _end, _start) => Object.values(_topics).map( id => makeURL(func(id), _end, _start))
 
-    let subscriber_summary_1wk = makeURL(SSURL, wks_1_date, new_date)
-    let subscriber_summary_2wks = makeURL(SSURL, wks_2_date, wks_1_date)
-    let subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date)
+    // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
+    const engage_1wk = makeWkFnArr(topics, makeEngageURL, 0, 7)
+    const topicS_1wk = makeWkFnArr(topics, makeTopicURL, 0, 7)
+    const engage_2wk = makeWkFnArr(topics, makeEngageURL, 7, 14)
+    const topicS_2wk = makeWkFnArr(topics, makeTopicURL, 7, 14)
+    const engage_3wk = makeWkFnArr(topics, makeEngageURL, 14, 21)
+    const topicS_3wk = makeWkFnArr(topics, makeTopicURL, 14, 21)
 
-    let bulletin_1wk = makeURL(BURL, wks_1_date, new_date)
-    let bulletin_2wk = makeURL(BURL, wks_2_date, wks_1_date)
-    let bulletin_3wk = makeURL(BURL, wks_3_date, wks_2_date)
+    const interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
 
-    let makeEngagement_1wk = topicID => makeURL(makeEURL(topicID), wks_1_date, new_date)
-    let makeEngagement_2wk = topicID => makeURL(makeEURL(topicID), wks_2_date, wks_1_date)
-    let makeEngagement_3wk = topicID => makeURL(makeEURL(topicID), wks_3_date, wks_2_date)
-
-    let makeSubscriptions_1wk = topicID => makeURL(makeTSURL(topicID), wks_1_date, new_date)
-    let makeSubscriptions_2wk = topicID => makeURL(makeTSURL(topicID), wks_2_date, wks_1_date)
-    let makeSubscriptions_3wk = topicID => makeURL(makeTSURL(topicID), wks_3_date, wks_2_date)
-
-    let engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
-    let subscr_1wk = Object.values(topics).map(topic => makeSubscriptions_1wk(topic))
-    let engage_2wk = Object.values(topics).map(topic => makeEngagement_2wk(topic))
-    let subscr_2wk = Object.values(topics).map(topic => makeSubscriptions_2wk(topic))
-    let engage_3wk = Object.values(topics).map(topic => makeEngagement_3wk(topic))
-    let subscr_3wk = Object.values(topics).map(topic => makeSubscriptions_3wk(topic))
-
-    let interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
-
-    let EplusS_1wk = interleave(engage_1wk, subscr_1wk)
-    let EplusS_2wk = interleave(engage_2wk, subscr_2wk)
-    let EplusS_3wk = interleave(engage_3wk, subscr_3wk)
-
+    const EplusS_1wk = interleave(engage_1wk, topicS_1wk)
+    const EplusS_2wk = interleave(engage_2wk, topicS_2wk)
+    const EplusS_3wk = interleave(engage_3wk, topicS_3wk)
 
     // Bulletin Summary
-    let callList1 = [
-      bulletin_summary_1wk,
-      bulletin_summary_2wks,
-      bulletin_summary_3wks
-    ];
+    const bulletinsCallList = makeWklyURLArr(BSURL, 0, 7, 14)
+
     // Subscriber Summary
-    let callList2 = [
-      subscriber_summary_1wk,
-      subscriber_summary_2wks,
-      subscriber_summary_3wks
-    ];
+    const subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14)
+
     // Bulletin Detail
-    let callList3 = [
-      bulletin_1wk,
-      bulletin_2wk,
-      bulletin_3wk
-    ];
+    // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
+
     // Engagement Rates
-    // let callList4 = {
-    //   EplusS_1wk, 
-    //   EplusS_2wk, 
-    //   EplusS_3wk
-    // } //?
+    let topicsCallList = [
+      EplusS_1wk, 
+      EplusS_2wk, 
+      EplusS_3wk
+    ]
 
 
+    /* =================================
+    Fetching Functions
+    ================================== */ 
 
     // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
-    const fetcher = async (url, acc) => {
+
+    // make a single call or recursion for `next` links 
+    const fetcher = async (url, acc) => {  
       const response = await window.fetch(url, {
         method: "GET",
         headers: {
@@ -340,8 +323,6 @@ import zip from "lodash.zip"
               console.log("recurring fetcher")
               await fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
             }
-          } else if (table.tableInfo.id === "bulletin_details") {
-
           } else {
             console.log("no results in `next`... acc = ")
             console.table(acc)
@@ -355,7 +336,102 @@ import zip from "lodash.zip"
       return response
     }
 
-    console.log("Iteration 36")
+    // handle Many calls in one weekly bundle (e.g., Engagement Rates)
+    const arrayFetcher = async (urls, acc) => {
+      const responses = await urls.map( async (url, i) => {
+        return await window.fetch(url, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/hal+json',
+            'X-AUTH-TOKEN': key
+          }
+        })
+        .then(async res => {
+          let prime = await res.json()
+          console.log("url is an Array:")
+          console.table(prime)
+
+          // odds are engagement rate and evens are topic summaries
+          if (i % 2 === 0) { // if even = topic summaries
+            let todo = { [`${prime.name} Subscribers`] : prime.total_subscriptions_to_date }
+            Object.assign(acc, todo)
+          } else {
+            let todo = { [`${prime.name} Engagement Rate`] : prime.engagement_rate }
+            Object.assign(acc, todo)
+          }
+        })
+      })
+      // will be an array of Promises containing objects
+      const payload = await Promise.all(responses)
+      console.log("payload:")
+      console.table(payload)
+      return payload
+    }
+      
+    /* =================================
+    General Purpose Derivative Functions
+    ================================== */ 
+
+    console.log("Iteration 38")
+
+    const makeRateFromObj = (source, col, numProp, denomProp) => {
+      console.log("in makeRateFromObj")
+      let result = source[col][numProp] / source[col][denomProp]
+
+      console.log("result: " + result)
+      return result
+    }
+
+    const makeSumFromObj = (source, col, ...counts) => {
+      console.log("in makeSumFromObj ...counts = " + counts)
+      let result = counts.reduce((acc, cur) => acc + source[col][cur], 0)
+    
+      console.log("after await -> counts.reduce...: " + result)
+      return result
+    } 
+
+    const makeSumFromArr = (source, col, ...counts) => {
+      console.log("in makeSumFromArr ...counts = ")
+      let result = source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
+
+      console.table(result)
+      return result
+    }
+
+    const augmentDumpNZip = (source, ...pushers) => {
+      const keys_ = Object.keys(source[0]);
+      const wk1_vals = Object.values(source[0]);
+      const wk2_vals = Object.values(source[1]);
+      const wk3_vals = Object.values(source[2]);
+
+      let wks = [wk1_vals, wk2_vals, wk3_vals]
+
+      pushers.map( pusher => keys_.push(pusher.name))
+      // pusher handles a single week
+      pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
+
+      return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+    }
+
+    const createDumpNZIP = (source, ...pushers) => {
+      const keys_ = [];
+      const wk1_vals = []
+      const wk2_vals = []
+      const wk3_vals = []
+
+      let wks = [wk1_vals, wk2_vals, wk3_vals]
+
+      pushers.map( pusher => keys_.push(pusher.name))
+      pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
+
+      return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+    }
+
+
+    /* =================================
+    Data Getters
+    ================================== */ 
 
     const get_data = async calls => {
 
@@ -365,52 +441,6 @@ import zip from "lodash.zip"
       // For Array results, returns an array of promises containing arrays of objects
       const dump = await Promise.all(results);
 
-      const makeRateFromObj = (source, col, numProp, denomProp) => {
-        console.log("in makeRateFromObj")
-        console.log("after await: " + source[col][numProp])
-        return source[col][numProp] / source[col][denomProp]
-      }
-
-      const makeSumFromObj = (source, col, ...counts) => {
-        console.log("in makeSumFromObj ...counts = " + counts)
-        console.log("after await -> counts.reduce...: " + counts.reduce((acc, cur) => acc + source[col][cur], 0))
-
-        return counts.reduce((acc, cur) => acc + source[col][cur], 0)
-      }
-
-      const makeSumFromArr = (source, col, ...counts) => {
-        console.log("in makeSumFromArr ...counts = " + counts)
-        return source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
-      }
-
-      const augmentDumpNZip = (source, ...pushers) => {
-        const keys_ = Object.keys(source[0]);
-        const wk1_vals = Object.values(source[0]);
-        const wk2_vals = Object.values(source[1]);
-        const wk3_vals = Object.values(source[2]);
-
-        let wks = [wk1_vals, wk2_vals, wk3_vals]
-
-        pushers.map( pusher => keys_.push(pusher.name))
-        // pusher handles a single week
-        pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
-
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-      }
-
-      const createDumpNZIP = (source, ...pushers) => {
-        const keys_ = [];
-        const wk1_vals = []
-        const wk2_vals = []
-        const wk3_vals = []
-
-        let wks = [wk1_vals, wk2_vals, wk3_vals]
-
-        pushers.map( pusher => keys_.push(pusher.name))
-        pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
-
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-      }
 
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
@@ -420,17 +450,6 @@ import zip from "lodash.zip"
         }
 
         return createDumpNZIP(dump, pushOpenRates)
-        // let keys_ = []
-        // let wk1_vals = []
-        // let wk2_vals = []
-        // let wk3_vals = []
-
-
-        // keys_.push("open_rate")
-        // pushOpenRates(dump, wk1_vals, 0)
-        // pushOpenRates(dump, wk2_vals, 1)
-        // pushOpenRates(dump, wk3_vals, 2)
-        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else if (table.tableInfo.id === "bulletin_details") {
 
@@ -440,18 +459,6 @@ import zip from "lodash.zip"
         }
 
         return createDumpNZIP(dump, pushTgiSums)
-        // let keys_ = []
-        // let wk1_vals = []
-        // let wk2_vals = []
-        // let wk3_vals = []
-
-
-        // keys_.push("total_digital_impressions")
-        // pushTgiSums(dump, wk1_vals, 0)
-        // pushTgiSums(dump, wk2_vals, 1)
-        // pushTgiSums(dump, wk3_vals, 2)
-
-        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals)
 
       } else if (table.tableInfo.id === "subscribers") {
         
@@ -461,20 +468,7 @@ import zip from "lodash.zip"
         }
 
         return augmentDumpNZip(dump, pushNewSubs)
-        // const keys_ = Object.keys(dump[0]);
-        // const wk1_vals = Object.values(dump[0]);
-        // const wk2_vals = Object.values(dump[1]);
-        // const wk3_vals = Object.values(dump[2]);
-        
-        
 
-        // keys_.push("new_subscribers")
-        // pushNewSubs(dump, wk1_vals, 0)
-        // pushNewSubs(dump, wk2_vals, 1)
-        // pushNewSubs(dump, wk3_vals, 2)
-
-        // return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-        
       } else {
 
         const keys_ = Object.keys(dump[0]);
@@ -485,14 +479,42 @@ import zip from "lodash.zip"
         return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
 
       }
-
     }
 
-    const dataGetter = (urlList) => {
+    const get_dataArr = async calls => {
+
+      const results = calls.map(url => arrayFetcher(url, {}))
+
+      // For Object results, returns an array of promises containing objects
+      // For Array results, returns an array of promises containing arrays of objects
+      const dump = await Promise.all(results);
+
+
+      // control logic for derived/calculated fields
+      if (table.tableInfo.id === "topics") {
+        // const pushOpenRates = {
+        //   name: "open_rate",
+        //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+        // }
+        
+        // return createDumpNZIP(dump, pushOpenRates)
+        const keys_ = Object.keys(dump[0]);
+        const wk1_vals = Object.values(dump[0]);
+        const wk2_vals = Object.values(dump[1]);
+        const wk3_vals = Object.values(dump[2]);
+  
+        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      }
+    }
+
+
+    /* =================================
+    Table Constructors
+    ================================== */ 
+
+    const dataGetter = urlList => {
       get_data(urlList)
         .then(result => {
-          // tableau.log("datasource: " + result);
-          // console.log("datasource: " + result);
           table.appendRows(
             result.map(k => ({
               "name": k[0],
@@ -506,21 +528,38 @@ import zip from "lodash.zip"
         })
     }
 
+    const arrDataGetter = urlList => {
+      get_dataArr(urlList)
+        .then(result => {
+          table.appendRows(
+            result.map(k => ({
+                "name": k[0],
+                "this_wk": k[1],
+                "prev_wk": k[2],
+                "three_wk": k[3]
+              })
+            )
+          )
+          doneCallback()
+        })
+    }
+
+    /* =================================
+    Table Targets
+    ================================== */ 
+
     if (table.tableInfo.id === "bulletins") {
-      dataGetter(callList1)
+      dataGetter(bulletinsCallList)
+    } else if (table.tableInfo.id === "bulletin_rates") {
+      dataGetter(bulletinsCallList)
+    } else if (table.tableInfo.id === "subscribers") {
+      dataGetter(subscribersCallList)
+    } else if (table.tableInfo.id == "topics") {
+      arrDataGetter(topicsCallList)
     }
-
-    if (table.tableInfo.id === "bulletin_rates") {
-      dataGetter(callList1)
-    }
-
-    if (table.tableInfo.id === "subscribers") {
-      dataGetter(callList2)
-    }
-
-    if (table.tableInfo.id === "bulletin_details") {
-      dataGetter(callList3)
-    }
+    // else if (table.tableInfo.id === "bulletin_details") {
+    //   dataGetter(callList3)
+    // }
 
 
   }

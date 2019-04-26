@@ -8756,6 +8756,8 @@ var _lodash = _interopRequireDefault(require("lodash.zip"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -8772,17 +8774,22 @@ Using the CLI:
 browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-env ] ]
 
  */
-// Polyfills
+
+/* =================================
+Polyfills and library functions
+================================== */
 require('babel-polyfill'); // special polyfill for fetch support (not provided by babel-polyfill)
 
 
-require('fetch-ie8'); // function from lodash for allowing us to combine multiple API responses into a
-// single 'table'
+require('fetch-ie8'); // function from lodash for allowing us to combine parallel arrays into a single 'table'
 
 
 (function () {
   // Create the connector object
-  var myConnector = tableau.makeConnector(); // Define the schema
+  var myConnector = tableau.makeConnector();
+  /* =================================
+  Schemas
+  ================================== */
 
   myConnector.getSchema = function (schemaCallback) {
     var rates_schema = [{
@@ -8857,28 +8864,27 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     //     dataType: tableau.dataTypeEnum.int
     //   },
     // ];
-    // let engagement_schema = [
-    //   {
-    //     id: "name",
-    //     alias: "Name of Metric",
-    //     dataType: tableau.dataTypeEnum.string
-    //   },
-    //   {
-    //     id: "this_wk",
-    //     alias: "This Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "prev_wk",
-    //     alias: "Previous Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "three_wk",
-    //     alias: "Three Weeks Ago",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    // ];
+
+    var topics_schema = [{
+      id: "name",
+      alias: "Name of Metric",
+      dataType: tableau.dataTypeEnum.string
+    }, {
+      id: "this_wk",
+      alias: "This Week",
+      dataType: tableau.dataTypeEnum["int"]
+    }, {
+      id: "prev_wk",
+      alias: "Previous Week",
+      dataType: tableau.dataTypeEnum["int"]
+    }, {
+      id: "three_wk",
+      alias: "Three Weeks Ago",
+      dataType: tableau.dataTypeEnum["int"]
+    }];
+    /* =================================
+    Schema Representatives
+    ================================== */
 
     var bulletin_rates = {
       id: "bulletin_rates",
@@ -8899,27 +8905,50 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
     //   alias: "Bulletin Details",
     //   columns: bulletin_detail
     // };
-    // let engagement = {
-    //   id: "engagement",
-    //   alias: "Engagement + Subscribers",
-    //   columns: engagement_schema
-    // };
 
-    schemaCallback([bulletins, bulletin_rates, subscribers
+    var topics = {
+      id: "topics",
+      alias: "Topic Engagement + Subscribers",
+      columns: topics_schema
+    };
+    schemaCallback([bulletins, bulletin_rates, subscribers, topics
     /*, engagement, bulletin_details */
     ]);
   };
 
   myConnector.getData = function (table, doneCallback) {
     // account number
-    var account = "11723"; // parse the string passed between Tableau lifecycle phases to get the user
-    // supplied data into our calls
+    var account = "11723";
+    /* =================================
+    Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData 
+    ================================== */
 
     var cd_data = JSON.parse(tableau.connectionData);
     var key = cd_data.key;
-    var end = cd_data.end_date; // Latest date from user input
+    var _end = cd_data.end_date;
+    /* =================================
+    Topics List
+    ================================== */
 
-    var end_date = new Date(end); // function for creating dates formatted for Granicus API
+    var topics = {
+      // "America Counts"                : "USCENSUS_11939",
+      // "Census Academy"                : "USCENSUS_11971",
+      // "Census Jobs"                   : "USCENSUS_11941",
+      // "Census Partnerships"           : "USCENSUS_11958",
+      // "Census Updates"                : "USCENSUS_11926",
+      // "Census Updates for Business"   : "USCENSUS_11927",
+      // "Data Visualization Newsletter" : "USCENSUS_11932",
+      // "Statistics in Schools"         : "USCENSUS_11940",
+      // "Stats for Stories"             : "USCENSUS_11960"
+      "State Data Center Leads": "42162" // only one currently visible... rest TODO
+
+      /* =================================
+      URL Creating Functions
+      ================================== */
+      // Latest date from user input
+
+    };
+    var end_date = new Date(_end); // function for creating dates formatted for Granicus API
 
     var makeDate = function makeDate(days_ago) {
       // create date from number of 'days_ago' from
@@ -8931,96 +8960,54 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       return "".concat(year, "-").concat(month, "-").concat(day);
     };
 
-    var new_date = makeDate(0);
-    var wks_1_date = makeDate(7);
-    var wks_2_date = makeDate(14);
-    var wks_3_date = makeDate(21); // TODO TOPIC IDS
-
-    var topics = {
-      "America Counts": "USCENSUS_11939",
-      "Census Academy": "USCENSUS_11971",
-      "Census Jobs": "USCENSUS_11941",
-      "Census Partnerships": "USCENSUS_11958",
-      "Census Updates": "USCENSUS_11926",
-      "Census Updates for Business": "USCENSUS_11927",
-      "Data Visualization Newsletter": "USCENSUS_11932",
-      "Statistics in Schools": "USCENSUS_11940",
-      "Stats for Stories": "USCENSUS_11960" // let allTimeStartDate = "2000-01-01";
-
+    var makeURLDateRange = function makeURLDateRange(end, start) {
+      return "start_date=".concat(makeDate(start), "&end_date=").concat(makeDate(end));
     };
-    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/" + account + "/"; // Bulletins summary url:
+
+    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/"); // Bulletins summary url:
 
     var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
 
     var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
 
-    var BURL = "reports/bulletins"; // Engagement rate url
+    var BURL = "reports/bulletins"; // Topic Summary
 
-    var makeEURL = function makeEURL(topicID) {
+    var makeTopicURL = function makeTopicURL(topicID) {
       return "reports/topics/".concat(topicID);
-    }; // Total Subscriptions
+    }; // Engagement rate url
 
 
-    var makeTSURL = function makeTSURL(topicID) {
-      return "topics/".concat(topicID, "/engagement_rate");
+    var makeEngageURL = function makeEngageURL(topicID) {
+      return "reports/topics/".concat(topicID, "/engagement_rate");
     };
 
-    var makeURL = function makeURL(extURL, startDate, endDate) {
-      return "".concat(base_url).concat(extURL, "?start_date=").concat(startDate, "&end_date=").concat(endDate);
+    var makeURL = function makeURL(extURL, _end, _start) {
+      return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(_end, _start));
     };
 
-    var bulletin_summary_1wk = makeURL(BSURL, wks_1_date, new_date);
-    var bulletin_summary_2wks = makeURL(BSURL, wks_2_date, wks_1_date);
-    var bulletin_summary_3wks = makeURL(BSURL, wks_3_date, wks_2_date);
-    var subscriber_summary_1wk = makeURL(SSURL, wks_1_date, new_date);
-    var subscriber_summary_2wks = makeURL(SSURL, wks_2_date, wks_1_date);
-    var subscriber_summary_3wks = makeURL(SSURL, wks_3_date, wks_2_date);
-    var bulletin_1wk = makeURL(BURL, wks_1_date, new_date);
-    var bulletin_2wk = makeURL(BURL, wks_2_date, wks_1_date);
-    var bulletin_3wk = makeURL(BURL, wks_3_date, wks_2_date);
+    var makeWklyURLArr = function makeWklyURLArr(str) {
+      for (var _len = arguments.length, days = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        days[_key - 1] = arguments[_key];
+      }
 
-    var makeEngagement_1wk = function makeEngagement_1wk(topicID) {
-      return makeURL(makeEURL(topicID), wks_1_date, new_date);
+      return days.map(function (day) {
+        return makeURL(str, day, day + 7);
+      });
     };
 
-    var makeEngagement_2wk = function makeEngagement_2wk(topicID) {
-      return makeURL(makeEURL(topicID), wks_2_date, wks_1_date);
-    };
+    var makeWkFnArr = function makeWkFnArr(_topics, func, _end, _start) {
+      return Object.values(_topics).map(function (id) {
+        return makeURL(func(id), _end, _start);
+      });
+    }; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
 
-    var makeEngagement_3wk = function makeEngagement_3wk(topicID) {
-      return makeURL(makeEURL(topicID), wks_3_date, wks_2_date);
-    };
 
-    var makeSubscriptions_1wk = function makeSubscriptions_1wk(topicID) {
-      return makeURL(makeTSURL(topicID), wks_1_date, new_date);
-    };
-
-    var makeSubscriptions_2wk = function makeSubscriptions_2wk(topicID) {
-      return makeURL(makeTSURL(topicID), wks_2_date, wks_1_date);
-    };
-
-    var makeSubscriptions_3wk = function makeSubscriptions_3wk(topicID) {
-      return makeURL(makeTSURL(topicID), wks_3_date, wks_2_date);
-    };
-
-    var engage_1wk = Object.values(topics).map(function (topic) {
-      return makeEngagement_1wk(topic);
-    });
-    var subscr_1wk = Object.values(topics).map(function (topic) {
-      return makeSubscriptions_1wk(topic);
-    });
-    var engage_2wk = Object.values(topics).map(function (topic) {
-      return makeEngagement_2wk(topic);
-    });
-    var subscr_2wk = Object.values(topics).map(function (topic) {
-      return makeSubscriptions_2wk(topic);
-    });
-    var engage_3wk = Object.values(topics).map(function (topic) {
-      return makeEngagement_3wk(topic);
-    });
-    var subscr_3wk = Object.values(topics).map(function (topic) {
-      return makeSubscriptions_3wk(topic);
-    });
+    var engage_1wk = makeWkFnArr(topics, makeEngageURL, 0, 7);
+    var topicS_1wk = makeWkFnArr(topics, makeTopicURL, 0, 7);
+    var engage_2wk = makeWkFnArr(topics, makeEngageURL, 7, 14);
+    var topicS_2wk = makeWkFnArr(topics, makeTopicURL, 7, 14);
+    var engage_3wk = makeWkFnArr(topics, makeEngageURL, 14, 21);
+    var topicS_3wk = makeWkFnArr(topics, makeTopicURL, 14, 21);
 
     var interleave = function interleave(arr1, arr2) {
       return arr1.reduce(function (acc, cur, i) {
@@ -9028,21 +9015,22 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       }, []);
     };
 
-    var EplusS_1wk = interleave(engage_1wk, subscr_1wk);
-    var EplusS_2wk = interleave(engage_2wk, subscr_2wk);
-    var EplusS_3wk = interleave(engage_3wk, subscr_3wk); // Bulletin Summary
+    var EplusS_1wk = interleave(engage_1wk, topicS_1wk);
+    var EplusS_2wk = interleave(engage_2wk, topicS_2wk);
+    var EplusS_3wk = interleave(engage_3wk, topicS_3wk); // Bulletin Summary
 
-    var callList1 = [bulletin_summary_1wk, bulletin_summary_2wks, bulletin_summary_3wks]; // Subscriber Summary
+    var bulletinsCallList = makeWklyURLArr(BSURL, 0, 7, 14); // Subscriber Summary
 
-    var callList2 = [subscriber_summary_1wk, subscriber_summary_2wks, subscriber_summary_3wks]; // Bulletin Detail
+    var subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14); // Bulletin Detail
+    // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
+    // Engagement Rates
 
-    var callList3 = [bulletin_1wk, bulletin_2wk, bulletin_3wk]; // Engagement Rates
-    // let callList4 = {
-    //   EplusS_1wk, 
-    //   EplusS_2wk, 
-    //   EplusS_3wk
-    // } //?
+    var topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk];
+    /* =================================
+    Fetching Functions
+    ================================== */
     // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
+    // make a single call or recursion for `next` links 
 
     var fetcher =
     /*#__PURE__*/
@@ -9085,7 +9073,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             console.log("ok?:" + res.ok);
 
                             if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 40;
+                              _context.next = 37;
                               break;
                             }
 
@@ -9130,31 +9118,22 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                             return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), next);
 
                           case 30:
-                            _context.next = 38;
+                            _context.next = 35;
                             break;
 
                           case 32:
-                            if (!(table.tableInfo.id === "bulletin_details")) {
-                              _context.next = 35;
-                              break;
-                            }
-
-                            _context.next = 38;
-                            break;
-
-                          case 35:
                             console.log("no results in `next`... acc = ");
                             console.table(acc);
                             return _context.abrupt("return", acc);
 
-                          case 38:
-                            _context.next = 41;
+                          case 35:
+                            _context.next = 38;
                             break;
 
-                          case 40:
+                          case 37:
                             return _context.abrupt("return", prime);
 
-                          case 41:
+                          case 38:
                           case "end":
                             return _context.stop();
                         }
@@ -9182,113 +9161,235 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       return function fetcher(_x, _x2) {
         return _ref.apply(this, arguments);
       };
-    }();
+    }(); // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 
-    console.log("Iteration 36");
 
-    var get_data =
+    var arrayFetcher =
     /*#__PURE__*/
     function () {
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(calls) {
-        var results, dump, makeRateFromObj, makeSumFromObj, makeSumFromArr, augmentDumpNZip, createDumpNZIP, pushOpenRates, pushTgiSums, pushNewSubs, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      regeneratorRuntime.mark(function _callee5(urls, acc) {
+        var responses, payload;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return urls.map(
+                /*#__PURE__*/
+                function () {
+                  var _ref4 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee4(url, i) {
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            _context4.next = 2;
+                            return window.fetch(url, {
+                              method: "GET",
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/hal+json',
+                                'X-AUTH-TOKEN': key
+                              }
+                            }).then(
+                            /*#__PURE__*/
+                            function () {
+                              var _ref5 = _asyncToGenerator(
+                              /*#__PURE__*/
+                              regeneratorRuntime.mark(function _callee3(res) {
+                                var prime, todo, _todo2;
+
+                                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                                  while (1) {
+                                    switch (_context3.prev = _context3.next) {
+                                      case 0:
+                                        _context3.next = 2;
+                                        return res.json();
+
+                                      case 2:
+                                        prime = _context3.sent;
+                                        console.log("url is an Array:");
+                                        console.table(prime); // odds are engagement rate and evens are topic summaries
+
+                                        if (i % 2 === 0) {
+                                          // if even = topic summaries
+                                          todo = _defineProperty({}, "".concat(prime.name, " Subscribers"), prime.total_subscriptions_to_date);
+                                          Object.assign(acc, todo);
+                                        } else {
+                                          _todo2 = _defineProperty({}, "".concat(prime.name, " Engagement Rate"), prime.engagement_rate);
+                                          Object.assign(acc, _todo2);
+                                        }
+
+                                      case 6:
+                                      case "end":
+                                        return _context3.stop();
+                                    }
+                                  }
+                                }, _callee3);
+                              }));
+
+                              return function (_x8) {
+                                return _ref5.apply(this, arguments);
+                              };
+                            }());
+
+                          case 2:
+                            return _context4.abrupt("return", _context4.sent);
+
+                          case 3:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4);
+                  }));
+
+                  return function (_x6, _x7) {
+                    return _ref4.apply(this, arguments);
+                  };
+                }());
+
+              case 2:
+                responses = _context5.sent;
+                _context5.next = 5;
+                return Promise.all(responses);
+
+              case 5:
+                payload = _context5.sent;
+                console.log("payload:");
+                console.table(payload);
+                return _context5.abrupt("return", payload);
+
+              case 9:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }));
+
+      return function arrayFetcher(_x4, _x5) {
+        return _ref3.apply(this, arguments);
+      };
+    }();
+    /* =================================
+    General Purpose Derivative Functions
+    ================================== */
+
+
+    console.log("Iteration 38");
+
+    var makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
+      console.log("in makeRateFromObj");
+      var result = source[col][numProp] / source[col][denomProp];
+      console.log("result: " + result);
+      return result;
+    };
+
+    var makeSumFromObj = function makeSumFromObj(source, col) {
+      for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        counts[_key2 - 2] = arguments[_key2];
+      }
+
+      console.log("in makeSumFromObj ...counts = " + counts);
+      var result = counts.reduce(function (acc, cur) {
+        return acc + source[col][cur];
+      }, 0);
+      console.log("after await -> counts.reduce...: " + result);
+      return result;
+    };
+
+    var makeSumFromArr = function makeSumFromArr(source, col) {
+      for (var _len3 = arguments.length, counts = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        counts[_key3 - 2] = arguments[_key3];
+      }
+
+      console.log("in makeSumFromArr ...counts = ");
+      var result = source[col].reduce(function (acc, cur) {
+        return counts.reduce(function (a, b) {
+          return acc + a + cur[b];
+        }, 0);
+      }, 0);
+      console.table(result);
+      return result;
+    };
+
+    var augmentDumpNZip = function augmentDumpNZip(source) {
+      var keys_ = Object.keys(source[0]);
+      var wk1_vals = Object.values(source[0]);
+      var wk2_vals = Object.values(source[1]);
+      var wk3_vals = Object.values(source[2]);
+      var wks = [wk1_vals, wk2_vals, wk3_vals];
+
+      for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+        pushers[_key4 - 1] = arguments[_key4];
+      }
+
+      pushers.map(function (pusher) {
+        return keys_.push(pusher.name);
+      }); // pusher handles a single week
+
+      pushers.map(function (p) {
+        return wks.map(function (wk, i) {
+          return p.pusher(source, wk, i);
+        });
+      });
+      return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+    };
+
+    var createDumpNZIP = function createDumpNZIP(source) {
+      var keys_ = [];
+      var wk1_vals = [];
+      var wk2_vals = [];
+      var wk3_vals = [];
+      var wks = [wk1_vals, wk2_vals, wk3_vals];
+
+      for (var _len5 = arguments.length, pushers = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+        pushers[_key5 - 1] = arguments[_key5];
+      }
+
+      pushers.map(function (pusher) {
+        return keys_.push(pusher.name);
+      });
+      pushers.map(function (p) {
+        return wks.map(function (wk, i) {
+          return p.pusher(source, wk, i);
+        });
+      });
+      return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+    };
+    /* =================================
+    Data Getters
+    ================================== */
+
+
+    var get_data =
+    /*#__PURE__*/
+    function () {
+      var _ref6 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee6(calls) {
+        var results, dump, pushOpenRates, pushTgiSums, pushNewSubs, keys_, wk1_vals, wk2_vals, wk3_vals;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 results = calls.map(function (url) {
                   return fetcher(url, []);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context3.next = 3;
+                _context6.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context3.sent;
-
-                makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
-                  console.log("in makeRateFromObj");
-                  console.log("after await: " + source[col][numProp]);
-                  return source[col][numProp] / source[col][denomProp];
-                };
-
-                makeSumFromObj = function makeSumFromObj(source, col) {
-                  for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-                    counts[_key - 2] = arguments[_key];
-                  }
-
-                  console.log("in makeSumFromObj ...counts = " + counts);
-                  console.log("after await -> counts.reduce...: " + counts.reduce(function (acc, cur) {
-                    return acc + source[col][cur];
-                  }, 0));
-                  return counts.reduce(function (acc, cur) {
-                    return acc + source[col][cur];
-                  }, 0);
-                };
-
-                makeSumFromArr = function makeSumFromArr(source, col) {
-                  for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-                    counts[_key2 - 2] = arguments[_key2];
-                  }
-
-                  console.log("in makeSumFromArr ...counts = " + counts);
-                  return source[col].reduce(function (acc, cur) {
-                    return counts.reduce(function (a, b) {
-                      return acc + a + cur[b];
-                    }, 0);
-                  }, 0);
-                };
-
-                augmentDumpNZip = function augmentDumpNZip(source) {
-                  var keys_ = Object.keys(source[0]);
-                  var wk1_vals = Object.values(source[0]);
-                  var wk2_vals = Object.values(source[1]);
-                  var wk3_vals = Object.values(source[2]);
-                  var wks = [wk1_vals, wk2_vals, wk3_vals];
-
-                  for (var _len3 = arguments.length, pushers = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-                    pushers[_key3 - 1] = arguments[_key3];
-                  }
-
-                  pushers.map(function (pusher) {
-                    return keys_.push(pusher.name);
-                  }); // pusher handles a single week
-
-                  pushers.map(function (p) {
-                    return wks.map(function (wk, i) {
-                      return p.pusher(source, wk, i);
-                    });
-                  });
-                  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
-                };
-
-                createDumpNZIP = function createDumpNZIP(source) {
-                  var keys_ = [];
-                  var wk1_vals = [];
-                  var wk2_vals = [];
-                  var wk3_vals = [];
-                  var wks = [wk1_vals, wk2_vals, wk3_vals];
-
-                  for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-                    pushers[_key4 - 1] = arguments[_key4];
-                  }
-
-                  pushers.map(function (pusher) {
-                    return keys_.push(pusher.name);
-                  });
-                  pushers.map(function (p) {
-                    return wks.map(function (wk, i) {
-                      return p.pusher(source, wk, i);
-                    });
-                  });
-                  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
-                }; // control logic for derived/calculated fields
-
+                dump = _context6.sent;
 
                 if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context3.next = 14;
+                  _context6.next = 9;
                   break;
                 }
 
@@ -9298,11 +9399,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
                   }
                 };
-                return _context3.abrupt("return", createDumpNZIP(dump, pushOpenRates));
+                return _context6.abrupt("return", createDumpNZIP(dump, pushOpenRates));
 
-              case 14:
+              case 9:
                 if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context3.next = 19;
+                  _context6.next = 14;
                   break;
                 }
 
@@ -9312,11 +9413,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
                   }
                 };
-                return _context3.abrupt("return", createDumpNZIP(dump, pushTgiSums));
+                return _context6.abrupt("return", createDumpNZIP(dump, pushTgiSums));
 
-              case 19:
+              case 14:
                 if (!(table.tableInfo.id === "subscribers")) {
-                  _context3.next = 24;
+                  _context6.next = 19;
                   break;
                 }
 
@@ -9326,32 +9427,85 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
                     return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers"));
                   }
                 };
-                return _context3.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
+                return _context6.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
 
-              case 24:
+              case 19:
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
-                return _context3.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context6.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 29:
+              case 24:
               case "end":
-                return _context3.stop();
+                return _context6.stop();
             }
           }
-        }, _callee3);
+        }, _callee6);
       }));
 
-      return function get_data(_x4) {
-        return _ref3.apply(this, arguments);
+      return function get_data(_x9) {
+        return _ref6.apply(this, arguments);
       };
     }();
 
+    var get_dataArr =
+    /*#__PURE__*/
+    function () {
+      var _ref7 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee7(calls) {
+        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                results = calls.map(function (url) {
+                  return arrayFetcher(url, {});
+                }); // For Object results, returns an array of promises containing objects
+                // For Array results, returns an array of promises containing arrays of objects
+
+                _context7.next = 3;
+                return Promise.all(results);
+
+              case 3:
+                dump = _context7.sent;
+
+                if (!(table.tableInfo.id === "topics")) {
+                  _context7.next = 10;
+                  break;
+                }
+
+                // const pushOpenRates = {
+                //   name: "open_rate",
+                //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+                // }
+                // return createDumpNZIP(dump, pushOpenRates)
+                keys_ = Object.keys(dump[0]);
+                wk1_vals = Object.values(dump[0]);
+                wk2_vals = Object.values(dump[1]);
+                wk3_vals = Object.values(dump[2]);
+                return _context7.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+
+              case 10:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }));
+
+      return function get_dataArr(_x10) {
+        return _ref7.apply(this, arguments);
+      };
+    }();
+    /* =================================
+    Table Constructors
+    ================================== */
+
+
     var dataGetter = function dataGetter(urlList) {
       get_data(urlList).then(function (result) {
-        // tableau.log("datasource: " + result);
-        // console.log("datasource: " + result);
         table.appendRows(result.map(function (k) {
           return {
             "name": k[0],
@@ -9364,21 +9518,36 @@ require('fetch-ie8'); // function from lodash for allowing us to combine multipl
       });
     };
 
+    var arrDataGetter = function arrDataGetter(urlList) {
+      get_dataArr(urlList).then(function (result) {
+        table.appendRows(result.map(function (k) {
+          return {
+            "name": k[0],
+            "this_wk": k[1],
+            "prev_wk": k[2],
+            "three_wk": k[3]
+          };
+        }));
+        doneCallback();
+      });
+    };
+    /* =================================
+    Table Targets
+    ================================== */
+
+
     if (table.tableInfo.id === "bulletins") {
-      dataGetter(callList1);
-    }
+      dataGetter(bulletinsCallList);
+    } else if (table.tableInfo.id === "bulletin_rates") {
+      dataGetter(bulletinsCallList);
+    } else if (table.tableInfo.id === "subscribers") {
+      dataGetter(subscribersCallList);
+    } else if (table.tableInfo.id == "topics") {
+      arrDataGetter(topicsCallList);
+    } // else if (table.tableInfo.id === "bulletin_details") {
+    //   dataGetter(callList3)
+    // }
 
-    if (table.tableInfo.id === "bulletin_rates") {
-      dataGetter(callList1);
-    }
-
-    if (table.tableInfo.id === "subscribers") {
-      dataGetter(callList2);
-    }
-
-    if (table.tableInfo.id === "bulletin_details") {
-      dataGetter(callList3);
-    }
   };
 
   tableau.registerConnector(myConnector); // Create event listeners for when the user submits the form
