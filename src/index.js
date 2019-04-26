@@ -359,7 +359,7 @@ import zip from "lodash.zip"
             return Object.assign(acc, todo)
           } else {
             let todo = {}
-            todo[`${prime["name"]} Engagement Rate`] = prime["total_subscriptions_to_date"]
+            todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
             // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
             console.log("engagement: ")
             console.table(todo)
@@ -375,7 +375,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 46")
+    console.log("Iteration 47")
     
     /* =================================
     General Purpose Derivative Functions

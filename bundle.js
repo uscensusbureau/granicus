@@ -9218,7 +9218,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                             case 16:
                               _todo = {};
-                              _todo["".concat(prime["name"], " Engagement Rate")] = prime["total_subscriptions_to_date"]; // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
+                              _todo["".concat(prime["name"], " Engagement Rate")] = prime["engagement_rate"]; // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
 
                               console.log("engagement: ");
                               console.table(_todo);
@@ -9260,7 +9260,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 46");
+    console.log("Iteration 47");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
