@@ -332,8 +332,8 @@ import zip from "lodash.zip"
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
     const arrayFetcher = async (urls) => {
-      const response = await urls.reduce(async (acc, url, i) => {
-        await window.fetch(url, {
+      const response = await urls.reduce((acc, url, i) => {
+        window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -346,10 +346,10 @@ import zip from "lodash.zip"
           let prime = await res.json()
           console.log("prime:")
           console.table(prime)
-          // odds are engagement rate and evens are topic summaries
-          if (i % 2 === 0) { // if even = topic summaries
+          // evens are engagement rate and odds are topic summaries
+          if (i % 2 === 0) {
             let todo = {}
-            todo[`${prime["name"]} Subscribers`] = prime["total_subscriptions_to_date"]
+            todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
             // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
             console.log("topic: ")
             console.table(todo)
@@ -358,7 +358,7 @@ import zip from "lodash.zip"
             return Object.assign(acc, todo)
           } else {
             let todo = {}
-            todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
+            todo[`${prime["name"]} Subscribers`] = prime["total_subscriptions_to_date"]
             // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
             console.log("engagement: ")
             console.table(todo)
@@ -374,7 +374,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 48")
+    console.log("Iteration 49")
     
     /* =================================
     General Purpose Derivative Functions
