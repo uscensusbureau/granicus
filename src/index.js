@@ -202,7 +202,7 @@ import zip from "lodash.zip"
         const last = await acc
         const coll = await res
         // evens are engagement rate and odds are topic summaries
-        if (table.tableInfo === "topics") {
+        if (table.tableInfo.id === "topics") {
           if (i % 2 === 0) {
            let todo = {}
             todo[`${coll["name"]} Engagement Rate`] = coll["engagement_rate"]
@@ -226,7 +226,7 @@ import zip from "lodash.zip"
       // will be an array of Promises containing objects
     }
   
-    console.log("Iteration 58")
+    console.log("Iteration 59")
     
     /* =================================
     General Purpose Derivative Functions

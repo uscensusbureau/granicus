@@ -9094,7 +9094,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                           case 5:
                             coll = _context4.sent;
 
-                            if (!(table.tableInfo === "topics")) {
+                            if (!(table.tableInfo.id === "topics")) {
                               _context4.next = 24;
                               break;
                             }
@@ -9147,7 +9147,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 58");
+    console.log("Iteration 59");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
