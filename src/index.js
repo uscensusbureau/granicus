@@ -269,9 +269,10 @@ import zip from "lodash.zip"
     }
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
-    const arrayFetcher = (urls) => {
-      const response = urls.reduce(async (acc, url, i) => {
-        await window.fetch(url, {
+    const arrayFetcher = async urls => {
+      
+      const response = await urls.reduce(async (acc, url, i) => {
+        const result = await window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -279,12 +280,12 @@ import zip from "lodash.zip"
             'X-AUTH-TOKEN': key
           }
         })
-        .then(async res => {
-          
-         const prime = await res.json()
-          console.log("prime:")
-          console.table(prime)
-          // evens are engagement rate and odds are topic summaries
+        
+        const prime = await result.json()
+        console.log("prime:")
+        console.table(prime)
+        // evens are engagement rate and odds are topic summaries
+        if (table.tableInfo === "topics") {
           if (i % 2 === 0) {
            let todo = {}
             todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
@@ -302,7 +303,7 @@ import zip from "lodash.zip"
             console.table(acc)
             return Object.assign(acc, todo)
           }
-        })
+        }
       // must resolve the value in order for the next tick to access the contents
       }, Promise.resolve({}))
       // will be an array of Promises containing objects
@@ -311,7 +312,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 53")
+    console.log("Iteration 54")
     
     /* =================================
     General Purpose Derivative Functions
@@ -361,7 +362,7 @@ import zip from "lodash.zip"
     const createDumpNZIP = (source, ...pushers) => {
       
       return zip(
-        pushers.map( pusher => pusher.name), // key
+        pushers.map( pusher => pusher.name), // keys
         ...[[],[],[]].map( (wk, i) => wk.concat(pushers.map( p => p.pusher(source, i)))))
     }
 
@@ -429,7 +430,7 @@ import zip from "lodash.zip"
 
     const get_dataArr = async calls => {
 
-      const results = calls.map(async urls => await arrayFetcher(urls))
+      const results = calls.map( urls => arrayFetcher(urls))
 
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
