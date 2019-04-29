@@ -123,99 +123,7 @@ import zip from "lodash.zip"
 
 
   myConnector.getData = function (table, doneCallback) {
-    // account number
-    const account = "11723";
-
-    /* =================================
-    Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData 
-    ================================== */ 
-
-    const cd_data = JSON.parse(tableau.connectionData);
-    const key = cd_data.key
-    const _end = cd_data.end_date
-    
-    /* =================================
-    Topics List
-    ================================== */ 
-    
-    const topics = {
-      // "America Counts"                : "USCENSUS_11939",
-      // "Census Academy"                : "USCENSUS_11971",
-      // "Census Jobs"                   : "USCENSUS_11941",
-      // "Census Partnerships"           : "USCENSUS_11958",
-      // "Census Updates"                : "USCENSUS_11926",
-      // "Census Updates for Business"   : "USCENSUS_11927",
-      // "Data Visualization Newsletter" : "USCENSUS_11932",
-      // "Statistics in Schools"         : "USCENSUS_11940",
-      // "Stats for Stories"             : "USCENSUS_11960"
-      "State Data Center Leads": "42162" // only one currently visible... rest TODO
-    }
-
-    /* =================================
-    URL Creating Functions
-    ================================== */ 
-
-    // Latest date from user input
-    const end_date = new Date(_end);
-
-    // function for creating dates formatted for Granicus API
-    const makeDate = (days_ago) => {
-      // create date from number of 'days_ago' from
-      const date = new Date(new Date().setDate(end_date.getDate() - days_ago));
-      const month = date.getUTCMonth() + 1; //jan = 0
-      const day = date.getUTCDate();
-      const year = date.getUTCFullYear();
-      return `${year}-${month}-${day}`
-    }
-
-    const makeURLDateRange = (end, start) => `start_date=${makeDate(start)}&end_date=${makeDate(end)}`
-
-    const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/`;
-
-    // Bulletins summary url:
-    const BSURL = "reports/bulletins/summary"
-    // Subscriber summary url:
-    const SSURL = "reports/subscriber_activity/summary"
-    // Bulletins report url:
-    const BURL = "reports/bulletins"
-    // Topic Summary
-    const makeTopicURL = topicID => `reports/topics/${topicID}`
-    // Engagement rate url
-    const makeEngageURL = topicID => `reports/topics/${topicID}/engagement_rate`
-
-    const makeURL = (extURL, _end, _start) => `${base_url}${extURL}?${makeURLDateRange(_end, _start)}`
-
-    const makeWklyURLArr = (str, ...days) => days.map( day => makeURL(str, day, day + 7))
-  
-    const makeWkFnArr = (_topics, func, _end, _start) => Object.values(_topics).map( id => makeURL(func(id), _end, _start))
-
-    // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
-    const engage_1wk = makeWkFnArr(topics, makeEngageURL, 0, 7)
-    const topicS_1wk = makeWkFnArr(topics, makeTopicURL, 0, 7)
-    const engage_2wk = makeWkFnArr(topics, makeEngageURL, 7, 14)
-    const topicS_2wk = makeWkFnArr(topics, makeTopicURL, 7, 14)
-    const engage_3wk = makeWkFnArr(topics, makeEngageURL, 14, 21)
-    const topicS_3wk = makeWkFnArr(topics, makeTopicURL, 14, 21)
-
-    const interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
-
-    const EplusS_1wk = interleave(engage_1wk, topicS_1wk)
-    const EplusS_2wk = interleave(engage_2wk, topicS_2wk)
-    const EplusS_3wk = interleave(engage_3wk, topicS_3wk)
-
-    // Bulletin Summary
-    const bulletinsCallList = makeWklyURLArr(BSURL, 0, 7, 14)
-
-    // Subscriber Summary
-    const subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14)
-
-    // Bulletin Detail
-    // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
-
-    // Engagement Rates = Array of arrays of URLS
-   const topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk]
-
-
+ 
     /* =================================
     Fetching Functions
     ================================== */ 
@@ -280,10 +188,15 @@ import zip from "lodash.zip"
             'X-AUTH-TOKEN': key
           }
         })
-        
+  
         const prime = await result.json()
         console.log("prime:")
         console.table(prime)
+        return prime
+      })
+      
+      
+      return response.reduce(async (acc, res, i) => {
         // evens are engagement rate and odds are topic summaries
         if (table.tableInfo === "topics") {
           if (i % 2 === 0) {
@@ -307,19 +220,14 @@ import zip from "lodash.zip"
       // must resolve the value in order for the next tick to access the contents
       }, Promise.resolve({}))
       // will be an array of Promises containing objects
-      console.log("payload:")
-      console.table(response)
-      return response
     }
   
-    console.log("Iteration 54")
+    console.log("Iteration 55")
     
     /* =================================
     General Purpose Derivative Functions
     ================================== */ 
-
-
-
+    
     const makeRateFromObj = (source, col, numProp, denomProp) => {
       console.log("in makeRateFromObj")
       const result = source[col][numProp] / source[col][denomProp]
@@ -494,7 +402,99 @@ import zip from "lodash.zip"
           doneCallback()
         })
     }
-
+ 
+  
+    /* =================================
+    Topics List
+    ================================== */
+  
+    const topics = {
+      // "America Counts"                : "USCENSUS_11939",
+      // "Census Academy"                : "USCENSUS_11971",
+      // "Census Jobs"                   : "USCENSUS_11941",
+      // "Census Partnerships"           : "USCENSUS_11958",
+      // "Census Updates"                : "USCENSUS_11926",
+      // "Census Updates for Business"   : "USCENSUS_11927",
+      // "Data Visualization Newsletter" : "USCENSUS_11932",
+      // "Statistics in Schools"         : "USCENSUS_11940",
+      // "Stats for Stories"             : "USCENSUS_11960"
+      "State Data Center Leads": "42162" // only one currently visible... rest TODO
+    }
+  
+    /* =================================
+    URL Creating Functions
+    ================================== */
+    
+    // account number
+    const account = "11723";
+  
+    // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
+    const cd_data = JSON.parse(tableau.connectionData);
+    const key = cd_data.key
+    const _end = cd_data.end_date
+    
+    // Latest date from user input
+    const end_date = new Date(_end);
+  
+    // function for creating dates formatted for Granicus API
+    const makeDate = (days_ago) => {
+      // create date from number of 'days_ago' from
+      const date = new Date(new Date().setDate(end_date.getDate() - days_ago));
+      const month = date.getUTCMonth() + 1; //jan = 0
+      const day = date.getUTCDate();
+      const year = date.getUTCFullYear();
+      return `${year}-${month}-${day}`
+    }
+  
+    const makeURLDateRange = (end, start) => `start_date=${makeDate(start)}&end_date=${makeDate(end)}`
+  
+    const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/`;
+  
+    // Bulletins summary url:
+    const BSURL = "reports/bulletins/summary"
+    // Subscriber summary url:
+    const SSURL = "reports/subscriber_activity/summary"
+    // Bulletins report url:
+    const BURL = "reports/bulletins"
+    // Topic Summary
+    const makeTopicURL = topicID => `reports/topics/${topicID}`
+    // Engagement rate url
+    const makeEngageURL = topicID => `reports/topics/${topicID}/engagement_rate`
+  
+    const makeURL = (extURL, _end, _start) => `${base_url}${extURL}?${makeURLDateRange(_end, _start)}`
+  
+    const makeWklyURLArr = (str, ...days) => days.map( day => makeURL(str, day, day + 7))
+  
+    const makeWkFnArr = (_topics, func, _end, _start) => Object.values(_topics).map( id => makeURL(func(id), _end, _start))
+  
+    // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
+    const engage_1wk = makeWkFnArr(topics, makeEngageURL, 0, 7)
+    const topicS_1wk = makeWkFnArr(topics, makeTopicURL, 0, 7)
+    const engage_2wk = makeWkFnArr(topics, makeEngageURL, 7, 14)
+    const topicS_2wk = makeWkFnArr(topics, makeTopicURL, 7, 14)
+    const engage_3wk = makeWkFnArr(topics, makeEngageURL, 14, 21)
+    const topicS_3wk = makeWkFnArr(topics, makeTopicURL, 14, 21)
+  
+    const interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
+  
+    const EplusS_1wk = interleave(engage_1wk, topicS_1wk)
+    const EplusS_2wk = interleave(engage_2wk, topicS_2wk)
+    const EplusS_3wk = interleave(engage_3wk, topicS_3wk)
+  
+    // Bulletin Summary
+    const bulletinsCallList = makeWklyURLArr(BSURL, 0, 7, 14)
+  
+    // Subscriber Summary
+    const subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14)
+  
+    // Bulletin Detail
+    // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
+  
+    // Engagement Rates = Array of arrays of URLS
+    const topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk]
+  
+  
+    
     /* =================================
     Table Targets
     ================================== */ 
