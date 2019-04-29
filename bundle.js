@@ -9209,7 +9209,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       return response;
     };
 
-    console.log("Iteration 52");
+    console.log("Iteration 53");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9261,8 +9261,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       var wks = [wk1_vals, wk2_vals, wk3_vals];
       return _lodash["default"].apply(void 0, [pushers.reduce(function (acc, pusher) {
         return acc.concat(pusher.name);
-      }, keys_)].concat(_toConsumableArray(wks.map(function (wk) {
-        return wk.concat(pushers.map(function (p, i) {
+      }, keys_)].concat(_toConsumableArray(wks.map(function (wk, i) {
+        return wk.concat(pushers.map(function (p) {
           return p.pusher(source, i);
         }));
       }))));
@@ -9275,8 +9275,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
       return _lodash["default"].apply(void 0, [pushers.map(function (pusher) {
         return pusher.name;
-      })].concat(_toConsumableArray([[], [], []].map(function (wk) {
-        return wk.concat(pushers.map(function (p, i) {
+      })].concat(_toConsumableArray([[], [], []].map(function (wk, i) {
+        return wk.concat(pushers.map(function (p) {
           return p.pusher(source, i);
         }));
       }))));

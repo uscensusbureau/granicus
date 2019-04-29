@@ -311,7 +311,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 52")
+    console.log("Iteration 53")
     
     /* =================================
     General Purpose Derivative Functions
@@ -343,6 +343,7 @@ import zip from "lodash.zip"
       return result
     }
   
+  
     const augmentDumpNZip = (source, ...pushers) => {
       let keys_ = Object.keys(source[0]);
       let wk1_vals = Object.values(source[0]);
@@ -350,19 +351,19 @@ import zip from "lodash.zip"
       let wk3_vals = Object.values(source[2]);
     
       let wks = [wk1_vals, wk2_vals, wk3_vals]
-      
+    
       return zip(
         pushers.reduce((acc, pusher) => acc.concat(pusher.name), keys_),
         // pusher handles a single week
-        ...wks.map( wk => wk.concat(pushers.map((p, i) => p.pusher(source, i)))));
+        ...wks.map( (wk, i) => wk.concat(pushers.map( p => p.pusher(source, i)))));
     }
   
     const createDumpNZIP = (source, ...pushers) => {
+      
       return zip(
-        pushers.map( pusher => pusher.name), // keys
-        ...[[],[],[]].map( wk => wk.concat(pushers.map((p, i) => p.pusher(source, i)))))
+        pushers.map( pusher => pusher.name), // key
+        ...[[],[],[]].map( (wk, i) => wk.concat(pushers.map( p => p.pusher(source, i)))))
     }
-
 
 
     /* =================================
