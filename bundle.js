@@ -8756,6 +8756,14 @@ var _lodash = _interopRequireDefault(require("lodash.zip"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -8807,63 +8815,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       alias: "Three Weeks Ago",
       dataType: tableau.dataTypeEnum["float"]
     }];
-    var summary_schema = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["int"]
-    }];
-    var summary_schema2 = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["int"]
-    }]; // let bulletin_detail = [
-    //   {
-    //     id: "name",
-    //     alias: "Name of Metric",
-    //     dataType: tableau.dataTypeEnum.string
-    //   },
-    //   {
-    //     id: "this_wk",
-    //     alias: "This Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "prev_wk",
-    //     alias: "Previous Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "three_wk",
-    //     alias: "Three Weeks Ago",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    // ];
-
-    var topics_schema = [{
+    var counts_schema = [{
       id: "name",
       alias: "Name of Metric",
       dataType: tableau.dataTypeEnum.string
@@ -8884,32 +8836,37 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     Schema Representatives
     ================================== */
 
-    var bulletin_rates = {
-      id: "bulletin_rates",
-      alias: "Bulletin Rates Table",
-      columns: rates_schema
-    };
     var bulletins = {
       id: "bulletins",
-      alias: "Bulletins Table",
-      columns: summary_schema
+      alias: "Bulletins",
+      columns: [].concat(counts_schema)
+    };
+    var bulletin_rates = {
+      id: "bulletin_rates",
+      alias: "Bulletin Rates",
+      columns: [].concat(rates_schema)
     };
     var subscribers = {
       id: "subscribers",
-      alias: "Subscribers Table",
-      columns: summary_schema2
-    }; // let bulletin_details = {
+      alias: "Subscribers",
+      columns: [].concat(counts_schema)
+    };
+    var subscriber_rates = {
+      id: "subscriber_rates",
+      alias: "Subscriber Rates",
+      columns: [].concat(rates_schema)
+    }; //const bulletin_details = {
     //   id: "bulletin_details",
     //   alias: "Bulletin Details",
-    //   columns: bulletin_detail
+    //   columns: [...counts_schema]
     // };
 
     var topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: topics_schema
+      columns: [].concat(counts_schema)
     };
-    schemaCallback([bulletins, bulletin_rates, subscribers, topics
+    schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics
     /*, engagement, bulletin_details */
     ]);
   };
@@ -9208,7 +9165,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               todo = {};
                               todo["".concat(prime["name"], " Engagement Rate")] = prime["engagement_rate"]; // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
 
-                              console.log("topic: ");
+                              console.log("engagement_rate: ");
                               console.table(todo);
                               console.log("acc:");
                               console.table(acc);
@@ -9353,7 +9310,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       var _ref5 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee5(calls) {
-        var results, dump, pushOpenRates, pushTgiSums, pushNewSubs, keys_, wk1_vals, wk2_vals, wk3_vals;
+        var results, dump, pushOpenRates, pushTgiSums, pushNewSubs, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -9377,7 +9334,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 pushOpenRates = {
                   name: "open_rate",
                   pusher: function pusher(source, wk, col) {
-                    return wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"));
+                    return [].concat(_toConsumableArray(wk), [makeRateFromObj(source, col, "opens_count", "total_delivered")]);
                   }
                 };
                 return _context5.abrupt("return", createDumpNZIP(dump, pushOpenRates));
@@ -9391,7 +9348,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 pushTgiSums = {
                   name: "total_digital_impressions",
                   pusher: function pusher(source, wk, col) {
-                    return wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"));
+                    return [].concat(_toConsumableArray(wk), [makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")]);
                   }
                 };
                 return _context5.abrupt("return", createDumpNZIP(dump, pushTgiSums));
@@ -9411,13 +9368,27 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 return _context5.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
 
               case 19:
+                if (!(table.tableInfo.id === "subscriber_rates")) {
+                  _context5.next = 24;
+                  break;
+                }
+
+                pushUnsubRate = {
+                  name: "unsubscribe_rate",
+                  pusher: function pusher(source, wk, col) {
+                    return wk.push(makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers"));
+                  }
+                };
+                return _context5.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
+
+              case 24:
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
                 return _context5.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 24:
+              case 29:
               case "end":
                 return _context5.stop();
             }
@@ -9548,6 +9519,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     } else if (table.tableInfo.id === "bulletin_rates") {
       dataGetter(bulletinsCallList);
     } else if (table.tableInfo.id === "subscribers") {
+      dataGetter(subscribersCallList);
+    } else if (table.tableInfo.id === "subscriber_rates") {
       dataGetter(subscribersCallList);
     } else if (table.tableInfo.id === "topics") {
       arrDataGetter(topicsCallList);

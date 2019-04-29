@@ -23,14 +23,14 @@ import zip from "lodash.zip"
 
 (function () {
   // Create the connector object
-  let myConnector = tableau.makeConnector();
+ const myConnector = tableau.makeConnector();
 
   /* =================================
   Schemas
   ================================== */ 
 
   myConnector.getSchema = function (schemaCallback) {
-    let rates_schema = [
+   const rates_schema = [
       {
         id: "name",
         alias: "Name of Metric",
@@ -52,134 +52,72 @@ import zip from "lodash.zip"
         dataType: tableau.dataTypeEnum.float
       },
     ];
-
-    let summary_schema = [
-      {
-        id: "name",
-        alias: "Name of Metric",
-        dataType: tableau.dataTypeEnum.string
-      },
-      {
-        id: "this_wk",
-        alias: "This Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "prev_wk",
-        alias: "Previous Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "three_wk",
-        alias: "Three Weeks Ago",
-        dataType: tableau.dataTypeEnum.int
-      },
-    ];
-
-    let summary_schema2 = [
-      {
-        id: "name",
-        alias: "Name of Metric",
-        dataType: tableau.dataTypeEnum.string
-      },
-      {
-        id: "this_wk",
-        alias: "This Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "prev_wk",
-        alias: "Previous Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "three_wk",
-        alias: "Three Weeks Ago",
-        dataType: tableau.dataTypeEnum.int
-      },
-    ];
-
-    // let bulletin_detail = [
-    //   {
-    //     id: "name",
-    //     alias: "Name of Metric",
-    //     dataType: tableau.dataTypeEnum.string
-    //   },
-    //   {
-    //     id: "this_wk",
-    //     alias: "This Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "prev_wk",
-    //     alias: "Previous Week",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    //   {
-    //     id: "three_wk",
-    //     alias: "Three Weeks Ago",
-    //     dataType: tableau.dataTypeEnum.int
-    //   },
-    // ];
-
-    let topics_schema = [
-      {
-        id: "name",
-        alias: "Name of Metric",
-        dataType: tableau.dataTypeEnum.string
-      },
-      {
-        id: "this_wk",
-        alias: "This Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "prev_wk",
-        alias: "Previous Week",
-        dataType: tableau.dataTypeEnum.int
-      },
-      {
-        id: "three_wk",
-        alias: "Three Weeks Ago",
-        dataType: tableau.dataTypeEnum.int
-      },
-    ];
+    
+   const counts_schema =  [
+     {
+       id: "name",
+       alias: "Name of Metric",
+       dataType: tableau.dataTypeEnum.string
+     },
+     {
+       id: "this_wk",
+       alias: "This Week",
+       dataType: tableau.dataTypeEnum.int
+     },
+     {
+       id: "prev_wk",
+       alias: "Previous Week",
+       dataType: tableau.dataTypeEnum.int
+     },
+     {
+       id: "three_wk",
+       alias: "Three Weeks Ago",
+       dataType: tableau.dataTypeEnum.int
+     },
+   ];
 
     /* =================================
     Schema Representatives
-    ================================== */ 
-
-    let bulletin_rates = {
-      id: "bulletin_rates",
-      alias: "Bulletin Rates Table",
-      columns: rates_schema
-    };
-
-    let bulletins = {
+    ================================== */
+  
+  
+    const bulletins = {
       id: "bulletins",
-      alias: "Bulletins Table",
-      columns: summary_schema
+      alias: "Bulletins",
+      columns: [...counts_schema]
+    };
+  
+    const bulletin_rates = {
+      id: "bulletin_rates",
+      alias: "Bulletin Rates",
+      columns: [...rates_schema]
     };
 
-    let subscribers = {
+   const subscribers = {
       id: "subscribers",
-      alias: "Subscribers Table",
-      columns: summary_schema2
+      alias: "Subscribers",
+      columns: [...counts_schema]
+    };
+  
+    const subscriber_rates = {
+      id: "subscriber_rates",
+      alias: "Subscriber Rates",
+      columns: [...rates_schema]
     };
 
-    // let bulletin_details = {
+    //const bulletin_details = {
     //   id: "bulletin_details",
     //   alias: "Bulletin Details",
-    //   columns: bulletin_detail
+    //   columns: [...counts_schema]
     // };
 
-    let topics = {
+   const topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: topics_schema
+      columns: [...counts_schema]
     };
 
-    schemaCallback([bulletins, bulletin_rates, subscribers, topics /*, engagement, bulletin_details */ ]);
+    schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, engagement, bulletin_details */ ]);
   };
 
 
@@ -275,7 +213,7 @@ import zip from "lodash.zip"
     // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
 
     // Engagement Rates = Array of arrays of URLS
-    let topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk]
+   const topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk]
 
 
     /* =================================
@@ -295,25 +233,25 @@ import zip from "lodash.zip"
         }
       })
       .then(async res => {
-        let prime = await res.json()
+       const prime = await res.json()
         console.log("api call: " + url);
         console.log("prime:")
         console.table(prime)
         console.log("ok?:" + res.ok)
         if (table.tableInfo.id === "bulletin_details") {
           if (res.ok) {
-            let cur = prime["bulletin_activity_details"]
+           const cur = prime["bulletin_activity_details"]
             console.log("in bulletin_details...")
             if (typeof cur === "undefined") {
               console.log("cur == undefined")
               return acc
             } else if (cur.length < 20) {
-              let last = acc.concat(cur)
+             const last = acc.concat(cur)
               console.log("Less than 20 results: ")
               console.table(last)
               return last // bulletin details is an array
             } else if (cur.length === 20) {
-              let next = acc.concat(cur)
+             const next = acc.concat(cur)
               console.log("More than 20 results: ")
               console.table(next)
               console.log("recurring fetcher")
@@ -343,15 +281,15 @@ import zip from "lodash.zip"
         })
         .then(async res => {
           
-          let prime = await res.json()
+         const prime = await res.json()
           console.log("prime:")
           console.table(prime)
           // evens are engagement rate and odds are topic summaries
           if (i % 2 === 0) {
-            let todo = {}
+           let todo = {}
             todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
             // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
-            console.log("topic: ")
+            console.log("engagement_rate: ")
             console.table(todo)
             console.log("acc:")
             console.table(acc)
@@ -384,7 +322,7 @@ import zip from "lodash.zip"
 
     const makeRateFromObj = (source, col, numProp, denomProp) => {
       console.log("in makeRateFromObj")
-      let result = source[col][numProp] / source[col][denomProp]
+      const result = source[col][numProp] / source[col][denomProp]
 
       console.log("result: " + result)
       return result
@@ -392,7 +330,7 @@ import zip from "lodash.zip"
 
     const makeSumFromObj = (source, col, ...counts) => {
       console.log("in makeSumFromObj ...counts = " + counts)
-      let result = counts.reduce((acc, cur) => acc + source[col][cur], 0)
+      const result = counts.reduce((acc, cur) => acc + source[col][cur], 0)
     
       console.log("after await -> counts.reduce...: " + result)
       return result
@@ -400,17 +338,17 @@ import zip from "lodash.zip"
 
     const makeSumFromArr = (source, col, ...counts) => {
       console.log("in makeSumFromArr ...counts = ")
-      let result = source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
+      const result = source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
 
       console.table(result)
       return result
     }
 
     const augmentDumpNZip = (source, ...pushers) => {
-      const keys_ = Object.keys(source[0]);
-      const wk1_vals = Object.values(source[0]);
-      const wk2_vals = Object.values(source[1]);
-      const wk3_vals = Object.values(source[2]);
+      let keys_ = Object.keys(source[0]);
+      let wk1_vals = Object.values(source[0]);
+      let wk2_vals = Object.values(source[1]);
+      let wk3_vals = Object.values(source[2]);
 
       let wks = [wk1_vals, wk2_vals, wk3_vals]
 
@@ -422,10 +360,10 @@ import zip from "lodash.zip"
     }
 
     const createDumpNZIP = (source, ...pushers) => {
-      const keys_ = [];
-      const wk1_vals = []
-      const wk2_vals = []
-      const wk3_vals = []
+      let keys_ = [];
+      let wk1_vals = []
+      let wk2_vals = []
+      let wk3_vals = []
 
       let wks = [wk1_vals, wk2_vals, wk3_vals]
 
@@ -446,14 +384,14 @@ import zip from "lodash.zip"
 
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
-      const dump = await Promise.all(results);
+      let dump = await Promise.all(results);
 
 
       // control logic for derived/calculated fields
       if (table.tableInfo.id === "bulletin_rates") {
         const pushOpenRates = {
           name: "open_rate",
-          pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
+          pusher: (source, wk, col) => [...wk, makeRateFromObj(source, col, "opens_count", "total_delivered")]
         }
 
         return createDumpNZIP(dump, pushOpenRates)
@@ -462,7 +400,7 @@ import zip from "lodash.zip"
 
         const pushTgiSums = {
           name: "total_digital_impressions",
-          pusher: (source, wk, col) => wk.push(makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count"))
+          pusher: (source, wk, col) => [...wk, makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")]
         }
 
         return createDumpNZIP(dump, pushTgiSums)
@@ -476,6 +414,15 @@ import zip from "lodash.zip"
 
         return augmentDumpNZip(dump, pushNewSubs)
 
+      } else  if (table.tableInfo.id === "subscriber_rates") {
+        
+        const pushUnsubRate = {
+          name: "unsubscribe_rate",
+          pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers"))
+        }
+  
+        return createDumpNZIP(dump, pushUnsubRate)
+        
       } else {
 
         const keys_ = Object.keys(dump[0]);
@@ -564,6 +511,8 @@ import zip from "lodash.zip"
     } else if (table.tableInfo.id === "bulletin_rates") {
       dataGetter(bulletinsCallList)
     } else if (table.tableInfo.id === "subscribers") {
+      dataGetter(subscribersCallList)
+    } else if (table.tableInfo.id === "subscriber_rates") {
       dataGetter(subscribersCallList)
     } else if (table.tableInfo.id === "topics") {
       arrDataGetter(topicsCallList)
