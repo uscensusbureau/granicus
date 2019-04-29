@@ -311,7 +311,7 @@ import zip from "lodash.zip"
       return response
     }
   
-    console.log("Iteration 51")
+    console.log("Iteration 52")
     
     /* =================================
     General Purpose Derivative Functions
@@ -342,37 +342,27 @@ import zip from "lodash.zip"
       console.table(result)
       return result
     }
-
+  
     const augmentDumpNZip = (source, ...pushers) => {
       let keys_ = Object.keys(source[0]);
       let wk1_vals = Object.values(source[0]);
       let wk2_vals = Object.values(source[1]);
       let wk3_vals = Object.values(source[2]);
-
+    
       let wks = [wk1_vals, wk2_vals, wk3_vals]
-
-      pushers.map( pusher => keys_.push(pusher.name))
-      // pusher handles a single week
-      pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
-
-      return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      
+      return zip(
+        pushers.reduce((acc, pusher) => acc.concat(pusher.name), keys_),
+        // pusher handles a single week
+        ...wks.map( wk => wk.concat(pushers.map((p, i) => p.pusher(source, i)))));
     }
-
+  
     const createDumpNZIP = (source, ...pushers) => {
-      let keys_ = [];
-      let wk1_vals = []
-      let wk2_vals = []
-      let wk3_vals = []
-
-      let wks = [wk1_vals, wk2_vals, wk3_vals]
-
-      // pushers.map( pusher => keys_.push(pusher.name))
-      // pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
-
       return zip(
         pushers.map( pusher => pusher.name), // keys
-        ...pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i))));
+        ...[[],[],[]].map( wk => wk.concat(pushers.map((p, i) => p.pusher(source, i)))))
     }
+
 
 
     /* =================================
@@ -392,7 +382,7 @@ import zip from "lodash.zip"
       if (table.tableInfo.id === "bulletin_rates") {
         const pushOpenRates = {
           name: "open_rate",
-          pusher: (source, wk, col) => [...wk, makeRateFromObj(source, col, "opens_count", "total_delivered")]
+          pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
         }
 
         return createDumpNZIP(dump, pushOpenRates)
@@ -401,7 +391,7 @@ import zip from "lodash.zip"
 
         const pushTgiSums = {
           name: "total_digital_impressions",
-          pusher: (source, wk, col) => [...wk, makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")]
+          pusher: (source, col) => makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")
         }
 
         return createDumpNZIP(dump, pushTgiSums)
@@ -410,7 +400,7 @@ import zip from "lodash.zip"
         
         const pushNewSubs = {
           name: "new_subscribers",
-          pusher: (source, wk, col) => wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers"))
+          pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
         }
 
         return augmentDumpNZip(dump, pushNewSubs)
@@ -419,7 +409,7 @@ import zip from "lodash.zip"
         
         const pushUnsubRate = {
           name: "unsubscribe_rate",
-          pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers"))
+          pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
         }
   
         return createDumpNZIP(dump, pushUnsubRate)

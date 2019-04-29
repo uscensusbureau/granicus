@@ -9209,7 +9209,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       return response;
     };
 
-    console.log("Iteration 51");
+    console.log("Iteration 52");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9250,46 +9250,35 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     };
 
     var augmentDumpNZip = function augmentDumpNZip(source) {
+      for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+        pushers[_key4 - 1] = arguments[_key4];
+      }
+
       var keys_ = Object.keys(source[0]);
       var wk1_vals = Object.values(source[0]);
       var wk2_vals = Object.values(source[1]);
       var wk3_vals = Object.values(source[2]);
       var wks = [wk1_vals, wk2_vals, wk3_vals];
-
-      for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        pushers[_key4 - 1] = arguments[_key4];
-      }
-
-      pushers.map(function (pusher) {
-        return keys_.push(pusher.name);
-      }); // pusher handles a single week
-
-      pushers.map(function (p) {
-        return wks.map(function (wk, i) {
-          return p.pusher(source, wk, i);
-        });
-      });
-      return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+      return _lodash["default"].apply(void 0, [pushers.reduce(function (acc, pusher) {
+        return acc.concat(pusher.name);
+      }, keys_)].concat(_toConsumableArray(wks.map(function (wk) {
+        return wk.concat(pushers.map(function (p, i) {
+          return p.pusher(source, i);
+        }));
+      }))));
     };
 
     var createDumpNZIP = function createDumpNZIP(source) {
-      var keys_ = [];
-      var wk1_vals = [];
-      var wk2_vals = [];
-      var wk3_vals = [];
-      var wks = [wk1_vals, wk2_vals, wk3_vals]; // pushers.map( pusher => keys_.push(pusher.name))
-      // pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
-
       for (var _len5 = arguments.length, pushers = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
         pushers[_key5 - 1] = arguments[_key5];
       }
 
       return _lodash["default"].apply(void 0, [pushers.map(function (pusher) {
         return pusher.name;
-      })].concat(_toConsumableArray(pushers.map(function (p) {
-        return wks.map(function (wk, i) {
-          return p.pusher(source, wk, i);
-        });
+      })].concat(_toConsumableArray([[], [], []].map(function (wk) {
+        return wk.concat(pushers.map(function (p, i) {
+          return p.pusher(source, i);
+        }));
       }))));
     };
     /* =================================
@@ -9326,8 +9315,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                 pushOpenRates = {
                   name: "open_rate",
-                  pusher: function pusher(source, wk, col) {
-                    return [].concat(_toConsumableArray(wk), [makeRateFromObj(source, col, "opens_count", "total_delivered")]);
+                  pusher: function pusher(source, col) {
+                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
                   }
                 };
                 return _context5.abrupt("return", createDumpNZIP(dump, pushOpenRates));
@@ -9340,8 +9329,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                 pushTgiSums = {
                   name: "total_digital_impressions",
-                  pusher: function pusher(source, wk, col) {
-                    return [].concat(_toConsumableArray(wk), [makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")]);
+                  pusher: function pusher(source, col) {
+                    return makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count");
                   }
                 };
                 return _context5.abrupt("return", createDumpNZIP(dump, pushTgiSums));
@@ -9354,8 +9343,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                 pushNewSubs = {
                   name: "new_subscribers",
-                  pusher: function pusher(source, wk, col) {
-                    return wk.push(makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers"));
+                  pusher: function pusher(source, col) {
+                    return makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
                   }
                 };
                 return _context5.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
@@ -9368,8 +9357,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                 pushUnsubRate = {
                   name: "unsubscribe_rate",
-                  pusher: function pusher(source, wk, col) {
-                    return wk.push(makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers"));
+                  pusher: function pusher(source, col) {
+                    return makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers");
                   }
                 };
                 return _context5.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
