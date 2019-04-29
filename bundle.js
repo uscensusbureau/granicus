@@ -9012,13 +9012,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     function () {
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(urls) {
+      regeneratorRuntime.mark(function _callee5(urls) {
         var responses, promiseArr;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
+                _context5.next = 2;
                 return urls.map(
                 /*#__PURE__*/
                 function () {
@@ -9065,42 +9065,81 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 }());
 
               case 2:
-                responses = _context4.sent;
-                _context4.next = 5;
+                responses = _context5.sent;
+                _context5.next = 5;
                 return Promise.all(responses);
 
               case 5:
-                promiseArr = _context4.sent;
-                return _context4.abrupt("return", promiseArr.reduce(function (acc, res, i) {
-                  // evens are engagement rate and odds are topic summaries
-                  if (table.tableInfo === "topics") {
-                    if (i % 2 === 0) {
-                      var todo = {};
-                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"];
-                      console.log("engagement_rate: ");
-                      console.table(todo);
-                      console.log("acc:");
-                      console.table(acc);
-                      return Object.assign(acc, todo);
-                    } else {
-                      var _todo = {};
-                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
-                      console.log("Subscribers: ");
-                      console.table(_todo);
-                      console.log("acc:");
-                      console.table(acc);
-                      return Object.assign(acc, _todo);
-                    }
-                  } // must resolve the value in order for the next tick to access the contents
+                promiseArr = _context5.sent;
+                return _context5.abrupt("return", promiseArr.reduce(
+                /*#__PURE__*/
+                function () {
+                  var _ref5 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee4(acc, res, i) {
+                    var last, coll, todo, _todo;
 
-                }, {}));
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            _context4.next = 2;
+                            return acc;
+
+                          case 2:
+                            last = _context4.sent;
+                            _context4.next = 5;
+                            return res;
+
+                          case 5:
+                            coll = _context4.sent;
+
+                            if (!(table.tableInfo === "topics")) {
+                              _context4.next = 24;
+                              break;
+                            }
+
+                            if (!(i % 2 === 0)) {
+                              _context4.next = 17;
+                              break;
+                            }
+
+                            todo = {};
+                            todo["".concat(coll["name"], " Engagement Rate")] = coll["engagement_rate"];
+                            console.log("engagement_rate: ");
+                            console.table(todo);
+                            console.log("last:");
+                            console.table(last);
+                            return _context4.abrupt("return", Object.assign(last, todo));
+
+                          case 17:
+                            _todo = {};
+                            _todo["".concat(coll["name"], " Subscribers")] = coll["total_subscriptions_to_date"];
+                            console.log("Subscribers: ");
+                            console.table(_todo);
+                            console.log("last:");
+                            console.table(last);
+                            return _context4.abrupt("return", Object.assign(last, _todo));
+
+                          case 24:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4);
+                  }));
+
+                  return function (_x6, _x7, _x8) {
+                    return _ref5.apply(this, arguments);
+                  };
+                }(), Promise.resolve({})));
 
               case 7:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }));
 
       return function arrayFetcher(_x4) {
@@ -9108,7 +9147,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 57");
+    console.log("Iteration 58");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9188,113 +9227,16 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     var get_data =
     /*#__PURE__*/
     function () {
-      var _ref5 = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee5(calls) {
-        var results, dump, pushOpenRates, pushTgiSums, pushNewSubs, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                results = calls.map(function (url) {
-                  return fetcher(url, []);
-                }); // For Object results, returns an array of promises containing objects
-                // For Array results, returns an array of promises containing arrays of objects
-
-                _context5.next = 3;
-                return Promise.all(results);
-
-              case 3:
-                dump = _context5.sent;
-
-                if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context5.next = 9;
-                  break;
-                }
-
-                pushOpenRates = {
-                  name: "open_rate",
-                  pusher: function pusher(source, col) {
-                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
-                  }
-                };
-                return _context5.abrupt("return", createDumpNZIP(dump, pushOpenRates));
-
-              case 9:
-                if (!(table.tableInfo.id === "bulletin_details")) {
-                  _context5.next = 14;
-                  break;
-                }
-
-                pushTgiSums = {
-                  name: "total_digital_impressions",
-                  pusher: function pusher(source, col) {
-                    return makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count");
-                  }
-                };
-                return _context5.abrupt("return", createDumpNZIP(dump, pushTgiSums));
-
-              case 14:
-                if (!(table.tableInfo.id === "subscribers")) {
-                  _context5.next = 19;
-                  break;
-                }
-
-                pushNewSubs = {
-                  name: "new_subscribers",
-                  pusher: function pusher(source, col) {
-                    return makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
-                  }
-                };
-                return _context5.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
-
-              case 19:
-                if (!(table.tableInfo.id === "subscriber_rates")) {
-                  _context5.next = 24;
-                  break;
-                }
-
-                pushUnsubRate = {
-                  name: "unsubscribe_rate",
-                  pusher: function pusher(source, col) {
-                    return makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers");
-                  }
-                };
-                return _context5.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
-
-              case 24:
-                keys_ = Object.keys(dump[0]);
-                wk1_vals = Object.values(dump[0]);
-                wk2_vals = Object.values(dump[1]);
-                wk3_vals = Object.values(dump[2]);
-                return _context5.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
-
-              case 29:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5);
-      }));
-
-      return function get_data(_x6) {
-        return _ref5.apply(this, arguments);
-      };
-    }();
-
-    var get_dataArr =
-    /*#__PURE__*/
-    function () {
       var _ref6 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee6(calls) {
-        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
+        var results, dump, pushOpenRates, pushTgiSums, pushNewSubs, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                results = calls.map(function (urls) {
-                  return arrayFetcher(urls);
+                results = calls.map(function (url) {
+                  return fetcher(url, []);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
@@ -9304,8 +9246,105 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
               case 3:
                 dump = _context6.sent;
 
+                if (!(table.tableInfo.id === "bulletin_rates")) {
+                  _context6.next = 9;
+                  break;
+                }
+
+                pushOpenRates = {
+                  name: "open_rate",
+                  pusher: function pusher(source, col) {
+                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
+                  }
+                };
+                return _context6.abrupt("return", createDumpNZIP(dump, pushOpenRates));
+
+              case 9:
+                if (!(table.tableInfo.id === "bulletin_details")) {
+                  _context6.next = 14;
+                  break;
+                }
+
+                pushTgiSums = {
+                  name: "total_digital_impressions",
+                  pusher: function pusher(source, col) {
+                    return makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count");
+                  }
+                };
+                return _context6.abrupt("return", createDumpNZIP(dump, pushTgiSums));
+
+              case 14:
+                if (!(table.tableInfo.id === "subscribers")) {
+                  _context6.next = 19;
+                  break;
+                }
+
+                pushNewSubs = {
+                  name: "new_subscribers",
+                  pusher: function pusher(source, col) {
+                    return makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
+                  }
+                };
+                return _context6.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
+
+              case 19:
+                if (!(table.tableInfo.id === "subscriber_rates")) {
+                  _context6.next = 24;
+                  break;
+                }
+
+                pushUnsubRate = {
+                  name: "unsubscribe_rate",
+                  pusher: function pusher(source, col) {
+                    return makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers");
+                  }
+                };
+                return _context6.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
+
+              case 24:
+                keys_ = Object.keys(dump[0]);
+                wk1_vals = Object.values(dump[0]);
+                wk2_vals = Object.values(dump[1]);
+                wk3_vals = Object.values(dump[2]);
+                return _context6.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+
+              case 29:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }));
+
+      return function get_data(_x9) {
+        return _ref6.apply(this, arguments);
+      };
+    }();
+
+    var get_dataArr =
+    /*#__PURE__*/
+    function () {
+      var _ref7 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee7(calls) {
+        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                results = calls.map(function (urls) {
+                  return arrayFetcher(urls);
+                }); // For Object results, returns an array of promises containing objects
+                // For Array results, returns an array of promises containing arrays of objects
+
+                _context7.next = 3;
+                return Promise.all(results);
+
+              case 3:
+                dump = _context7.sent;
+
                 if (!(table.tableInfo.id === "topics")) {
-                  _context6.next = 11;
+                  _context7.next = 11;
                   break;
                 }
 
@@ -9319,18 +9358,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
-                return _context6.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context7.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 11:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }));
 
-      return function get_dataArr(_x7) {
-        return _ref6.apply(this, arguments);
+      return function get_dataArr(_x10) {
+        return _ref7.apply(this, arguments);
       };
     }();
     /* =================================
