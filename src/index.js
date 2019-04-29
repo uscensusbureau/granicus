@@ -196,33 +196,57 @@ import zip from "lodash.zip"
       })
       
       const promiseArr = await Promise.all(responses)
-      
-      return promiseArr.reduce(async (acc, res, i) => {
-        
-        const last = await acc
-        const coll = await res
+  
+      return promiseArr.reduce( (acc, res, i) => {
+
         // evens are engagement rate and odds are topic summaries
         if (table.tableInfo.id === "topics") {
           if (i % 2 === 0) {
-           let todo = {}
-            todo[`${coll["name"]} Engagement Rate`] = coll["engagement_rate"]
+            let todo = {}
+            todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
             console.log("engagement_rate: ")
             console.table(todo)
-            console.log("last:")
-            console.table(last)
-            return Object.assign(last, todo)
+            console.log("acc:")
+            console.table(acc)
+            return Object.assign(acc, todo)
           } else {
             let todo = {}
-            todo[`${coll["name"]} Subscribers`] = coll["total_subscriptions_to_date"]
+            todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
             console.log("Subscribers: ")
             console.table(todo)
-            console.log("last:")
-            console.table(last)
-            return Object.assign(last, todo)
+            console.log("acc:")
+            console.table(acc)
+            return Object.assign(acc, todo)
           }
         }
-      // must resolve the value in order for the next tick to access the contents
-      }, Promise.resolve({}))
+        // must resolve the value in order for the next tick to access the contents
+      }, {})
+      // return promiseArr.reduce(async (acc, res, i) => {
+      //
+      //   const last = await acc
+      //   const coll = await res
+      //   // evens are engagement rate and odds are topic summaries
+      //   if (table.tableInfo.id === "topics") {
+      //     if (i % 2 === 0) {
+      //      let todo = {}
+      //       todo[`${coll["name"]} Engagement Rate`] = coll["engagement_rate"]
+      //       console.log("engagement_rate: ")
+      //       console.table(todo)
+      //       console.log("last:")
+      //       console.table(last)
+      //       return Object.assign(last, todo)
+      //     } else {
+      //       let todo = {}
+      //       todo[`${coll["name"]} Subscribers`] = coll["total_subscriptions_to_date"]
+      //       console.log("Subscribers: ")
+      //       console.table(todo)
+      //       console.log("last:")
+      //       console.table(last)
+      //       return Object.assign(last, todo)
+      //     }
+      //   }
+      // // must resolve the value in order for the next tick to access the contents
+      // }, Promise.resolve({}))
       // will be an array of Promises containing objects
     }
   
