@@ -179,7 +179,7 @@ import zip from "lodash.zip"
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
     const arrayFetcher = async urls => {
       
-      const response = await urls.reduce(async (acc, url, i) => {
+      const responses = await urls.map(async url => {
         const result = await window.fetch(url, {
           method: "GET",
           headers: {
@@ -195,13 +195,14 @@ import zip from "lodash.zip"
         return prime
       })
       
+      const promiseArr = await Promise.all(responses)
       
-      return response.reduce(async (acc, res, i) => {
+      return promiseArr.reduce((acc, res, i) => {
         // evens are engagement rate and odds are topic summaries
         if (table.tableInfo === "topics") {
           if (i % 2 === 0) {
            let todo = {}
-            todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
+            todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
             console.log("engagement_rate: ")
             console.table(todo)
             console.log("acc:")
@@ -209,7 +210,7 @@ import zip from "lodash.zip"
             return Object.assign(acc, todo)
           } else {
             let todo = {}
-            todo[`${prime["name"]} Subscribers`] = prime["total_subscriptions_to_date"]
+            todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
             console.log("Subscribers: ")
             console.table(todo)
             console.log("acc:")
@@ -222,7 +223,7 @@ import zip from "lodash.zip"
       // will be an array of Promises containing objects
     }
   
-    console.log("Iteration 55")
+    console.log("Iteration 56")
     
     /* =================================
     General Purpose Derivative Functions
