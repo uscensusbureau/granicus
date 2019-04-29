@@ -114,7 +114,7 @@ import zip from "lodash.zip"
    const topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: [...counts_schema]
+      columns: [...rates_schema]
     };
 
     schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, engagement, bulletin_details */ ]);

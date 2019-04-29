@@ -8864,7 +8864,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     var topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: [].concat(counts_schema)
+      columns: [].concat(rates_schema)
     };
     schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics
     /*, engagement, bulletin_details */
