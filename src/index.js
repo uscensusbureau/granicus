@@ -219,11 +219,11 @@ import zip from "lodash.zip"
           }
         }
       // must resolve the value in order for the next tick to access the contents
-      }, Promise.resolve({}))
+      }, {})
       // will be an array of Promises containing objects
     }
   
-    console.log("Iteration 56")
+    console.log("Iteration 57")
     
     /* =================================
     General Purpose Derivative Functions

@@ -9093,7 +9093,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     }
                   } // must resolve the value in order for the next tick to access the contents
 
-                }, Promise.resolve({})));
+                }, {}));
 
               case 7:
               case "end":
@@ -9108,7 +9108,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 56");
+    console.log("Iteration 57");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
