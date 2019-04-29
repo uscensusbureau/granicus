@@ -269,9 +269,9 @@ import zip from "lodash.zip"
     }
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
-    const arrayFetcher = async (urls) => {
-      const response = await urls.reduce((acc, url, i) => {
-        window.fetch(url, {
+    const arrayFetcher = (urls) => {
+      const response = urls.reduce(async (acc, url, i) => {
+        await window.fetch(url, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -288,7 +288,6 @@ import zip from "lodash.zip"
           if (i % 2 === 0) {
            let todo = {}
             todo[`${prime["name"]} Engagement Rate`] = prime["engagement_rate"]
-            // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
             console.log("engagement_rate: ")
             console.table(todo)
             console.log("acc:")
@@ -297,22 +296,22 @@ import zip from "lodash.zip"
           } else {
             let todo = {}
             todo[`${prime["name"]} Subscribers`] = prime["total_subscriptions_to_date"]
-            // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
-            console.log("engagement: ")
+            console.log("Subscribers: ")
             console.table(todo)
             console.log("acc:")
             console.table(acc)
             return Object.assign(acc, todo)
           }
         })
-      }, {})
+      // must resolve the value in order for the next tick to access the contents
+      }, Promise.resolve({}))
       // will be an array of Promises containing objects
       console.log("payload:")
       console.table(response)
       return response
     }
   
-    console.log("Iteration 49")
+    console.log("Iteration 51")
     
     /* =================================
     General Purpose Derivative Functions
@@ -367,10 +366,12 @@ import zip from "lodash.zip"
 
       let wks = [wk1_vals, wk2_vals, wk3_vals]
 
-      pushers.map( pusher => keys_.push(pusher.name))
-      pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
+      // pushers.map( pusher => keys_.push(pusher.name))
+      // pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
 
-      return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      return zip(
+        pushers.map( pusher => pusher.name), // keys
+        ...pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i))));
     }
 
 

@@ -9117,20 +9117,19 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     }(); // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 
 
-    var arrayFetcher =
-    /*#__PURE__*/
-    function () {
-      var _ref3 = _asyncToGenerator(
+    var arrayFetcher = function arrayFetcher(urls) {
+      var response = urls.reduce(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(urls) {
-        var response;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return urls.reduce(function (acc, url, i) {
-                  window.fetch(url, {
+      function () {
+        var _ref3 = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee4(acc, url, i) {
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  _context4.next = 2;
+                  return window.fetch(url, {
                     method: "GET",
                     headers: {
                       'Content-Type': 'application/json',
@@ -9163,8 +9162,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                               }
 
                               todo = {};
-                              todo["".concat(prime["name"], " Engagement Rate")] = prime["engagement_rate"]; // let todo = { [`${prime["name"]} Subscribers`] : prime["total_subscriptions_to_date"] }
-
+                              todo["".concat(prime["name"], " Engagement Rate")] = prime["engagement_rate"];
                               console.log("engagement_rate: ");
                               console.table(todo);
                               console.log("acc:");
@@ -9173,9 +9171,8 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
                             case 15:
                               _todo = {};
-                              _todo["".concat(prime["name"], " Subscribers")] = prime["total_subscriptions_to_date"]; // let todo = { [`${prime["name"]} Engagement Rate`] : prime["engagement_rate"] }
-
-                              console.log("engagement: ");
+                              _todo["".concat(prime["name"], " Subscribers")] = prime["total_subscriptions_to_date"];
+                              console.log("Subscribers: ");
                               console.table(_todo);
                               console.log("acc:");
                               console.table(acc);
@@ -9189,33 +9186,30 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                       }, _callee3);
                     }));
 
-                    return function (_x5) {
+                    return function (_x7) {
                       return _ref4.apply(this, arguments);
                     };
                   }());
-                }, {});
 
-              case 2:
-                response = _context4.sent;
-                // will be an array of Promises containing objects
-                console.log("payload:");
-                console.table(response);
-                return _context4.abrupt("return", response);
-
-              case 6:
-              case "end":
-                return _context4.stop();
+                case 2:
+                case "end":
+                  return _context4.stop();
+              }
             }
-          }
-        }, _callee4);
-      }));
+          }, _callee4);
+        }));
 
-      return function arrayFetcher(_x4) {
-        return _ref3.apply(this, arguments);
-      };
-    }();
+        return function (_x4, _x5, _x6) {
+          return _ref3.apply(this, arguments);
+        };
+      }(), Promise.resolve({})); // will be an array of Promises containing objects
 
-    console.log("Iteration 49");
+      console.log("payload:");
+      console.table(response);
+      return response;
+    };
+
+    console.log("Iteration 51");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9283,21 +9277,20 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       var wk1_vals = [];
       var wk2_vals = [];
       var wk3_vals = [];
-      var wks = [wk1_vals, wk2_vals, wk3_vals];
+      var wks = [wk1_vals, wk2_vals, wk3_vals]; // pushers.map( pusher => keys_.push(pusher.name))
+      // pushers.map( p => wks.map((wk, i) => p.pusher(source, wk, i)))
 
       for (var _len5 = arguments.length, pushers = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
         pushers[_key5 - 1] = arguments[_key5];
       }
 
-      pushers.map(function (pusher) {
-        return keys_.push(pusher.name);
-      });
-      pushers.map(function (p) {
+      return _lodash["default"].apply(void 0, [pushers.map(function (pusher) {
+        return pusher.name;
+      })].concat(_toConsumableArray(pushers.map(function (p) {
         return wks.map(function (wk, i) {
           return p.pusher(source, wk, i);
         });
-      });
-      return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+      }))));
     };
     /* =================================
     Data Getters
@@ -9396,7 +9389,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         }, _callee5);
       }));
 
-      return function get_data(_x6) {
+      return function get_data(_x8) {
         return _ref5.apply(this, arguments);
       };
     }();
@@ -9436,7 +9429,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     }, _callee6);
                   }));
 
-                  return function (_x8) {
+                  return function (_x10) {
                     return _ref7.apply(this, arguments);
                   };
                 }()); // For Object results, returns an array of promises containing objects
@@ -9473,7 +9466,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         }, _callee7);
       }));
 
-      return function get_dataArr(_x7) {
+      return function get_dataArr(_x9) {
         return _ref6.apply(this, arguments);
       };
     }();
