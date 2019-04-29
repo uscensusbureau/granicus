@@ -9367,20 +9367,68 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     };
     /* =================================
     Topics List
+    
+     "id": 449122,
+     "code": "USCENSUS_11939",
+     "name": "America Counts: Stories Behind the Numbers",
+      
+      
+    "id": 454831,
+    "code": "USCENSUS_11971",
+    "name": "Census Academy",
+      
+      
+    "id": 449126,
+    "code": "USCENSUS_11941",
+    "name": "Census Jobs",
+      
+      
+    "id": 452433,
+    "code": "USCENSUS_11958",
+    "name": "Census Partnerships",
+      
+    "id": 444983,
+    "code": "USCENSUS_11926",
+    "name": "Census Updates",
+    
+    "id": 444992,
+    "code": "USCENSUS_11927",
+    "name": "Census Updates for Business",
+    
+    "id": 447782,
+    "code": "USCENSUS_11932",
+    "name": "Data Visualization Newsletter",
+    
+    "id": 449124,
+    "code": "USCENSUS_11940",
+    "name": "Statistics in Schools",
+      
+    "id": 452958,
+    "code": "USCENSUS_11960",
+    "name": "Stats for Stories",
+      
+      
     ================================== */
 
 
     var topics = {
-      // "America Counts"                : "USCENSUS_11939",
-      // "Census Academy"                : "USCENSUS_11971",
-      // "Census Jobs"                   : "USCENSUS_11941",
-      // "Census Partnerships"           : "USCENSUS_11958",
-      // "Census Updates"                : "USCENSUS_11926",
-      // "Census Updates for Business"   : "USCENSUS_11927",
-      // "Data Visualization Newsletter" : "USCENSUS_11932",
-      // "Statistics in Schools"         : "USCENSUS_11940",
-      // "Stats for Stories"             : "USCENSUS_11960"
-      "State Data Center Leads": "42162" // only one currently visible... rest TODO
+      "America Counts": "449122",
+      // "USCENSUS_11939",
+      "Census Academy": "454831",
+      // "USCENSUS_11971",
+      "Census Jobs": "449126",
+      // "USCENSUS_11941",
+      "Census Partnerships": "452433",
+      // "USCENSUS_11958",
+      "Census Updates": "444983",
+      // "USCENSUS_11926",
+      "Census Updates for Business": "444992",
+      // "USCENSUS_11927",
+      "Data Visualization Newsletter": "447782",
+      // "USCENSUS_11932",
+      "Statistics in Schools": "449124",
+      // "USCENSUS_11940",
+      "Stats for Stories": "452958" // "USCENSUS_11960"
 
       /* =================================
       URL Creating Functions
