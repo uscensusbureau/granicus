@@ -13939,13 +13939,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 };
                 pushClickRates = {
-                  name: "open_rate",
+                  name: "click_rates",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "clicks_count", "total_delivered");
                   }
                 };
                 pushDeliveryRates = {
-                  name: "open_rate",
+                  name: "delivery_rates",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "total_delivered", "total_recipients");
                   }

@@ -86,11 +86,11 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
             pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
           }
           const pushClickRates = {
-            name: "open_rate",
+            name: "click_rates",
             pusher: (source, col) => makeRateFromObj(source, col, "clicks_count", "total_delivered")
           }
           const pushDeliveryRates = {
-            name: "open_rate",
+            name: "delivery_rates",
             pusher: (source, col) => makeRateFromObj(source, col, "total_delivered", "total_recipients")
           }
 
