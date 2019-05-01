@@ -117,7 +117,7 @@ import zip from "lodash.zip"
       columns: JSON.parse(JSON.stringify([...rates_schema]))
     };
 
-    schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, engagement, bulletin_details */ ]);
+    schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, bulletin_details */ ]);
   };
 
 
@@ -570,13 +570,21 @@ import zip from "lodash.zip"
 
     if (table.tableInfo.id === "bulletins") {
       dataGetter(bulletinsCallList)
-    } else if (table.tableInfo.id === "bulletin_rates") {
+    }
+    
+    if (table.tableInfo.id === "bulletin_rates") {
       dataGetter(bulletinsCallList)
-    } else if (table.tableInfo.id === "subscribers") {
+    }
+    
+    if (table.tableInfo.id === "subscribers") {
       dataGetter(subscribersCallList)
-    } else if (table.tableInfo.id === "subscriber_rates") {
+    }
+    
+    if (table.tableInfo.id === "subscriber_rates") {
       dataGetter(subscribersCallList)
-    } else if (table.tableInfo.id === "topics") {
+    }
+    
+    if (table.tableInfo.id === "topics") {
       arrDataGetter(topicsCallList)
     }
     // else if (table.tableInfo.id === "bulletin_details") {

@@ -8867,7 +8867,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
     };
     schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics
-    /*, engagement, bulletin_details */
+    /*, bulletin_details */
     ]);
   };
 
@@ -9526,13 +9526,21 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
     if (table.tableInfo.id === "bulletins") {
       dataGetter(bulletinsCallList);
-    } else if (table.tableInfo.id === "bulletin_rates") {
+    }
+
+    if (table.tableInfo.id === "bulletin_rates") {
       dataGetter(bulletinsCallList);
-    } else if (table.tableInfo.id === "subscribers") {
+    }
+
+    if (table.tableInfo.id === "subscribers") {
       dataGetter(subscribersCallList);
-    } else if (table.tableInfo.id === "subscriber_rates") {
+    }
+
+    if (table.tableInfo.id === "subscriber_rates") {
       dataGetter(subscribersCallList);
-    } else if (table.tableInfo.id === "topics") {
+    }
+
+    if (table.tableInfo.id === "topics") {
       arrDataGetter(topicsCallList);
     } // else if (table.tableInfo.id === "bulletin_details") {
     //   dataGetter(callList3)
