@@ -137,11 +137,26 @@ import zip from "lodash.zip"
     /* =================================
     Fetching Functions
     ================================== */ 
-
-    // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
-
-    // make a single call or recursion for `next` links 
-    const fetcher = async (url, acc) => {  
+    
+    const fetcher = async url => {
+      const result = await window.fetch(url, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/hal+json',
+          'X-AUTH-TOKEN': key
+        }
+      })
+    
+      const prime = await result.json()
+      console.log("api call: " + url);
+      console.log("prime:")
+      console.log(prime)
+      return prime // summaries is an object
+    }
+    
+    // TODO: Figure out a way to reduce response time (currently >30s = timeout)
+    const detailFetcher = async (url, acc) => {
       const result = await window.fetch(url, {
         method: "GET",
         headers: {
@@ -155,10 +170,10 @@ import zip from "lodash.zip"
       console.log("api call: " + url);
       console.log("prime:")
       console.log(prime)
-      console.log("ok?:" + res.ok)
+      console.log("ok?:" + result.ok)
       
       if (tableID === "bulletin_details") {
-        if (res.ok) {
+        if (result.ok) {
           const cur = prime["bulletin_activity_details"]
           console.log("in bulletin_details...")
           if (typeof cur === "undefined") {
@@ -236,7 +251,7 @@ import zip from "lodash.zip"
       }, {})
     }
   
-    console.log("Iteration 60")
+    console.log("Iteration 61")
     
     /* =================================
     General Purpose Derivative Functions

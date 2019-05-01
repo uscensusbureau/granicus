@@ -8877,16 +8877,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     /* =================================
     Fetching Functions
     ================================== */
-    // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
-    // make a single call or recursion for `next` links 
 
     var fetcher =
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(url, acc) {
-        var result, prime, cur, last, todo;
+      regeneratorRuntime.mark(function _callee(url) {
+        var result, prime;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -8911,70 +8909,9 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 console.log("api call: " + url);
                 console.log("prime:");
                 console.log(prime);
-                console.log("ok?:" + res.ok);
-
-                if (!(tableID === "bulletin_details")) {
-                  _context.next = 40;
-                  break;
-                }
-
-                if (!res.ok) {
-                  _context.next = 35;
-                  break;
-                }
-
-                cur = prime["bulletin_activity_details"];
-                console.log("in bulletin_details...");
-
-                if (!(typeof cur === "undefined")) {
-                  _context.next = 19;
-                  break;
-                }
-
-                console.log("cur == undefined");
-                return _context.abrupt("return", acc);
-
-              case 19:
-                if (!(cur.length < 20)) {
-                  _context.next = 26;
-                  break;
-                }
-
-                last = acc.concat(cur);
-                console.log("Less than 20 results: ");
-                console.log(last);
-                return _context.abrupt("return", last);
-
-              case 26:
-                if (!(cur.length === 20)) {
-                  _context.next = 33;
-                  break;
-                }
-
-                todo = acc.concat(cur);
-                console.log("More than 20 results: ");
-                console.log(todo);
-                console.log("recurring fetcher");
-                _context.next = 33;
-                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
-
-              case 33:
-                _context.next = 38;
-                break;
-
-              case 35:
-                console.log("no results in `next`... acc = ");
-                console.log(acc);
-                return _context.abrupt("return", acc);
-
-              case 38:
-                _context.next = 41;
-                break;
-
-              case 40:
                 return _context.abrupt("return", prime);
 
-              case 41:
+              case 10:
               case "end":
                 return _context.stop();
             }
@@ -8982,8 +8919,116 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         }, _callee);
       }));
 
-      return function fetcher(_x, _x2) {
+      return function fetcher(_x) {
         return _ref.apply(this, arguments);
+      };
+    }(); // TODO: Figure out a way to reduce response time (currently >30s = timeout)
+
+
+    var detailFetcher =
+    /*#__PURE__*/
+    function () {
+      var _ref2 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2(url, acc) {
+        var result, prime, cur, last, todo;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return window.fetch(url, {
+                  method: "GET",
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/hal+json',
+                    'X-AUTH-TOKEN': key
+                  }
+                });
+
+              case 2:
+                result = _context2.sent;
+                _context2.next = 5;
+                return result.json();
+
+              case 5:
+                prime = _context2.sent;
+                console.log("api call: " + url);
+                console.log("prime:");
+                console.log(prime);
+                console.log("ok?:" + result.ok);
+
+                if (!(tableID === "bulletin_details")) {
+                  _context2.next = 40;
+                  break;
+                }
+
+                if (!result.ok) {
+                  _context2.next = 35;
+                  break;
+                }
+
+                cur = prime["bulletin_activity_details"];
+                console.log("in bulletin_details...");
+
+                if (!(typeof cur === "undefined")) {
+                  _context2.next = 19;
+                  break;
+                }
+
+                console.log("cur == undefined");
+                return _context2.abrupt("return", acc);
+
+              case 19:
+                if (!(cur.length < 20)) {
+                  _context2.next = 26;
+                  break;
+                }
+
+                last = acc.concat(cur);
+                console.log("Less than 20 results: ");
+                console.log(last);
+                return _context2.abrupt("return", last);
+
+              case 26:
+                if (!(cur.length === 20)) {
+                  _context2.next = 33;
+                  break;
+                }
+
+                todo = acc.concat(cur);
+                console.log("More than 20 results: ");
+                console.log(todo);
+                console.log("recurring fetcher");
+                _context2.next = 33;
+                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
+
+              case 33:
+                _context2.next = 38;
+                break;
+
+              case 35:
+                console.log("no results in `next`... acc = ");
+                console.log(acc);
+                return _context2.abrupt("return", acc);
+
+              case 38:
+                _context2.next = 41;
+                break;
+
+              case 40:
+                return _context2.abrupt("return", prime);
+
+              case 41:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function detailFetcher(_x2, _x3) {
+        return _ref2.apply(this, arguments);
       };
     }(); // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 
@@ -8991,27 +9036,27 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     var arrayFetcher =
     /*#__PURE__*/
     function () {
-      var _ref2 = _asyncToGenerator(
+      var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(urls) {
+      regeneratorRuntime.mark(function _callee4(urls) {
         var responses, promiseArr;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _context3.next = 2;
+                _context4.next = 2;
                 return urls.map(
                 /*#__PURE__*/
                 function () {
-                  var _ref3 = _asyncToGenerator(
+                  var _ref4 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee2(url) {
+                  regeneratorRuntime.mark(function _callee3(url) {
                     var result, prime;
-                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
                       while (1) {
-                        switch (_context2.prev = _context2.next) {
+                        switch (_context3.prev = _context3.next) {
                           case 0:
-                            _context2.next = 2;
+                            _context3.next = 2;
                             return window.fetch(url, {
                               method: "GET",
                               headers: {
@@ -9022,37 +9067,37 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                             });
 
                           case 2:
-                            result = _context2.sent;
-                            _context2.next = 5;
+                            result = _context3.sent;
+                            _context3.next = 5;
                             return result.json();
 
                           case 5:
-                            prime = _context2.sent;
+                            prime = _context3.sent;
                             console.log("prime:");
                             console.log(prime);
-                            return _context2.abrupt("return", prime);
+                            return _context3.abrupt("return", prime);
 
                           case 9:
                           case "end":
-                            return _context2.stop();
+                            return _context3.stop();
                         }
                       }
-                    }, _callee2);
+                    }, _callee3);
                   }));
 
-                  return function (_x4) {
-                    return _ref3.apply(this, arguments);
+                  return function (_x5) {
+                    return _ref4.apply(this, arguments);
                   };
                 }());
 
               case 2:
-                responses = _context3.sent;
-                _context3.next = 5;
+                responses = _context4.sent;
+                _context4.next = 5;
                 return Promise.all(responses);
 
               case 5:
-                promiseArr = _context3.sent;
-                return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
+                promiseArr = _context4.sent;
+                return _context4.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   // evens are engagement rate and odds are topic summaries
                   if (tableID === "topics") {
                     if (i % 2 === 0) {
@@ -9078,18 +9123,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
               case 7:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }));
 
-      return function arrayFetcher(_x3) {
-        return _ref2.apply(this, arguments);
+      return function arrayFetcher(_x4) {
+        return _ref3.apply(this, arguments);
       };
     }();
 
-    console.log("Iteration 60");
+    console.log("Iteration 61");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9169,26 +9214,26 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     var get_data =
     /*#__PURE__*/
     function () {
-      var _ref4 = _asyncToGenerator(
+      var _ref5 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(calls) {
+      regeneratorRuntime.mark(function _callee5(calls) {
         var results, dump, pushNewSubs, pushOpenRates, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 results = calls.map(function (url) {
                   return fetcher(url, []);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context4.next = 3;
+                _context5.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context4.sent;
-                _context4.t0 = tableID;
-                _context4.next = _context4.t0 === "subscribers" ? 7 : _context4.t0 === "bulletin_rates" ? 9 : _context4.t0 === "subscriber_rates" ? 11 : 13;
+                dump = _context5.sent;
+                _context5.t0 = tableID;
+                _context5.next = _context5.t0 === "subscribers" ? 7 : _context5.t0 === "bulletin_rates" ? 9 : _context5.t0 === "subscriber_rates" ? 11 : 13;
                 break;
 
               case 7:
@@ -9198,7 +9243,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     return makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
                   }
                 };
-                return _context4.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
+                return _context5.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
 
               case 9:
                 pushOpenRates = {
@@ -9207,7 +9252,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     return makeRateFromObj(source, col, "opens_count", "total_delivered");
                   }
                 };
-                return _context4.abrupt("return", createDumpNZIP(dump, pushOpenRates));
+                return _context5.abrupt("return", createDumpNZIP(dump, pushOpenRates));
 
               case 11:
                 pushUnsubRate = {
@@ -9216,52 +9261,52 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                     return makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers");
                   }
                 };
-                return _context4.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
+                return _context5.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
 
               case 13:
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
-                return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context5.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 18:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }));
 
-      return function get_data(_x5) {
-        return _ref4.apply(this, arguments);
+      return function get_data(_x6) {
+        return _ref5.apply(this, arguments);
       };
     }();
 
     var get_dataArr =
     /*#__PURE__*/
     function () {
-      var _ref5 = _asyncToGenerator(
+      var _ref6 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee5(calls) {
+      regeneratorRuntime.mark(function _callee6(calls) {
         var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 results = calls.map(function (urls) {
                   return arrayFetcher(urls);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context5.next = 3;
+                _context6.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context5.sent;
+                dump = _context6.sent;
 
                 if (!(tableID === "topics")) {
-                  _context5.next = 11;
+                  _context6.next = 11;
                   break;
                 }
 
@@ -9275,18 +9320,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
-                return _context5.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context6.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
               case 11:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5);
+        }, _callee6);
       }));
 
-      return function get_dataArr(_x6) {
-        return _ref5.apply(this, arguments);
+      return function get_dataArr(_x7) {
+        return _ref6.apply(this, arguments);
       };
     }();
     /* =================================
