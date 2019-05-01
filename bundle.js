@@ -13578,10 +13578,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.detailFetcher = exports.arrayFetcher = exports.fetcher = void 0;
 
-var _fetchIe = _interopRequireDefault(require("fetch-ie8"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -13602,7 +13598,7 @@ var fetcher = function fetcher(tableID, key) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return (0, _fetchIe["default"])(url, {
+                return window.fetch(url, {
                   method: "GET",
                   headers: {
                     'Content-Type': 'application/json',
@@ -13666,7 +13662,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
                             _context2.next = 2;
-                            return (0, _fetchIe["default"])(url, {
+                            return window.fetch(url, {
                               method: "GET",
                               headers: {
                                 'Content-Type': 'application/json',
@@ -13760,7 +13756,7 @@ var detailFetcher = function detailFetcher(tableID, key) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return (0, _fetchIe["default"])(url, {
+                return window.fetch(url, {
                   method: "GET",
                   headers: {
                     'Content-Type': 'application/json',
@@ -13859,10 +13855,12 @@ var detailFetcher = function detailFetcher(tableID, key) {
 
 exports.detailFetcher = detailFetcher;
 
-},{"fetch-ie8":331}],338:[function(require,module,exports){
+},{}],338:[function(require,module,exports){
 "use strict";
 
 require("babel-polyfill");
+
+require("fetch-ie8");
 
 var _schemas = require("./schemas");
 
@@ -13895,7 +13893,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    tableau.log("Iteration 66");
+    tableau.log("Iteration 67");
     /* =================================
     Data Getters
     ================================== */
@@ -14099,7 +14097,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   });
 })();
 
-},{"./callLists":335,"./derivatives":336,"./fetchers":337,"./payloadModifiers":339,"./schemas":340,"babel-polyfill":1}],339:[function(require,module,exports){
+},{"./callLists":335,"./derivatives":336,"./fetchers":337,"./payloadModifiers":339,"./schemas":340,"babel-polyfill":1,"fetch-ie8":331}],339:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

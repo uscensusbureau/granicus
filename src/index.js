@@ -16,6 +16,9 @@ Polyfills and library functions
 ================================== */ 
 
 import 'babel-polyfill';
+// special polyfill for fetch support (not provided by babel-polyfill)
+import 'fetch-ie8'
+
 import { bulletins_schema,
          bulletin_rates_schema,
          subscribers_schema,
@@ -55,7 +58,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     let TABLEID = table.tableInfo.id
     
   
-    tableau.log("Iteration 66")
+    tableau.log("Iteration 67")
     
 
     /* =================================
