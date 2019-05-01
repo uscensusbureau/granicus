@@ -57,14 +57,14 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 63")
+    tableau.log("Iteration 65")
     
 
     /* =================================
     Data Getters
     ================================== */
 
-    const get_data = async calls => {
+    const makeCalls = async calls => {
 
       const results = calls.map(url => fetcher(TABLEID, KEY)(url))
       
@@ -99,7 +99,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
       
     }
 
-    const get_dataArr = async calls => {
+    const makeCallsArr = async calls => {
 
       const results = calls.map( urls => arrayFetcher(TABLEID, KEY)(urls))
 
@@ -116,7 +116,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
         // }
         
         // return createDumpNZIP(dump, pushOpenRates)
-        console.log(`
+        tableau.log(`
         =====================
         COMPLETE
         =====================
@@ -131,7 +131,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     ================================== */
 
     const dataGetter = urlList => {
-      get_data(urlList)
+      makeCalls(urlList)
         .then(result => {
           table.appendRows(
             result.map(k => ({
@@ -147,7 +147,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     }
 
     const arrDataGetter = urlList => {
-      get_dataArr(urlList)
+      makeCallsArr(urlList)
         .then(result => {
           table.appendRows(
             result.map(k => ({
@@ -185,7 +185,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
         arrDataGetter(topicsCallList(DATE))
         break
       }
-      default: console.log("SLIPPED THROUGH THE TABLE TARGETS")
+      default: tableau.log("SLIPPED THROUGH THE TABLE TARGETS")
     }
     //
     // else if (table.tableInfo.id === "bulletin_details") {
