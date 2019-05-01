@@ -84,37 +84,37 @@ import zip from "lodash.zip"
     const bulletins = {
       id: "bulletins",
       alias: "Bulletins",
-      columns: [...counts_schema]
+      columns: JSON.parse(JSON.stringify([...counts_schema]))
     };
   
     const bulletin_rates = {
       id: "bulletin_rates",
       alias: "Bulletin Rates",
-      columns: [...rates_schema]
+      columns: JSON.parse(JSON.stringify([...rates_schema]))
     };
 
    const subscribers = {
       id: "subscribers",
       alias: "Subscribers",
-      columns: [...counts_schema]
+      columns: JSON.parse(JSON.stringify([...counts_schema]))
     };
   
     const subscriber_rates = {
       id: "subscriber_rates",
       alias: "Subscriber Rates",
-      columns: [...rates_schema]
+      columns: JSON.parse(JSON.stringify([...rates_schema]))
     };
 
     //const bulletin_details = {
     //   id: "bulletin_details",
     //   alias: "Bulletin Details",
-    //   columns: [...counts_schema]
+    //   columns:JSON.parse(JSON.stringify ([...counts_schema]
     // };
 
    const topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: [...rates_schema]
+      columns: JSON.parse(JSON.stringify([...rates_schema]))
     };
 
     schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, engagement, bulletin_details */ ]);

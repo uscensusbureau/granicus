@@ -8839,32 +8839,32 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     var bulletins = {
       id: "bulletins",
       alias: "Bulletins",
-      columns: [].concat(counts_schema)
+      columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
     };
     var bulletin_rates = {
       id: "bulletin_rates",
       alias: "Bulletin Rates",
-      columns: [].concat(rates_schema)
+      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
     };
     var subscribers = {
       id: "subscribers",
       alias: "Subscribers",
-      columns: [].concat(counts_schema)
+      columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
     };
     var subscriber_rates = {
       id: "subscriber_rates",
       alias: "Subscriber Rates",
-      columns: [].concat(rates_schema)
+      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
     }; //const bulletin_details = {
     //   id: "bulletin_details",
     //   alias: "Bulletin Details",
-    //   columns: [...counts_schema]
+    //   columns:JSON.parse(JSON.stringify ([...counts_schema]
     // };
 
     var topics = {
       id: "topics",
       alias: "Topic Engagement + Subscribers",
-      columns: [].concat(rates_schema)
+      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
     };
     schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics
     /*, engagement, bulletin_details */
