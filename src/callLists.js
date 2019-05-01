@@ -8,6 +8,7 @@ Topics List
 
 
 const topics = {
+  "General 2020 Census Updates"   : "289016",
   "America Counts"                : "449122", // "USCENSUS_11939",
   "Census Academy"                : "454831", // "USCENSUS_11971",
   "Census Jobs"                   : "449126", // "USCENSUS_11941",
