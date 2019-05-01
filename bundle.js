@@ -8872,11 +8872,14 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
   };
 
   myConnector.getData = function (table, doneCallback) {
+    // Table ID for case by case deploys
+    var tableID = table.tableInfo.id;
     /* =================================
     Fetching Functions
     ================================== */
     // TODO: If there are >= 20 results in `bulletin_activity_details` array, call again and create a new matrix
     // make a single call or recursion for `next` links 
+
     var fetcher =
     /*#__PURE__*/
     function () {
@@ -8910,7 +8913,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 console.log(prime);
                 console.log("ok?:" + res.ok);
 
-                if (!(table.tableInfo.id === "bulletin_details")) {
+                if (!(tableID === "bulletin_details")) {
                   _context.next = 40;
                   break;
                 }
@@ -9051,7 +9054,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 promiseArr = _context3.sent;
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   // evens are engagement rate and odds are topic summaries
-                  if (table.tableInfo.id === "topics") {
+                  if (tableID === "topics") {
                     if (i % 2 === 0) {
                       var todo = {};
                       todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"];
@@ -9086,7 +9089,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       };
     }();
 
-    console.log("Iteration 59");
+    console.log("Iteration 60");
     /* =================================
     General Purpose Derivative Functions
     ================================== */
@@ -9169,7 +9172,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
       var _ref4 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee4(calls) {
-        var results, dump, pushOpenRates, pushNewSubs, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
+        var results, dump, pushNewSubs, pushOpenRates, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -9184,26 +9187,11 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
               case 3:
                 dump = _context4.sent;
-
-                if (!(table.tableInfo.id === "bulletin_rates")) {
-                  _context4.next = 7;
-                  break;
-                }
-
-                pushOpenRates = {
-                  name: "open_rate",
-                  pusher: function pusher(source, col) {
-                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
-                  }
-                };
-                return _context4.abrupt("return", createDumpNZIP(dump, pushOpenRates));
+                _context4.t0 = tableID;
+                _context4.next = _context4.t0 === "subscribers" ? 7 : _context4.t0 === "bulletin_rates" ? 9 : _context4.t0 === "subscriber_rates" ? 11 : 13;
+                break;
 
               case 7:
-                if (!(table.tableInfo.id === "subscribers")) {
-                  _context4.next = 10;
-                  break;
-                }
-
                 pushNewSubs = {
                   name: "new_subscribers",
                   pusher: function pusher(source, col) {
@@ -9212,12 +9200,16 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 };
                 return _context4.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
 
-              case 10:
-                if (!(table.tableInfo.id === "subscriber_rates")) {
-                  _context4.next = 13;
-                  break;
-                }
+              case 9:
+                pushOpenRates = {
+                  name: "open_rate",
+                  pusher: function pusher(source, col) {
+                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
+                  }
+                };
+                return _context4.abrupt("return", createDumpNZIP(dump, pushOpenRates));
 
+              case 11:
                 pushUnsubRate = {
                   name: "unsubscribe_rate",
                   pusher: function pusher(source, col) {
@@ -9227,18 +9219,13 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 return _context4.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
 
               case 13:
-                if (!(table.tableInfo.id === "bulletins")) {
-                  _context4.next = 19;
-                  break;
-                }
-
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
                 wk3_vals = Object.values(dump[2]);
                 return _context4.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
 
-              case 19:
+              case 18:
               case "end":
                 return _context4.stop();
             }
@@ -9273,7 +9260,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
               case 3:
                 dump = _context5.sent;
 
-                if (!(table.tableInfo.id === "topics")) {
+                if (!(tableID === "topics")) {
                   _context5.next = 11;
                   break;
                 }
@@ -9283,7 +9270,7 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
                 // }
                 // return createDumpNZIP(dump, pushOpenRates)
-                console.log("\n        =====================\n        COMPLETE\n        =====================");
+                console.log("\n        =====================\n        COMPLETE\n        =====================\n        ");
                 keys_ = Object.keys(dump[0]);
                 wk1_vals = Object.values(dump[0]);
                 wk2_vals = Object.values(dump[1]);
@@ -9452,25 +9439,50 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
     Table Targets
     ================================== */
 
-    if (table.tableInfo.id === "bulletins") {
-      dataGetter(bulletinsCallList);
-    }
+    switch (tableID) {
+      case "bulletins":
+      case "bulletin_rates":
+        {
+          dataGetter(bulletinsCallList);
+          break;
+        }
 
-    if (table.tableInfo.id === "bulletin_rates") {
-      dataGetter(bulletinsCallList);
-    }
+      case "subscribers":
+      case "subscriber_rates":
+        {
+          dataGetter(subscribersCallList);
+          break;
+        }
 
-    if (table.tableInfo.id === "subscribers") {
-      dataGetter(subscribersCallList);
-    }
+      case "topics":
+        {
+          arrDataGetter(topicsCallList);
+          break;
+        }
 
-    if (table.tableInfo.id === "subscriber_rates") {
-      dataGetter(subscribersCallList);
-    }
-
-    if (table.tableInfo.id === "topics") {
-      arrDataGetter(topicsCallList);
-    } // else if (table.tableInfo.id === "bulletin_details") {
+      default:
+        console.log("SLIPPED THROUGH THE TABLE TARGETS");
+    } //
+    // if (table.tableInfo.id === "bulletins") {
+    //   dataGetter(bulletinsCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "bulletin_rates") {
+    //   dataGetter(bulletinsCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "subscribers") {
+    //   dataGetter(subscribersCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "subscriber_rates") {
+    //   dataGetter(subscribersCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "topics") {
+    //   arrDataGetter(topicsCallList)
+    // }
+    // else if (table.tableInfo.id === "bulletin_details") {
     //   dataGetter(callList3)
     // }
 

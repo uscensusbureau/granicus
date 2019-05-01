@@ -130,6 +130,10 @@ import zip from "lodash.zip"
 
   myConnector.getData = function (table, doneCallback) {
  
+    // Table ID for case by case deploys
+    
+    let tableID = table.tableInfo.id
+    
     /* =================================
     Fetching Functions
     ================================== */ 
@@ -153,7 +157,7 @@ import zip from "lodash.zip"
       console.log(prime)
       console.log("ok?:" + res.ok)
       
-      if (table.tableInfo.id === "bulletin_details") {
+      if (tableID === "bulletin_details") {
         if (res.ok) {
           const cur = prime["bulletin_activity_details"]
           console.log("in bulletin_details...")
@@ -209,7 +213,7 @@ import zip from "lodash.zip"
       return promiseArr.reduce( (acc, res, i) => {
 
         // evens are engagement rate and odds are topic summaries
-        if (table.tableInfo.id === "topics") {
+        if (tableID === "topics") {
           if (i % 2 === 0) {
             let todo = {}
             todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
@@ -232,7 +236,7 @@ import zip from "lodash.zip"
       }, {})
     }
   
-    console.log("Iteration 59")
+    console.log("Iteration 60")
     
     /* =================================
     General Purpose Derivative Functions
@@ -296,18 +300,18 @@ import zip from "lodash.zip"
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
       let dump = await Promise.all(results);
-
-
+      
+      
       // control logic for derived/calculated fields
-      if (table.tableInfo.id === "bulletin_rates") {
-        const pushOpenRates = {
-          name: "open_rate",
-          pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
-        }
-
-        return createDumpNZIP(dump, pushOpenRates)
-
-      }
+      // if (tableID === "bulletin_rates") {
+      //   const pushOpenRates = {
+      //     name: "open_rate",
+      //     pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
+      //   }
+      //
+      //   return createDumpNZIP(dump, pushOpenRates)
+      //
+      // }
       
       // if (table.tableInfo.id === "bulletin_details") {
       //
@@ -320,38 +324,71 @@ import zip from "lodash.zip"
       //
       // }
       
-      if (table.tableInfo.id === "subscribers") {
-        
-        const pushNewSubs = {
-          name: "new_subscribers",
-          pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
+      // if (table.tableInfo.id === "subscribers") {
+      //
+      //   const pushNewSubs = {
+      //     name: "new_subscribers",
+      //     pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
+      //   }
+      //
+      //   return augmentDumpNZip(dump, pushNewSubs)
+      //
+      // }
+      
+      // if (table.tableInfo.id === "subscriber_rates") {
+      //
+      //   const pushUnsubRate = {
+      //     name: "unsubscribe_rate",
+      //     pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
+      //   }
+      //
+      //   return createDumpNZIP(dump, pushUnsubRate)
+      //
+      // }
+      //
+      // if (table.tableInfo.id === "bulletins") {
+      //
+      //   const keys_ = Object.keys(dump[0]);
+      //   const wk1_vals = Object.values(dump[0]);
+      //   const wk2_vals = Object.values(dump[1]);
+      //   const wk3_vals = Object.values(dump[2]);
+      //
+      //   return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+      //
+      // }
+  
+      switch (tableID) {
+        case "subscribers": {
+          const pushNewSubs = {
+            name: "new_subscribers",
+            pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
+          }
+          return augmentDumpNZip(dump, pushNewSubs)
         }
-
-        return augmentDumpNZip(dump, pushNewSubs)
-
+        case "bulletin_rates": {
+          const pushOpenRates = {
+            name: "open_rate",
+            pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
+          }
+          return createDumpNZIP(dump, pushOpenRates)
+        }
+        case "subscriber_rates": {
+          const pushUnsubRate = {
+            name: "unsubscribe_rate",
+            pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
+          }
+          return createDumpNZIP(dump, pushUnsubRate)
+        }
+        default: {
+          const keys_ = Object.keys(dump[0]);
+          const wk1_vals = Object.values(dump[0]);
+          const wk2_vals = Object.values(dump[1]);
+          const wk3_vals = Object.values(dump[2]);
+  
+          return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
+        }
       }
       
-      if (table.tableInfo.id === "subscriber_rates") {
-        
-        const pushUnsubRate = {
-          name: "unsubscribe_rate",
-          pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
-        }
-  
-        return createDumpNZIP(dump, pushUnsubRate)
-        
-      }
-  
-      if (table.tableInfo.id === "bulletins") {
-
-        const keys_ = Object.keys(dump[0]);
-        const wk1_vals = Object.values(dump[0]);
-        const wk2_vals = Object.values(dump[1]);
-        const wk3_vals = Object.values(dump[2]);
-
-        return zip(keys_, wk1_vals, wk2_vals, wk3_vals);
-
-      }
     }
 
     const get_dataArr = async calls => {
@@ -364,7 +401,7 @@ import zip from "lodash.zip"
 
 
       // control logic for derived/calculated fields
-      if (table.tableInfo.id === "topics") {
+      if (tableID === "topics") {
         // const pushOpenRates = {
         //   name: "open_rate",
         //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
@@ -374,8 +411,9 @@ import zip from "lodash.zip"
         console.log(`
         =====================
         COMPLETE
-        =====================`)
-        const keys_ = Object.keys(dump[0]);
+        =====================
+        `)
+        const keys_    = Object.keys(dump[0]);
         const wk1_vals = Object.values(dump[0]);
         const wk2_vals = Object.values(dump[1]);
         const wk3_vals = Object.values(dump[2]);
@@ -394,9 +432,9 @@ import zip from "lodash.zip"
         .then(result => {
           table.appendRows(
             result.map(k => ({
-              "name":     k[0],
-              "this_wk":  k[1],
-              "prev_wk":  k[2],
+              "name"    : k[0],
+              "this_wk" : k[1],
+              "prev_wk" : k[2],
               "three_wk": k[3]
             })
           )
@@ -410,9 +448,9 @@ import zip from "lodash.zip"
         .then(result => {
           table.appendRows(
             result.map(k => ({
-              "name":     k[0],
-              "this_wk":  k[1],
-              "prev_wk":  k[2],
+              "name"    : k[0],
+              "this_wk" : k[1],
+              "prev_wk" : k[2],
               "three_wk": k[3]
             })
           )
@@ -517,25 +555,45 @@ import zip from "lodash.zip"
     Table Targets
     ================================== */ 
 
-    if (table.tableInfo.id === "bulletins") {
-      dataGetter(bulletinsCallList)
-    }
+
     
-    if (table.tableInfo.id === "bulletin_rates") {
-      dataGetter(bulletinsCallList)
+    switch (tableID) {
+      case "bulletins":
+      case "bulletin_rates": {
+        dataGetter(bulletinsCallList)
+        break
+      }
+      case "subscribers":
+      case "subscriber_rates": {
+        dataGetter(subscribersCallList)
+        break
+      }
+      case "topics": {
+        arrDataGetter(topicsCallList)
+        break
+      }
+      default: console.log("SLIPPED THROUGH THE TABLE TARGETS")
     }
-    
-    if (table.tableInfo.id === "subscribers") {
-      dataGetter(subscribersCallList)
-    }
-    
-    if (table.tableInfo.id === "subscriber_rates") {
-      dataGetter(subscribersCallList)
-    }
-    
-    if (table.tableInfo.id === "topics") {
-      arrDataGetter(topicsCallList)
-    }
+    //
+    // if (table.tableInfo.id === "bulletins") {
+    //   dataGetter(bulletinsCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "bulletin_rates") {
+    //   dataGetter(bulletinsCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "subscribers") {
+    //   dataGetter(subscribersCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "subscriber_rates") {
+    //   dataGetter(subscribersCallList)
+    // }
+    //
+    // if (table.tableInfo.id === "topics") {
+    //   arrDataGetter(topicsCallList)
+    // }
     // else if (table.tableInfo.id === "bulletin_details") {
     //   dataGetter(callList3)
     // }
