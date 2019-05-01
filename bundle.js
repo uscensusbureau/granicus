@@ -13905,7 +13905,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(calls) {
-        var results, dump, pushNewSubs, pushOpenRates, pushUnsubRate;
+        var results, dump, pushNewSubs, pushOpenRates, pushClickRates, pushDeliveryRates, pushUnsubRate;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -13919,7 +13919,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 3:
                 dump = _context.sent;
                 _context.t0 = TABLEID;
-                _context.next = _context.t0 === "subscribers" ? 7 : _context.t0 === "bulletin_rates" ? 9 : _context.t0 === "subscriber_rates" ? 11 : 13;
+                _context.next = _context.t0 === "bulletins" ? 7 : _context.t0 === "subscribers" ? 7 : _context.t0 === "bulletin_rates" ? 9 : _context.t0 === "subscriber_rates" ? 13 : 15;
                 break;
 
               case 7:
@@ -13938,9 +13938,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     return (0, _derivatives.makeRateFromObj)(source, col, "opens_count", "total_delivered");
                   }
                 };
-                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushOpenRates));
+                pushClickRates = {
+                  name: "open_rate",
+                  pusher: function pusher(source, col) {
+                    return (0, _derivatives.makeRateFromObj)(source, col, "clicks_count", "total_delivered");
+                  }
+                };
+                pushDeliveryRates = {
+                  name: "open_rate",
+                  pusher: function pusher(source, col) {
+                    return (0, _derivatives.makeRateFromObj)(source, col, "total_delivered", "total_recipients");
+                  }
+                };
+                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushOpenRates, pushClickRates, pushDeliveryRates));
 
-              case 11:
+              case 13:
                 pushUnsubRate = {
                   name: "unsubscribe_rate",
                   pusher: function pusher(source, col) {
@@ -13949,10 +13961,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 };
                 return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushUnsubRate));
 
-              case 13:
+              case 15:
                 return _context.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 14:
+              case 16:
               case "end":
                 return _context.stop();
             }

@@ -72,6 +72,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
       let dump = await Promise.all(results);
   
       switch (TABLEID) {
+        case "bulletins" : 
         case "subscribers": {
           const pushNewSubs = {
             name: "new_subscribers",
@@ -84,7 +85,17 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
             name: "open_rate",
             pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
           }
-          return createDumpNZIP(dump, pushOpenRates)
+          const pushClickRates = {
+            name: "open_rate",
+            pusher: (source, col) => makeRateFromObj(source, col, "clicks_count", "total_delivered")
+          }
+          const pushDeliveryRates = {
+            name: "open_rate",
+            pusher: (source, col) => makeRateFromObj(source, col, "total_delivered", "total_recipients")
+          }
+
+
+          return createDumpNZIP(dump, pushOpenRates, pushClickRates, pushDeliveryRates)
         }
         case "subscriber_rates": {
           const pushUnsubRate = {
