@@ -1,9 +1,12 @@
+// special polyfill for fetch support (not provided by babel-polyfill)
+import fetch from 'fetch-ie8'
+
 /* =================================
 Fetching Functions
 ================================== */
 
 const fetcher = (tableID, key) => async url => {
-  const result = await window.fetch(url, {
+  const result = await fetch(url, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +28,7 @@ const fetcher = (tableID, key) => async url => {
 const arrayFetcher = (tableID, key) => async urls => {
   
   const responses = await urls.map(async url => {
-    const result = await window.fetch(url, {
+    const result = await fetch(url, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +74,7 @@ const arrayFetcher = (tableID, key) => async urls => {
 
 // TODO: Figure out a way to reduce response time (currently >30s = timeout)
 const detailFetcher = (tableID, key) => async (url, acc) => {
-  const result = await window.fetch(url, {
+  const result = await fetch(url, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',

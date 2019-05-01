@@ -15,9 +15,7 @@ browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-e
 Polyfills and library functions
 ================================== */ 
 
-require('babel-polyfill');
-// special polyfill for fetch support (not provided by babel-polyfill)
-require('fetch-ie8')
+import 'babel-polyfill';
 import { bulletins_schema,
          bulletin_rates_schema,
          subscribers_schema,
@@ -50,14 +48,14 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
     const cd_data = JSON.parse(tableau.connectionData);
     const KEY = cd_data.key
-    const DATE = new Date(cd_data.end_date)
+    const DATE = cd_data.end_date
     
     // Table ID for case by case deploys
     
     let TABLEID = table.tableInfo.id
     
   
-    tableau.log("Iteration 65")
+    tableau.log("Iteration 66")
     
 
     /* =================================

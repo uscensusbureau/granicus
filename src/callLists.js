@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 // Get stuff from user input
 
 /* ================================
@@ -27,14 +29,18 @@ const account = "11723";
 // Latest date from user input
 
 // function for creating dates formatted for Granicus API
-const makeDate = (user_date, days_ago) => {
-  // create date from number of 'days_ago' from
-  const date = new Date(new Date().setDate(user_date.getDate() - days_ago));
-  const month = date.getUTCMonth() + 1; //jan = 0
-  const day = date.getUTCDate();
-  const year = date.getUTCFullYear();
-  return `${year}-${month}-${day}`
-}
+
+const makeDate = (user_date, days_ago) => moment(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD')
+//
+// const makeDate = (user_date, days_ago) => {
+//   // create date from number of 'days_ago' from
+//   const date = new Date().setDate(user_date.getDate() - days_ago);
+//   const month = date.getUTCMonth() + 1; //jan = 0
+//   const day = date.getUTCDate();
+//   const year = date.getUTCFullYear();
+//   return `${year}-${month}-${day}`
+// }
+
 
 const makeURLDateRange = (user_date, end, start) => `start_date=${makeDate(user_date, start)}&end_date=${makeDate(user_date, end)}`
 
