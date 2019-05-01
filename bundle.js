@@ -8752,133 +8752,229 @@ module.exports = zip;
 },{}],334:[function(require,module,exports){
 "use strict";
 
-var _lodash = _interopRequireDefault(require("lodash.zip"));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
+// Get stuff from user input
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+/* ================================
+Topics List
+================================== */
+var topics = {
+  "America Counts": "449122",
+  // "USCENSUS_11939",
+  "Census Academy": "454831",
+  // "USCENSUS_11971",
+  "Census Jobs": "449126",
+  // "USCENSUS_11941",
+  "Census Partnerships": "452433",
+  // "USCENSUS_11958",
+  "Census Updates": "444983",
+  // "USCENSUS_11926",
+  "Census Updates for Business": "444992",
+  // "USCENSUS_11927",
+  "Data Visualization Newsletter": "447782",
+  // "USCENSUS_11932",
+  "Statistics in Schools": "449124",
+  // "USCENSUS_11940",
+  "Stats for Stories": "452958" // "USCENSUS_11960"
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+  /* =================================
+  URL Creating Functions
+  ================================== */
+  // account number
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+};
+var account = "11723"; // Latest date from user input
+// function for creating dates formatted for Granicus API
 
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+var makeDate = function makeDate(user_date, days_ago) {
+  // create date from number of 'days_ago' from
+  var date = new Date(new Date().setDate(user_date.getDate() - days_ago));
+  var month = date.getUTCMonth() + 1; //jan = 0
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+  var day = date.getUTCDate();
+  var year = date.getUTCFullYear();
+  return "".concat(year, "-").concat(month, "-").concat(day);
+};
+
+var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
+  return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
+};
+
+var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/"); // Bulletins summary url:
+
+var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
+
+var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
+
+var BURL = "reports/bulletins"; // Topic Summary
+
+var makeTopicURL = function makeTopicURL(topicID) {
+  return "reports/topics/".concat(topicID);
+}; // Engagement rate url
+
+
+var makeEngageURL = function makeEngageURL(topicID) {
+  return "reports/topics/".concat(topicID, "/engagement_rate");
+};
+
+var makeURL = function makeURL(user_date, extURL, _end, _start) {
+  return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, _end, _start));
+};
+
+var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
+  for (var _len = arguments.length, days = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    days[_key - 2] = arguments[_key];
+  }
+
+  return days.map(function (day) {
+    return makeURL(user_date, str, day, day + 7);
+  });
+};
+
+var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, _end, _start) {
+  return Object.values(_topics).map(function (id) {
+    return makeURL(user_date, func(id), _end, _start);
+  });
+}; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
+
+
+var engage_1wk = function engage_1wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeEngageURL, 0, 7);
+};
+
+var topicS_1wk = function topicS_1wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeTopicURL, 0, 7);
+};
+
+var engage_2wk = function engage_2wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeEngageURL, 7, 14);
+};
+
+var topicS_2wk = function topicS_2wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeTopicURL, 7, 14);
+};
+
+var engage_3wk = function engage_3wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeEngageURL, 14, 21);
+};
+
+var topicS_3wk = function topicS_3wk(user_date) {
+  return makeWkFnArr(user_date, topics, makeTopicURL, 14, 21);
+};
+
+var interleave = function interleave(arr1, arr2) {
+  return arr1.reduce(function (acc, cur, i) {
+    return acc.concat(cur, arr2[i]);
+  }, []);
+};
+
+var EplusS_1wk = function EplusS_1wk(user_date) {
+  return interleave(engage_1wk(user_date), topicS_1wk(user_date));
+};
+
+var EplusS_2wk = function EplusS_2wk(user_date) {
+  return interleave(engage_2wk(user_date), topicS_2wk(user_date));
+};
+
+var EplusS_3wk = function EplusS_3wk(user_date) {
+  return interleave(engage_3wk(user_date), topicS_3wk(user_date));
+}; // Bulletin Summary
+
+
+var bulletinsCallList = function bulletinsCallList(user_date) {
+  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
+}; // Subscriber Summary
+
+
+exports.bulletinsCallList = bulletinsCallList;
+
+var subscribersCallList = function subscribersCallList(user_date) {
+  return makeWklyURLArr(user_date, SSURL, 0, 7, 14);
+}; // Bulletin Detail
+// const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
+// Engagement Rates = Array of arrays of URLS
+
+
+exports.subscribersCallList = subscribersCallList;
+
+var topicsCallList = function topicsCallList(user_date) {
+  return [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)];
+};
+
+exports.topicsCallList = topicsCallList;
+
+},{}],335:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeSumFromArr = exports.makeSumFromObj = exports.makeRateFromObj = void 0;
+
+/* =================================
+General Purpose Derivative Functions
+================================== */
+var makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
+  console.log("in makeRateFromObj");
+  var result = source[col][numProp] / source[col][denomProp];
+  console.log("result: " + result);
+  return result;
+};
+
+exports.makeRateFromObj = makeRateFromObj;
+
+var makeSumFromObj = function makeSumFromObj(source, col) {
+  for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    counts[_key - 2] = arguments[_key];
+  }
+
+  console.log("in makeSumFromObj ...counts = " + counts);
+  var result = counts.reduce(function (acc, cur) {
+    return acc + source[col][cur];
+  }, 0);
+  console.log("after await -> counts.reduce...: " + result);
+  return result;
+};
+
+exports.makeSumFromObj = makeSumFromObj;
+
+var makeSumFromArr = function makeSumFromArr(source, col) {
+  for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+    counts[_key2 - 2] = arguments[_key2];
+  }
+
+  console.log("in makeSumFromArr ...counts = ");
+  var result = source[col].reduce(function (acc, cur) {
+    return counts.reduce(function (a, b) {
+      return acc + a + cur[b];
+    }, 0);
+  }, 0);
+  console.log(result);
+  return result;
+};
+
+exports.makeSumFromArr = makeSumFromArr;
+
+},{}],336:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.detailFetcher = exports.arrayFetcher = exports.fetcher = void 0;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-// require('es6-promise').polyfill();
-
-/*
-Tableau's internal browser is old. In order to make dealing with multiple
-asynchronous API calls, waiting for them and processing them *in order*, we use
-a combination of browserify (with babelify) and some polyfills
-
-Using the CLI:
-
-browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-env ] ]
-
- */
-
 /* =================================
-Polyfills and library functions
+Fetching Functions
 ================================== */
-require('babel-polyfill'); // special polyfill for fetch support (not provided by babel-polyfill)
-
-
-require('fetch-ie8'); // function from lodash for allowing us to combine parallel arrays into a single 'table'
-
-
-(function () {
-  // Create the connector object
-  var myConnector = tableau.makeConnector();
-  /* =================================
-  Schemas
-  ================================== */
-
-  myConnector.getSchema = function (schemaCallback) {
-    var rates_schema = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["float"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["float"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["float"]
-    }];
-    var counts_schema = [{
-      id: "name",
-      alias: "Name of Metric",
-      dataType: tableau.dataTypeEnum.string
-    }, {
-      id: "this_wk",
-      alias: "This Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "prev_wk",
-      alias: "Previous Week",
-      dataType: tableau.dataTypeEnum["int"]
-    }, {
-      id: "three_wk",
-      alias: "Three Weeks Ago",
-      dataType: tableau.dataTypeEnum["int"]
-    }];
-    /* =================================
-    Schema Representatives
-    ================================== */
-
-    var bulletins = {
-      id: "bulletins",
-      alias: "Bulletins",
-      columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
-    };
-    var bulletin_rates = {
-      id: "bulletin_rates",
-      alias: "Bulletin Rates",
-      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
-    };
-    var subscribers = {
-      id: "subscribers",
-      alias: "Subscribers",
-      columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
-    };
-    var subscriber_rates = {
-      id: "subscriber_rates",
-      alias: "Subscriber Rates",
-      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
-    }; //const bulletin_details = {
-    //   id: "bulletin_details",
-    //   alias: "Bulletin Details",
-    //   columns:JSON.parse(JSON.stringify ([...counts_schema]
-    // };
-
-    var topics = {
-      id: "topics",
-      alias: "Topic Engagement + Subscribers",
-      columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
-    };
-    schemaCallback([topics, bulletins, bulletin_rates, subscribers, subscriber_rates
-    /*, bulletin_details */
-    ]);
-  };
-
-  myConnector.getData = function (table, doneCallback) {
-    // Table ID for case by case deploys
-    var tableID = table.tableInfo.id;
-    /* =================================
-    Fetching Functions
-    ================================== */
-
-    var fetcher =
+var fetcher = function fetcher(tableID, key) {
+  return (
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
@@ -8919,144 +9015,41 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         }, _callee);
       }));
 
-      return function fetcher(_x) {
+      return function (_x) {
         return _ref.apply(this, arguments);
       };
-    }(); // TODO: Figure out a way to reduce response time (currently >30s = timeout)
+    }()
+  );
+}; // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 
 
-    var detailFetcher =
+exports.fetcher = fetcher;
+
+var arrayFetcher = function arrayFetcher(tableID, key) {
+  return (
     /*#__PURE__*/
     function () {
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2(url, acc) {
-        var result, prime, cur, last, todo;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return window.fetch(url, {
-                  method: "GET",
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/hal+json',
-                    'X-AUTH-TOKEN': key
-                  }
-                });
-
-              case 2:
-                result = _context2.sent;
-                _context2.next = 5;
-                return result.json();
-
-              case 5:
-                prime = _context2.sent;
-                console.log("api call: " + url);
-                console.log("prime:");
-                console.log(prime);
-                console.log("ok?:" + result.ok);
-
-                if (!(tableID === "bulletin_details")) {
-                  _context2.next = 40;
-                  break;
-                }
-
-                if (!result.ok) {
-                  _context2.next = 35;
-                  break;
-                }
-
-                cur = prime["bulletin_activity_details"];
-                console.log("in bulletin_details...");
-
-                if (!(typeof cur === "undefined")) {
-                  _context2.next = 19;
-                  break;
-                }
-
-                console.log("cur == undefined");
-                return _context2.abrupt("return", acc);
-
-              case 19:
-                if (!(cur.length < 20)) {
-                  _context2.next = 26;
-                  break;
-                }
-
-                last = acc.concat(cur);
-                console.log("Less than 20 results: ");
-                console.log(last);
-                return _context2.abrupt("return", last);
-
-              case 26:
-                if (!(cur.length === 20)) {
-                  _context2.next = 33;
-                  break;
-                }
-
-                todo = acc.concat(cur);
-                console.log("More than 20 results: ");
-                console.log(todo);
-                console.log("recurring fetcher");
-                _context2.next = 33;
-                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
-
-              case 33:
-                _context2.next = 38;
-                break;
-
-              case 35:
-                console.log("no results in `next`... acc = ");
-                console.log(acc);
-                return _context2.abrupt("return", acc);
-
-              case 38:
-                _context2.next = 41;
-                break;
-
-              case 40:
-                return _context2.abrupt("return", prime);
-
-              case 41:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-
-      return function detailFetcher(_x2, _x3) {
-        return _ref2.apply(this, arguments);
-      };
-    }(); // handle Many calls in one weekly bundle (e.g., Engagement Rates)
-
-
-    var arrayFetcher =
-    /*#__PURE__*/
-    function () {
-      var _ref3 = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(urls) {
+      regeneratorRuntime.mark(function _callee3(urls) {
         var responses, promiseArr;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context4.next = 2;
+                _context3.next = 2;
                 return urls.map(
                 /*#__PURE__*/
                 function () {
-                  var _ref4 = _asyncToGenerator(
+                  var _ref3 = _asyncToGenerator(
                   /*#__PURE__*/
-                  regeneratorRuntime.mark(function _callee3(url) {
+                  regeneratorRuntime.mark(function _callee2(url) {
                     var result, prime;
-                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
-                        switch (_context3.prev = _context3.next) {
+                        switch (_context2.prev = _context2.next) {
                           case 0:
-                            _context3.next = 2;
+                            _context2.next = 2;
                             return window.fetch(url, {
                               method: "GET",
                               headers: {
@@ -9067,37 +9060,37 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                             });
 
                           case 2:
-                            result = _context3.sent;
-                            _context3.next = 5;
+                            result = _context2.sent;
+                            _context2.next = 5;
                             return result.json();
 
                           case 5:
-                            prime = _context3.sent;
+                            prime = _context2.sent;
                             console.log("prime:");
                             console.log(prime);
-                            return _context3.abrupt("return", prime);
+                            return _context2.abrupt("return", prime);
 
                           case 9:
                           case "end":
-                            return _context3.stop();
+                            return _context2.stop();
                         }
                       }
-                    }, _callee3);
+                    }, _callee2);
                   }));
 
-                  return function (_x5) {
-                    return _ref4.apply(this, arguments);
+                  return function (_x3) {
+                    return _ref3.apply(this, arguments);
                   };
                 }());
 
               case 2:
-                responses = _context4.sent;
-                _context4.next = 5;
+                responses = _context3.sent;
+                _context3.next = 5;
                 return Promise.all(responses);
 
               case 5:
-                promiseArr = _context4.sent;
-                return _context4.abrupt("return", promiseArr.reduce(function (acc, res, i) {
+                promiseArr = _context3.sent;
+                return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   // evens are engagement rate and odds are topic summaries
                   if (tableID === "topics") {
                     if (i % 2 === 0) {
@@ -9123,190 +9116,284 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
 
               case 7:
               case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }));
+
+      return function (_x2) {
+        return _ref2.apply(this, arguments);
+      };
+    }()
+  );
+}; // TODO: Figure out a way to reduce response time (currently >30s = timeout)
+
+
+exports.arrayFetcher = arrayFetcher;
+
+var detailFetcher = function detailFetcher(tableID, key) {
+  return (
+    /*#__PURE__*/
+    function () {
+      var _ref4 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee4(url, acc) {
+        var result, prime, cur, last, todo;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return window.fetch(url, {
+                  method: "GET",
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/hal+json',
+                    'X-AUTH-TOKEN': key
+                  }
+                });
+
+              case 2:
+                result = _context4.sent;
+                _context4.next = 5;
+                return result.json();
+
+              case 5:
+                prime = _context4.sent;
+                console.log("api call: " + url);
+                console.log("prime:");
+                console.log(prime);
+                console.log("ok?:" + result.ok);
+
+                if (!(tableID === "bulletin_details")) {
+                  _context4.next = 40;
+                  break;
+                }
+
+                if (!result.ok) {
+                  _context4.next = 35;
+                  break;
+                }
+
+                cur = prime["bulletin_activity_details"];
+                console.log("in bulletin_details...");
+
+                if (!(typeof cur === "undefined")) {
+                  _context4.next = 19;
+                  break;
+                }
+
+                console.log("cur == undefined");
+                return _context4.abrupt("return", acc);
+
+              case 19:
+                if (!(cur.length < 20)) {
+                  _context4.next = 26;
+                  break;
+                }
+
+                last = acc.concat(cur);
+                console.log("Less than 20 results: ");
+                console.log(last);
+                return _context4.abrupt("return", last);
+
+              case 26:
+                if (!(cur.length === 20)) {
+                  _context4.next = 33;
+                  break;
+                }
+
+                todo = acc.concat(cur);
+                console.log("More than 20 results: ");
+                console.log(todo);
+                console.log("recurring fetcher");
+                _context4.next = 33;
+                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
+
+              case 33:
+                _context4.next = 38;
+                break;
+
+              case 35:
+                console.log("no results in `next`... acc = ");
+                console.log(acc);
+                return _context4.abrupt("return", acc);
+
+              case 38:
+                _context4.next = 41;
+                break;
+
+              case 40:
+                return _context4.abrupt("return", prime);
+
+              case 41:
+              case "end":
                 return _context4.stop();
             }
           }
         }, _callee4);
       }));
 
-      return function arrayFetcher(_x4) {
-        return _ref3.apply(this, arguments);
+      return function (_x4, _x5) {
+        return _ref4.apply(this, arguments);
       };
-    }();
+    }()
+  );
+};
 
-    console.log("Iteration 61");
-    /* =================================
-    General Purpose Derivative Functions
-    ================================== */
+exports.detailFetcher = detailFetcher;
 
-    var makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
-      console.log("in makeRateFromObj");
-      var result = source[col][numProp] / source[col][denomProp];
-      console.log("result: " + result);
-      return result;
-    };
+},{}],337:[function(require,module,exports){
+"use strict";
 
-    var makeSumFromObj = function makeSumFromObj(source, col) {
-      for (var _len = arguments.length, counts = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        counts[_key - 2] = arguments[_key];
-      }
+var _schemas = require("./schemas");
 
-      console.log("in makeSumFromObj ...counts = " + counts);
-      var result = counts.reduce(function (acc, cur) {
-        return acc + source[col][cur];
-      }, 0);
-      console.log("after await -> counts.reduce...: " + result);
-      return result;
-    };
+var _fetchers = require("./fetchers");
 
-    var makeSumFromArr = function makeSumFromArr(source, col) {
-      for (var _len2 = arguments.length, counts = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        counts[_key2 - 2] = arguments[_key2];
-      }
+var _derivatives = require("./derivatives");
 
-      console.log("in makeSumFromArr ...counts = ");
-      var result = source[col].reduce(function (acc, cur) {
-        return counts.reduce(function (a, b) {
-          return acc + a + cur[b];
-        }, 0);
-      }, 0);
-      console.log(result);
-      return result;
-    };
+var _payloadModifiers = require("./payloadModifiers");
 
-    var augmentDumpNZip = function augmentDumpNZip(source) {
-      for (var _len3 = arguments.length, pushers = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-        pushers[_key3 - 1] = arguments[_key3];
-      }
+var _callLists = require("./callLists");
 
-      var keys_ = Object.keys(source[0]);
-      var wk1_vals = Object.values(source[0]);
-      var wk2_vals = Object.values(source[1]);
-      var wk3_vals = Object.values(source[2]);
-      var wks = [wk1_vals, wk2_vals, wk3_vals];
-      return _lodash["default"].apply(void 0, [pushers.reduce(function (acc, pusher) {
-        return acc.concat(pusher.name);
-      }, keys_)].concat(_toConsumableArray(wks.map(function (wk, i) {
-        return wk.concat(pushers.map(function (p) {
-          return p.pusher(source, i);
-        }));
-      }))));
-    };
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
-    var createDumpNZIP = function createDumpNZIP(source) {
-      for (var _len4 = arguments.length, pushers = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        pushers[_key4 - 1] = arguments[_key4];
-      }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-      return _lodash["default"].apply(void 0, [pushers.map(function (pusher) {
-        return pusher.name;
-      })].concat(_toConsumableArray([[], [], []].map(function (wk, i) {
-        return wk.concat(pushers.map(function (p) {
-          return p.pusher(source, i);
-        }));
-      }))));
-    };
+// require('es6-promise').polyfill();
+
+/*
+Tableau's internal browser is old. In order to make dealing with multiple
+asynchronous API calls, waiting for them and processing them *in order*, we use
+a combination of browserify (with babelify) and some polyfills
+
+Using the CLI:
+
+browserify ./src/index.js -o bundle.js -t [ babelify --presets [ @babel/preset-env ] ]
+
+ */
+
+/* =================================
+Polyfills and library functions
+================================== */
+require('babel-polyfill'); // special polyfill for fetch support (not provided by babel-polyfill)
+
+
+require('fetch-ie8');
+
+(function () {
+  // Create the connector object
+  var myConnector = tableau.makeConnector();
+
+  myConnector.getSchema = function (schemaCallback) {
+    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.subscriber_rates_schema
+    /*, bulletin_details */
+    ]);
+  };
+
+  myConnector.getData = function (table, doneCallback) {
+    // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
+    var cd_data = JSON.parse(tableau.connectionData);
+    var KEY = cd_data.key;
+    var DATE = cd_data.end_date; // Table ID for case by case deploys
+
+    var TABLEID = table.tableInfo.id;
+    console.log("Iteration 62");
     /* =================================
     Data Getters
     ================================== */
 
-
     var get_data =
     /*#__PURE__*/
     function () {
-      var _ref5 = _asyncToGenerator(
+      var _ref = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee5(calls) {
-        var results, dump, pushNewSubs, pushOpenRates, pushUnsubRate, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      regeneratorRuntime.mark(function _callee(calls) {
+        var results, dump, pushNewSubs, pushOpenRates, pushUnsubRate;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context.prev = _context.next) {
               case 0:
                 results = calls.map(function (url) {
-                  return fetcher(url, []);
-                }); // For Object results, returns an array of promises containing objects
-                // For Array results, returns an array of promises containing arrays of objects
-
-                _context5.next = 3;
+                  return (0, _fetchers.fetcher)(TABLEID, KEY)(url);
+                });
+                _context.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context5.sent;
-                _context5.t0 = tableID;
-                _context5.next = _context5.t0 === "subscribers" ? 7 : _context5.t0 === "bulletin_rates" ? 9 : _context5.t0 === "subscriber_rates" ? 11 : 13;
+                dump = _context.sent;
+                _context.t0 = TABLEID;
+                _context.next = _context.t0 === "subscribers" ? 7 : _context.t0 === "bulletin_rates" ? 9 : _context.t0 === "subscriber_rates" ? 11 : 13;
                 break;
 
               case 7:
                 pushNewSubs = {
                   name: "new_subscribers",
                   pusher: function pusher(source, col) {
-                    return makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
+                    return (0, _derivatives.makeSumFromObj)(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
                   }
                 };
-                return _context5.abrupt("return", augmentDumpNZip(dump, pushNewSubs));
+                return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, pushNewSubs));
 
               case 9:
                 pushOpenRates = {
                   name: "open_rate",
                   pusher: function pusher(source, col) {
-                    return makeRateFromObj(source, col, "opens_count", "total_delivered");
+                    return (0, _derivatives.makeRateFromObj)(source, col, "opens_count", "total_delivered");
                   }
                 };
-                return _context5.abrupt("return", createDumpNZIP(dump, pushOpenRates));
+                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushOpenRates));
 
               case 11:
                 pushUnsubRate = {
                   name: "unsubscribe_rate",
                   pusher: function pusher(source, col) {
-                    return makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers");
+                    return (0, _derivatives.makeRateFromObj)(source, col, "deleted_subscribers", "total_subscribers");
                   }
                 };
-                return _context5.abrupt("return", createDumpNZIP(dump, pushUnsubRate));
+                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushUnsubRate));
 
               case 13:
-                keys_ = Object.keys(dump[0]);
-                wk1_vals = Object.values(dump[0]);
-                wk2_vals = Object.values(dump[1]);
-                wk3_vals = Object.values(dump[2]);
-                return _context5.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 18:
+              case 14:
               case "end":
-                return _context5.stop();
+                return _context.stop();
             }
           }
-        }, _callee5);
+        }, _callee);
       }));
 
-      return function get_data(_x6) {
-        return _ref5.apply(this, arguments);
+      return function get_data(_x) {
+        return _ref.apply(this, arguments);
       };
     }();
 
     var get_dataArr =
     /*#__PURE__*/
     function () {
-      var _ref6 = _asyncToGenerator(
+      var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee6(calls) {
-        var results, dump, keys_, wk1_vals, wk2_vals, wk3_vals;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      regeneratorRuntime.mark(function _callee2(calls) {
+        var results, dump;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 results = calls.map(function (urls) {
-                  return arrayFetcher(urls);
+                  return (0, _fetchers.arrayFetcher)(TABLEID, KEY)(urls);
                 }); // For Object results, returns an array of promises containing objects
                 // For Array results, returns an array of promises containing arrays of objects
 
-                _context6.next = 3;
+                _context2.next = 3;
                 return Promise.all(results);
 
               case 3:
-                dump = _context6.sent;
+                dump = _context2.sent;
 
-                if (!(tableID === "topics")) {
-                  _context6.next = 11;
+                if (!(TABLEID === "topics")) {
+                  _context2.next = 7;
                   break;
                 }
 
@@ -9316,22 +9403,18 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
                 // }
                 // return createDumpNZIP(dump, pushOpenRates)
                 console.log("\n        =====================\n        COMPLETE\n        =====================\n        ");
-                keys_ = Object.keys(dump[0]);
-                wk1_vals = Object.values(dump[0]);
-                wk2_vals = Object.values(dump[1]);
-                wk3_vals = Object.values(dump[2]);
-                return _context6.abrupt("return", (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals));
+                return _context2.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 11:
+              case 7:
               case "end":
-                return _context6.stop();
+                return _context2.stop();
             }
           }
-        }, _callee6);
+        }, _callee2);
       }));
 
-      return function get_dataArr(_x7) {
-        return _ref6.apply(this, arguments);
+      return function get_dataArr(_x2) {
+        return _ref2.apply(this, arguments);
       };
     }();
     /* =================================
@@ -9366,167 +9449,35 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
         doneCallback();
       });
     };
-    /* ================================
-    Topics List
-    ================================== */
-
-
-    var topics = {
-      "America Counts": "449122",
-      // "USCENSUS_11939",
-      "Census Academy": "454831",
-      // "USCENSUS_11971",
-      "Census Jobs": "449126",
-      // "USCENSUS_11941",
-      "Census Partnerships": "452433",
-      // "USCENSUS_11958",
-      "Census Updates": "444983",
-      // "USCENSUS_11926",
-      "Census Updates for Business": "444992",
-      // "USCENSUS_11927",
-      "Data Visualization Newsletter": "447782",
-      // "USCENSUS_11932",
-      "Statistics in Schools": "449124",
-      // "USCENSUS_11940",
-      "Stats for Stories": "452958" // "USCENSUS_11960"
-
-      /* =================================
-      URL Creating Functions
-      ================================== */
-      // account number
-
-    };
-    var account = "11723"; // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
-
-    var cd_data = JSON.parse(tableau.connectionData);
-    var key = cd_data.key;
-    var _end = cd_data.end_date; // Latest date from user input
-
-    var end_date = new Date(_end); // function for creating dates formatted for Granicus API
-
-    var makeDate = function makeDate(days_ago) {
-      // create date from number of 'days_ago' from
-      var date = new Date(new Date().setDate(end_date.getDate() - days_ago));
-      var month = date.getUTCMonth() + 1; //jan = 0
-
-      var day = date.getUTCDate();
-      var year = date.getUTCFullYear();
-      return "".concat(year, "-").concat(month, "-").concat(day);
-    };
-
-    var makeURLDateRange = function makeURLDateRange(end, start) {
-      return "start_date=".concat(makeDate(start), "&end_date=").concat(makeDate(end));
-    };
-
-    var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/"); // Bulletins summary url:
-
-    var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
-
-    var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
-
-    var BURL = "reports/bulletins"; // Topic Summary
-
-    var makeTopicURL = function makeTopicURL(topicID) {
-      return "reports/topics/".concat(topicID);
-    }; // Engagement rate url
-
-
-    var makeEngageURL = function makeEngageURL(topicID) {
-      return "reports/topics/".concat(topicID, "/engagement_rate");
-    };
-
-    var makeURL = function makeURL(extURL, _end, _start) {
-      return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(_end, _start));
-    };
-
-    var makeWklyURLArr = function makeWklyURLArr(str) {
-      for (var _len5 = arguments.length, days = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-        days[_key5 - 1] = arguments[_key5];
-      }
-
-      return days.map(function (day) {
-        return makeURL(str, day, day + 7);
-      });
-    };
-
-    var makeWkFnArr = function makeWkFnArr(_topics, func, _end, _start) {
-      return Object.values(_topics).map(function (id) {
-        return makeURL(func(id), _end, _start);
-      });
-    }; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
-
-
-    var engage_1wk = makeWkFnArr(topics, makeEngageURL, 0, 7);
-    var topicS_1wk = makeWkFnArr(topics, makeTopicURL, 0, 7);
-    var engage_2wk = makeWkFnArr(topics, makeEngageURL, 7, 14);
-    var topicS_2wk = makeWkFnArr(topics, makeTopicURL, 7, 14);
-    var engage_3wk = makeWkFnArr(topics, makeEngageURL, 14, 21);
-    var topicS_3wk = makeWkFnArr(topics, makeTopicURL, 14, 21);
-
-    var interleave = function interleave(arr1, arr2) {
-      return arr1.reduce(function (acc, cur, i) {
-        return acc.concat(cur, arr2[i]);
-      }, []);
-    };
-
-    var EplusS_1wk = interleave(engage_1wk, topicS_1wk);
-    var EplusS_2wk = interleave(engage_2wk, topicS_2wk);
-    var EplusS_3wk = interleave(engage_3wk, topicS_3wk); // Bulletin Summary
-
-    var bulletinsCallList = makeWklyURLArr(BSURL, 0, 7, 14); // Subscriber Summary
-
-    var subscribersCallList = makeWklyURLArr(SSURL, 0, 7, 14); // Bulletin Detail
-    // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
-    // Engagement Rates = Array of arrays of URLS
-
-    var topicsCallList = [EplusS_1wk, EplusS_2wk, EplusS_3wk];
     /* =================================
     Table Targets
     ================================== */
 
-    switch (tableID) {
+
+    switch (TABLEID) {
       case "bulletins":
       case "bulletin_rates":
         {
-          dataGetter(bulletinsCallList);
+          dataGetter((0, _callLists.bulletinsCallList)(DATE));
           break;
         }
 
       case "subscribers":
       case "subscriber_rates":
         {
-          dataGetter(subscribersCallList);
+          dataGetter((0, _callLists.subscribersCallList)(DATE));
           break;
         }
 
       case "topics":
         {
-          arrDataGetter(topicsCallList);
+          arrDataGetter((0, _callLists.topicsCallList)(DATE));
           break;
         }
 
       default:
         console.log("SLIPPED THROUGH THE TABLE TARGETS");
     } //
-    // if (table.tableInfo.id === "bulletins") {
-    //   dataGetter(bulletinsCallList)
-    // }
-    //
-    // if (table.tableInfo.id === "bulletin_rates") {
-    //   dataGetter(bulletinsCallList)
-    // }
-    //
-    // if (table.tableInfo.id === "subscribers") {
-    //   dataGetter(subscribersCallList)
-    // }
-    //
-    // if (table.tableInfo.id === "subscriber_rates") {
-    //   dataGetter(subscribersCallList)
-    // }
-    //
-    // if (table.tableInfo.id === "topics") {
-    //   arrDataGetter(topicsCallList)
-    // }
     // else if (table.tableInfo.id === "bulletin_details") {
     //   dataGetter(callList3)
     // }
@@ -9552,4 +9503,158 @@ require('fetch-ie8'); // function from lodash for allowing us to combine paralle
   });
 })();
 
-},{"babel-polyfill":1,"fetch-ie8":331,"lodash.zip":332}]},{},[334]);
+},{"./callLists":334,"./derivatives":335,"./fetchers":336,"./payloadModifiers":338,"./schemas":339,"babel-polyfill":1,"fetch-ie8":331}],338:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createDumpNZIP = exports.augmentDumpNZip = exports.dumpNZIP = void 0;
+
+var _lodash = _interopRequireDefault(require("lodash.zip"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var augmentDumpNZip = function augmentDumpNZip(source) {
+  for (var _len = arguments.length, pushers = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    pushers[_key - 1] = arguments[_key];
+  }
+
+  var keys_ = Object.keys(source[0]);
+  var wk1_vals = Object.values(source[0]);
+  var wk2_vals = Object.values(source[1]);
+  var wk3_vals = Object.values(source[2]);
+  var wks = [wk1_vals, wk2_vals, wk3_vals];
+  return _lodash["default"].apply(void 0, [pushers.reduce(function (acc, pusher) {
+    return acc.concat(pusher.name);
+  }, keys_)].concat(_toConsumableArray(wks.map(function (wk, i) {
+    return wk.concat(pushers.map(function (p) {
+      return p.pusher(source, i);
+    }));
+  }))));
+};
+
+exports.augmentDumpNZip = augmentDumpNZip;
+
+var createDumpNZIP = function createDumpNZIP(source) {
+  for (var _len2 = arguments.length, pushers = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    pushers[_key2 - 1] = arguments[_key2];
+  }
+
+  return _lodash["default"].apply(void 0, [pushers.map(function (pusher) {
+    return pusher.name;
+  })].concat(_toConsumableArray([[], [], []].map(function (wk, i) {
+    return wk.concat(pushers.map(function (p) {
+      return p.pusher(source, i);
+    }));
+  }))));
+};
+
+exports.createDumpNZIP = createDumpNZIP;
+
+var dumpNZIP = function dumpNZIP(source) {
+  var keys_ = Object.keys(source[0]);
+  var wk1_vals = Object.values(source[0]);
+  var wk2_vals = Object.values(source[1]);
+  var wk3_vals = Object.values(source[2]);
+  return (0, _lodash["default"])(keys_, wk1_vals, wk2_vals, wk3_vals);
+};
+
+exports.dumpNZIP = dumpNZIP;
+
+},{"lodash.zip":332}],339:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.topics_engagement_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
+
+/* =================================
+  Schemas
+  ================================== */
+var rates_schema = [{
+  id: "name",
+  alias: "Name of Metric",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "this_wk",
+  alias: "This Week",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "prev_wk",
+  alias: "Previous Week",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "three_wk",
+  alias: "Three Weeks Ago",
+  dataType: tableau.dataTypeEnum["float"]
+}];
+var counts_schema = [{
+  id: "name",
+  alias: "Name of Metric",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "this_wk",
+  alias: "This Week",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "prev_wk",
+  alias: "Previous Week",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "three_wk",
+  alias: "Three Weeks Ago",
+  dataType: tableau.dataTypeEnum["int"]
+}];
+/* =================================
+Schema Representatives
+================================== */
+// JSON.parse(JSON.stringify...)) ugliness required for Tableau:
+// https://github.com/tableau/webdataconnector/issues/115#issuecomment-254354375
+
+var bulletins_schema = {
+  id: "bulletins",
+  alias: "Bulletins",
+  columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
+};
+exports.bulletins_schema = bulletins_schema;
+var bulletin_rates_schema = {
+  id: "bulletin_rates",
+  alias: "Bulletin Rates",
+  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
+};
+exports.bulletin_rates_schema = bulletin_rates_schema;
+var subscribers_schema = {
+  id: "subscribers",
+  alias: "Subscribers",
+  columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
+};
+exports.subscribers_schema = subscribers_schema;
+var subscriber_rates_schema = {
+  id: "subscriber_rates",
+  alias: "Subscriber Rates",
+  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
+}; //const bulletin_details = {
+//   id: "bulletin_details",
+//   alias: "Bulletin Details",
+//   columns:JSON.parse(JSON.stringify ([...counts_schema]
+// };
+
+exports.subscriber_rates_schema = subscriber_rates_schema;
+var topics_engagement_schema = {
+  id: "topics",
+  alias: "Topic Engagement + Subscribers",
+  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
+};
+exports.topics_engagement_schema = topics_engagement_schema;
+
+},{}]},{},[337]);
