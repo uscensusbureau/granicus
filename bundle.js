@@ -9110,8 +9110,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                       console.log(acc);
                       return Object.assign(acc, _todo);
                     }
-                  } // must resolve the value in order for the next tick to access the contents
-
+                  }
                 }, {}));
 
               case 7:
@@ -9296,10 +9295,10 @@ require('fetch-ie8');
     // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
     var cd_data = JSON.parse(tableau.connectionData);
     var KEY = cd_data.key;
-    var DATE = cd_data.end_date; // Table ID for case by case deploys
+    var DATE = new Date(cd_data.end_date); // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 62");
+    console.log("Iteration 63");
     /* =================================
     Data Getters
     ================================== */

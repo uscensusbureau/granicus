@@ -64,7 +64,6 @@ const arrayFetcher = (tableID, key) => async urls => {
         return Object.assign(acc, todo)
       }
     }
-    // must resolve the value in order for the next tick to access the contents
   }, {})
 }
 
