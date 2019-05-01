@@ -117,7 +117,13 @@ import zip from "lodash.zip"
       columns: JSON.parse(JSON.stringify([...rates_schema]))
     };
 
-    schemaCallback([bulletins, bulletin_rates, subscribers, subscriber_rates, topics /*, bulletin_details */ ]);
+    schemaCallback([
+      topics,
+      bulletins,
+      bulletin_rates,
+      subscribers,
+      subscriber_rates
+      /*, bulletin_details */ ]);
   };
 
 
@@ -132,7 +138,7 @@ import zip from "lodash.zip"
 
     // make a single call or recursion for `next` links 
     const fetcher = async (url, acc) => {  
-      return await window.fetch(url, {
+      const result = await window.fetch(url, {
         method: "GET",
         headers: {
           'Content-Type': 'application/json',
@@ -140,40 +146,43 @@ import zip from "lodash.zip"
           'X-AUTH-TOKEN': key
         }
       })
-      .then(async res => {
-       const prime = await res.json()
-        console.log("api call: " + url);
-        console.log("prime:")
-        console.table(prime)
-        console.log("ok?:" + res.ok)
-        if (table.tableInfo.id === "bulletin_details") {
-          if (res.ok) {
-           const cur = prime["bulletin_activity_details"]
-            console.log("in bulletin_details...")
-            if (typeof cur === "undefined") {
-              console.log("cur == undefined")
-              return acc
-            } else if (cur.length < 20) {
-             const last = acc.concat(cur)
-              console.log("Less than 20 results: ")
-              console.table(last)
-              return last // bulletin details is an array
-            } else if (cur.length === 20) {
-             const next = acc.concat(cur)
-              console.log("More than 20 results: ")
-              console.table(next)
-              console.log("recurring fetcher")
-              await fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, next)
-            }
-          } else {
-            console.log("no results in `next`... acc = ")
-            console.table(acc)
+      
+      const prime = await result.json()
+      console.log("api call: " + url);
+      console.log("prime:")
+      console.log(prime)
+      console.log("ok?:" + res.ok)
+      
+      if (table.tableInfo.id === "bulletin_details") {
+        if (res.ok) {
+          const cur = prime["bulletin_activity_details"]
+          console.log("in bulletin_details...")
+          if (typeof cur === "undefined") {
+            console.log("cur == undefined")
             return acc
+          } else if (cur.length < 20) {
+           const last = acc.concat(cur)
+            console.log("Less than 20 results: ")
+            console.log(last)
+            return last // bulletin details is an array
+          } else if (cur.length === 20) {
+            const todo = acc.concat(cur)
+            console.log("More than 20 results: ")
+            console.log(todo)
+            console.log("recurring fetcher")
+            await fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, todo)
           }
         } else {
-          return prime // summaries is an object
+          console.log("no results in `next`... acc = ")
+          console.log(acc)
+          return acc
         }
-      })
+        
+      } else {
+        
+        return prime // summaries is an object
+      
+      }
     }
 
     // handle Many calls in one weekly bundle (e.g., Engagement Rates)
@@ -191,7 +200,7 @@ import zip from "lodash.zip"
   
         const prime = await result.json()
         console.log("prime:")
-        console.table(prime)
+        console.log(prime)
         return prime
       })
       
@@ -205,49 +214,22 @@ import zip from "lodash.zip"
             let todo = {}
             todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
             console.log("engagement_rate: ")
-            console.table(todo)
+            console.log(todo)
             console.log("acc:")
-            console.table(acc)
+            console.log(acc)
             return Object.assign(acc, todo)
           } else {
             let todo = {}
             todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
             console.log("Subscribers: ")
-            console.table(todo)
+            console.log(todo)
             console.log("acc:")
-            console.table(acc)
+            console.log(acc)
             return Object.assign(acc, todo)
           }
         }
         // must resolve the value in order for the next tick to access the contents
       }, {})
-      // return promiseArr.reduce(async (acc, res, i) => {
-      //
-      //   const last = await acc
-      //   const coll = await res
-      //   // evens are engagement rate and odds are topic summaries
-      //   if (table.tableInfo.id === "topics") {
-      //     if (i % 2 === 0) {
-      //      let todo = {}
-      //       todo[`${coll["name"]} Engagement Rate`] = coll["engagement_rate"]
-      //       console.log("engagement_rate: ")
-      //       console.table(todo)
-      //       console.log("last:")
-      //       console.table(last)
-      //       return Object.assign(last, todo)
-      //     } else {
-      //       let todo = {}
-      //       todo[`${coll["name"]} Subscribers`] = coll["total_subscriptions_to_date"]
-      //       console.log("Subscribers: ")
-      //       console.table(todo)
-      //       console.log("last:")
-      //       console.table(last)
-      //       return Object.assign(last, todo)
-      //     }
-      //   }
-      // // must resolve the value in order for the next tick to access the contents
-      // }, Promise.resolve({}))
-      // will be an array of Promises containing objects
     }
   
     console.log("Iteration 59")
@@ -276,7 +258,7 @@ import zip from "lodash.zip"
       console.log("in makeSumFromArr ...counts = ")
       const result = source[col].reduce((acc, cur) => counts.reduce((a, b) => acc + a + cur[b], 0), 0)
 
-      console.table(result)
+      console.log(result)
       return result
     }
   
@@ -325,16 +307,20 @@ import zip from "lodash.zip"
 
         return createDumpNZIP(dump, pushOpenRates)
 
-      } else if (table.tableInfo.id === "bulletin_details") {
-
-        const pushTgiSums = {
-          name: "total_digital_impressions",
-          pusher: (source, col) => makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")
-        }
-
-        return createDumpNZIP(dump, pushTgiSums)
-
-      } else if (table.tableInfo.id === "subscribers") {
+      }
+      
+      // if (table.tableInfo.id === "bulletin_details") {
+      //
+      //   const pushTgiSums = {
+      //     name: "total_digital_impressions",
+      //     pusher: (source, col) => makeSumFromArr(source, col, "nonunique_opens_count", "nonunique_clicks_count")
+      //   }
+      //
+      //   return createDumpNZIP(dump, pushTgiSums)
+      //
+      // }
+      
+      if (table.tableInfo.id === "subscribers") {
         
         const pushNewSubs = {
           name: "new_subscribers",
@@ -343,7 +329,9 @@ import zip from "lodash.zip"
 
         return augmentDumpNZip(dump, pushNewSubs)
 
-      } else  if (table.tableInfo.id === "subscriber_rates") {
+      }
+      
+      if (table.tableInfo.id === "subscriber_rates") {
         
         const pushUnsubRate = {
           name: "unsubscribe_rate",
@@ -352,7 +340,9 @@ import zip from "lodash.zip"
   
         return createDumpNZIP(dump, pushUnsubRate)
         
-      } else {
+      }
+  
+      if (table.tableInfo.id === "bulletins") {
 
         const keys_ = Object.keys(dump[0]);
         const wk1_vals = Object.values(dump[0]);
@@ -404,15 +394,15 @@ import zip from "lodash.zip"
         .then(result => {
           table.appendRows(
             result.map(k => ({
-              "name": k[0],
-              "this_wk": k[1],
-              "prev_wk": k[2],
+              "name":     k[0],
+              "this_wk":  k[1],
+              "prev_wk":  k[2],
               "three_wk": k[3]
             })
-            )
           )
-          doneCallback()
-        })
+        )
+        doneCallback()
+      })
     }
 
     const arrDataGetter = urlList => {
@@ -420,66 +410,25 @@ import zip from "lodash.zip"
         .then(result => {
           table.appendRows(
             result.map(k => ({
-                "name": k[0],
-                "this_wk": k[1],
-                "prev_wk": k[2],
-                "three_wk": k[3]
-              })
-            )
+              "name":     k[0],
+              "this_wk":  k[1],
+              "prev_wk":  k[2],
+              "three_wk": k[3]
+            })
           )
-          doneCallback()
-        })
+        )
+        doneCallback()
+      })
     }
  
   
-    /* =================================
+    /* ================================
     Topics List
-    
-     "id": 449122,
-     "code": "USCENSUS_11939",
-     "name": "America Counts: Stories Behind the Numbers",
-      
-      
-    "id": 454831,
-    "code": "USCENSUS_11971",
-    "name": "Census Academy",
-      
-      
-    "id": 449126,
-    "code": "USCENSUS_11941",
-    "name": "Census Jobs",
-      
-      
-    "id": 452433,
-    "code": "USCENSUS_11958",
-    "name": "Census Partnerships",
-      
-    "id": 444983,
-    "code": "USCENSUS_11926",
-    "name": "Census Updates",
-    
-    "id": 444992,
-    "code": "USCENSUS_11927",
-    "name": "Census Updates for Business",
-    
-    "id": 447782,
-    "code": "USCENSUS_11932",
-    "name": "Data Visualization Newsletter",
-    
-    "id": 449124,
-    "code": "USCENSUS_11940",
-    "name": "Statistics in Schools",
-      
-    "id": 452958,
-    "code": "USCENSUS_11960",
-    "name": "Stats for Stories",
-      
-      
     ================================== */
   
     
     const topics = {
-      "America Counts"                : "449122",// "USCENSUS_11939",
+      "America Counts"                : "449122", // "USCENSUS_11939",
       "Census Academy"                : "454831", // "USCENSUS_11971",
       "Census Jobs"                   : "449126", // "USCENSUS_11941",
       "Census Partnerships"           : "452433", // "USCENSUS_11958",
@@ -487,7 +436,7 @@ import zip from "lodash.zip"
       "Census Updates for Business"   : "444992", // "USCENSUS_11927",
       "Data Visualization Newsletter" : "447782", // "USCENSUS_11932",
       "Statistics in Schools"         : "449124", // "USCENSUS_11940",
-      "Stats for Stories"             : "452958"// "USCENSUS_11960"
+      "Stats for Stories"             : "452958"  // "USCENSUS_11960"
     }
   
     /* =================================
