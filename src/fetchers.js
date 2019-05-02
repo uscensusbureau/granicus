@@ -1,3 +1,4 @@
+import mapKeys from 'lodash.mapkeys'
 
 /* =================================
 Fetching Functions
@@ -21,6 +22,19 @@ const fetcher = (tableID, key) => async url => {
 }
 
 
+const renameKeysWQMarks = obj => {
+  return mapKeys(obj, (v, k) => {
+    switch (k) {
+      case "bulletin_visibility?": {
+        return "bulletin_visibility"
+      }
+      case "publish_to_rss?": {
+        return "publish_to_rss"
+      }
+      default: return k
+    }
+  })
+}
 
 // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 const arrayFetcher = (tableID, key) => async urls => {
@@ -89,7 +103,9 @@ const arrayFetcher = (tableID, key) => async urls => {
         if (res["bulletin_activity_details"]) {
           console.log("res['bulletin_activity_details'][0]['subject']")
           console.log(res["bulletin_activity_details"][0]["subject"])
-          return acc.concat(res["bulletin_activity_details"])
+          // fixes keys with question marks (not allowed in Tableau)
+          return acc.concat(res["bulletin_activity_details"].map(o => renameKeysWQMarks(o)))
+          
         } else {
           return acc
         }

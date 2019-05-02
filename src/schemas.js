@@ -48,6 +48,13 @@ const counts_schema =  [
   },
 ];
 
+/*
+An error occurred while communicating with the data source.
+  
+  The web data connector returned invalid data.
+  Error creating object for class TableInfo. The input data for one of the contained objects is invalid. The input Id 'bulletin_visibility?' is invalid. The Id must contain only letters, numbers or underscores.
+
+  */
 const tgi_schema = [
   {
     id: "created_at",                              
@@ -175,8 +182,8 @@ const tgi_schema = [
     dataType: tableau.dataTypeEnum.int
   },
   {
-    id: "bulletin_visibility?",                     
-    alias: "Bulletin Visibility?",
+    id: "bulletin_visibility",
+    alias: "Bulletin Visibility",
     dataType: tableau.dataTypeEnum.string
   },
   {
@@ -190,8 +197,8 @@ const tgi_schema = [
     dataType: tableau.dataTypeEnum.string
   },
   {
-    id: "publish_to_rss?",                          
-    alias: "Publish to RSS?",
+    id: "publish_to_rss",
+    alias: "Publish to RSS",
     dataType: tableau.dataTypeEnum.string
   },
   {
