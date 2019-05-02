@@ -13780,7 +13780,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
               case 10:
                 console.log("in arrayFetcher: bulletin_details");
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
-                  if (res["bulletin_activity_details first subject for this response"]) {
+                  if (res["bulletin_activity_details"]) {
                     console.log("res['bulletin_activity_details'][0]['subject']");
                     console.log(res["bulletin_activity_details"][0]["subject"]);
                     return acc.concat(res["bulletin_activity_details"]);
@@ -13936,8 +13936,6 @@ var _payloadModifiers = require("./payloadModifiers");
 
 var _callLists = require("./callLists");
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -13959,7 +13957,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 72");
+    console.log("Iteration 73");
     /* =================================
     Data Getters
     ================================== */
@@ -14158,7 +14156,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           table.appendRows(Object.keys(obj).reduce(function (acc, cur) {
             var todo = {};
             todo["".concat(cur)] = obj[cur];
-            return Object.assign(acc, _defineProperty({}, cur, obj[cur]));
+            return Object.assign(acc, todo);
           }, {}));
         });
       });

@@ -61,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 72")
+    console.log("Iteration 73")
     
 
     /* =================================
@@ -189,7 +189,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
               Object.keys(obj).reduce((acc, cur) => {
                 let todo = {}
                 todo[`${cur}`] = obj[cur]
-                return Object.assign(acc, {[cur]: obj[cur]})
+                return Object.assign(acc, todo)
               }, {})
             )
           })
