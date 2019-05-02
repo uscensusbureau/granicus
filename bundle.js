@@ -13957,7 +13957,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 73");
+    console.log("Iteration 74");
     /* =================================
     Data Getters
     ================================== */
@@ -14152,13 +14152,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
     var detailGetter = function detailGetter(urlList) {
       makeCallsDetails(urlList).then(function (results) {
-        results.map(function (obj) {
-          table.appendRows(Object.keys(obj).reduce(function (acc, cur) {
-            var todo = {};
-            todo["".concat(cur)] = obj[cur];
-            return Object.assign(acc, todo);
-          }, {}));
-        });
+        table.appendRows(results //   results.map( obj => {
+        //     Object.keys(obj).reduce((acc, cur) => {
+        //       let todo = {}
+        //       todo[`${cur}`] = obj[cur]
+        //       return Object.assign(acc, todo)
+        //     }, {})
+        //   })
+        );
       });
     };
     /* =================================

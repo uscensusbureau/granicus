@@ -61,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 73")
+    console.log("Iteration 74")
     
 
     /* =================================
@@ -151,49 +151,48 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
 
     const dataGetter = urlList => {
       makeCalls(urlList)
-        .then(result => {
-          table.appendRows(
-            result.map(k => ({
-              "name"    : k[0],
-              "this_wk" : k[1],
-              "prev_wk" : k[2],
-              "three_wk": k[3]
-            })
-          )
-        )
+      .then(result => {
+        table.appendRows(
+          result.map(k => ({
+            "name"    : k[0],
+            "this_wk" : k[1],
+            "prev_wk" : k[2],
+            "three_wk": k[3]
+          })
+        ))
         doneCallback()
       })
     }
 
     const arrDataGetter = urlList => {
       makeCallsArr(urlList)
-        .then(result => {
-          table.appendRows(
-            result.map(k => ({
-              "name"    : k[0],
-              "this_wk" : k[1],
-              "prev_wk" : k[2],
-              "three_wk": k[3]
-            })
-          )
-        )
+      .then(result => {
+        table.appendRows(
+          result.map(k => ({
+            "name"    : k[0],
+            "this_wk" : k[1],
+            "prev_wk" : k[2],
+            "three_wk": k[3]
+          })
+        ))
         doneCallback()
       })
     }
     
     const detailGetter = urlList => {
       makeCallsDetails(urlList)
-        .then( results => {
-          results.map( obj => {
-            table.appendRows(
-              Object.keys(obj).reduce((acc, cur) => {
-                let todo = {}
-                todo[`${cur}`] = obj[cur]
-                return Object.assign(acc, todo)
-              }, {})
-            )
-          })
-        })
+      .then( results => {
+        table.appendRows(
+          results
+        //   results.map( obj => {
+        //     Object.keys(obj).reduce((acc, cur) => {
+        //       let todo = {}
+        //       todo[`${cur}`] = obj[cur]
+        //       return Object.assign(acc, todo)
+        //     }, {})
+        //   })
+        )}
+      )
     }
  
  
