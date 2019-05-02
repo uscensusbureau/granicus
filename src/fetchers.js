@@ -86,9 +86,9 @@ const arrayFetcher = (tableID, key) => async urls => {
     case "bulletin_details" : {
       console.log("in arrayFetcher: bulletin_details")
       return promiseArr.reduce((acc, res) => {
-        if (res["bulletin_activity_details"]) {
-          console.log("bulletin_activity_details: subject")
-          console.log(res["bulletin_activity_details"]["subject"])
+        if (res["bulletin_activity_details first subject for this response"]) {
+          console.log("res['bulletin_activity_details'][0]['subject']")
+          console.log(res["bulletin_activity_details"][0]["subject"])
           return acc.concat(res["bulletin_activity_details"])
         } else {
           return acc

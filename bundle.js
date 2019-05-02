@@ -13780,9 +13780,9 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
               case 10:
                 console.log("in arrayFetcher: bulletin_details");
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
-                  if (res["bulletin_activity_details"]) {
-                    console.log("bulletin_activity_details: subject");
-                    console.log(res["bulletin_activity_details"]["subject"]);
+                  if (res["bulletin_activity_details first subject for this response"]) {
+                    console.log("res['bulletin_activity_details'][0]['subject']");
+                    console.log(res["bulletin_activity_details"][0]["subject"]);
                     return acc.concat(res["bulletin_activity_details"]);
                   } else {
                     return acc;
@@ -13959,7 +13959,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 71");
+    console.log("Iteration 72");
     /* =================================
     Data Getters
     ================================== */
@@ -14092,23 +14092,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3(calls) {
-        var results, dump;
+        var dump;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                results = (0, _fetchers.arrayFetcher)(TABLEID, KEY)(calls);
-                _context3.next = 3;
-                return Promise.all(results);
+                _context3.next = 2;
+                return (0, _fetchers.arrayFetcher)(TABLEID, KEY)(calls);
 
-              case 3:
+              case 2:
                 dump = _context3.sent;
-                // will be an array of promises of objects
+                // const dump = await Promise.all(results) // will be an array of promises of objects
                 console.log("in makeCallsDetails:");
                 console.table(dump);
                 return _context3.abrupt("return", dump);
 
-              case 7:
+              case 6:
               case "end":
                 return _context3.stop();
             }

@@ -61,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 71")
+    console.log("Iteration 72")
     
 
     /* =================================
@@ -135,9 +135,9 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     }
 
     const makeCallsDetails = async calls => {
-      const results = arrayFetcher(TABLEID, KEY)(calls)
+      const dump = await arrayFetcher(TABLEID, KEY)(calls)
       
-      const dump = await Promise.all(results) // will be an array of promises of objects
+      // const dump = await Promise.all(results) // will be an array of promises of objects
       
       console.log("in makeCallsDetails:")
       console.table(dump)
