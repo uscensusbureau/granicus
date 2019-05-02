@@ -17988,7 +17988,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       case "bulletin_details":
         {
-          detailGetter((0, _callLists.bulletinDetailsCallsForDays)(DATE, 30));
+          detailGetter((0, _callLists.bulletinDetailsCallsForDays)(DATE, 21));
           break;
         }
 

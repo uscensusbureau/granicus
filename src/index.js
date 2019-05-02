@@ -219,7 +219,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
         break
       }
       case "bulletin_details": {
-        detailGetter(bulletinDetailsCallsForDays(DATE, 30))
+        detailGetter(bulletinDetailsCallsForDays(DATE, 21))
         break
       }
       default: console.log("SLIPPED THROUGH THE TABLE TARGETS")
