@@ -191,8 +191,10 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
         //       return Object.assign(acc, todo)
         //     }, {})
         //   })
-        )}
-      )
+        
+        )
+        doneCallback()
+      })
     }
  
  
@@ -219,7 +221,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
         break
       }
       case "bulletin_details": {
-        detailGetter(bulletinDetailsCallsForDays(DATE, 21))
+        detailGetter(bulletinDetailsCallsForDays(DATE, 30))
         break
       }
       default: console.log("SLIPPED THROUGH THE TABLE TARGETS")
