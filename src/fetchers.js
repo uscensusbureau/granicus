@@ -1,4 +1,5 @@
 import mapKeys from 'lodash.mapkeys'
+import omit from 'lodash.omit'
 
 /* =================================
 Fetching Functions
@@ -23,7 +24,7 @@ const fetcher = (tableID, key) => async url => {
 
 
 const renameKeysWQMarks = obj => {
-  return mapKeys(obj, (v, k) => {
+  const cleaned = mapKeys(obj, (v, k) => {
     switch (k) {
       case "bulletin_visibility?": {
         return "bulletin_visibility"
@@ -34,6 +35,7 @@ const renameKeysWQMarks = obj => {
       default: return k
     }
   })
+  return omit(cleaned, ["_links"])
 }
 
 // handle Many calls in one weekly bundle (e.g., Engagement Rates)

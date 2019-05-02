@@ -183,7 +183,7 @@ const tgi_schema = [
   },
   {
     id: "bulletin_visibility",
-    alias: "Bulletin Visibility",
+    alias: "Bulletin Visibility?",
     dataType: tableau.dataTypeEnum.string
   },
   {
@@ -198,7 +198,7 @@ const tgi_schema = [
   },
   {
     id: "publish_to_rss",
-    alias: "Publish to RSS",
+    alias: "Publish to RSS?",
     dataType: tableau.dataTypeEnum.string
   },
   {
