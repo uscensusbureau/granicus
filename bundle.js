@@ -13710,7 +13710,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                               }
                             }).then(function (response) {
                               if (response.ok) {
-                                return response;
+                                return response.json();
                               } else {
                                 return {};
                               }
@@ -13719,7 +13719,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                           case 2:
                             result = _context2.sent;
                             _context2.next = 5;
-                            return result.json();
+                            return result;
 
                           case 5:
                             prime = _context2.sent;
@@ -13747,12 +13747,11 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
 
               case 5:
                 promiseArr = _context3.sent;
+                _context3.t0 = tableID;
+                _context3.next = _context3.t0 === "topics" ? 9 : _context3.t0 === "bulletin_details" ? 10 : 12;
+                break;
 
-                if (!(tableID === "topics")) {
-                  _context3.next = 10;
-                  break;
-                }
-
+              case 9:
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   if (res["name"]) {
                     // evens are engagement rate and odds are topic summaries
@@ -13779,15 +13778,18 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                 }, {}));
 
               case 10:
+                console.log("in arrayFetcher: bulletin_details");
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
-                  if (res.bulletin_activity_details) {
-                    return acc.concat(res.bulletin_activity_details);
+                  if (res["bulletin_activity_details"]) {
+                    console.log("bulletin_activity_details: subject");
+                    console.log(res["bulletin_activity_details"]["subject"]);
+                    return acc.concat(res["bulletin_activity_details"]);
                   } else {
                     return acc;
                   }
                 }, []));
 
-              case 11:
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -13957,7 +13959,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 70");
+    console.log("Iteration 71");
     /* =================================
     Data Getters
     ================================== */

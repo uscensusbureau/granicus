@@ -35,13 +35,13 @@ const arrayFetcher = (tableID, key) => async urls => {
       }
     }).then(response => {
       if (response.ok){
-        return response
+        return response.json()
       } else {
         return {}
       }
     })
     
-    const prime = await result.json()
+    const prime = await result
     console.log("prime:")
     console.table(prime)
     return prime
@@ -52,42 +52,49 @@ const arrayFetcher = (tableID, key) => async urls => {
   
   // topics table = array of promises of objects
   // return a single object with k/v pairs
-  if (tableID === "topics") {
-    return promiseArr.reduce((acc, res, i) => {
-      if (res["name"]) {
-        // evens are engagement rate and odds are topic summaries
-        if (i % 2 === 0) {
-          let todo = {}
-          todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
-          // console.log("engagement_rate: ")
-          // console.log(todo)
-          // console.log("acc:")
-          // console.log(acc)
-          return Object.assign(acc, todo)
+  
+  switch (tableID) {
+    case "topics" : {
+      return promiseArr.reduce((acc, res, i) => {
+        if (res["name"]) {
+          // evens are engagement rate and odds are topic summaries
+          if (i % 2 === 0) {
+            let todo = {}
+            todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
+            // console.log("engagement_rate: ")
+            // console.log(todo)
+            // console.log("acc:")
+            // console.log(acc)
+            return Object.assign(acc, todo)
+          } else {
+            let todo = {}
+            todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
+            // console.log("Subscribers: ")
+            // console.log(todo)
+            // console.log("acc:")
+            // console.log(acc)
+            return Object.assign(acc, todo)
+          }
         } else {
-          let todo = {}
-          todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
-          // console.log("Subscribers: ")
-          // console.log(todo)
-          // console.log("acc:")
-          // console.log(acc)
-          return Object.assign(acc, todo)
+          return acc
         }
-      } else {
-        return acc
-      }
-    }, {})
-  // bulletin details table = array of promises of array (get`bulletin_activity_details`)
-  // of objects
-  // return a single array of objects (one for each bulletin)
-  } else {
-    return promiseArr.reduce((acc, res) => {
-      if (res.bulletin_activity_details) {
-        return acc.concat(res.bulletin_activity_details)
-      } else {
-        return acc
-      }
-    }, [])
+      }, {})
+    }
+    // bulletin details table = array of promises of array (get`bulletin_activity_details`)
+    // of objects
+    // return a single array of objects (one for each bulletin)
+    case "bulletin_details" : {
+      console.log("in arrayFetcher: bulletin_details")
+      return promiseArr.reduce((acc, res) => {
+        if (res["bulletin_activity_details"]) {
+          console.log("bulletin_activity_details: subject")
+          console.log(res["bulletin_activity_details"]["subject"])
+          return acc.concat(res["bulletin_activity_details"])
+        } else {
+          return acc
+        }
+      }, [])
+    }
   }
 }
 
