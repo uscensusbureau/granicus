@@ -13359,7 +13359,7 @@ module.exports = zip;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.bulletinDetailsCallList = exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
+exports.bulletinDetailsCallsForDays = exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
 
 var _moment = _interopRequireDefault(require("moment"));
 
@@ -13545,13 +13545,17 @@ var makeTopicParams = function makeTopicParams(topicIDs) {
   })));
 };
 
-var bulletinDetailsCallList = function bulletinDetailsCallList(user_date, days) {
+var bulletinDetailsCallsForDays = function bulletinDetailsCallsForDays(user_date, days) {
   return _toConsumableArray(Array(days).keys()).map(function (day) {
-    "".concat(makeURL(user_date, BURL, day + 2, day + 1)).concat(makeTopicParams(topics));
+    console.log("in bulletinDetailsCallsForDays");
+    var result = "".concat(makeURL(user_date, BURL, day + 1, day)).concat(makeTopicParams(topics));
+    console.log("url:");
+    console.log(result);
+    return result;
   });
 };
 
-exports.bulletinDetailsCallList = bulletinDetailsCallList;
+exports.bulletinDetailsCallsForDays = bulletinDetailsCallsForDays;
 
 },{"moment":333}],336:[function(require,module,exports){
 "use strict";
@@ -13565,9 +13569,9 @@ exports.makeSumFromArr = exports.makeSumFromObj = exports.makeRateFromObj = void
 General Purpose Derivative Functions
 ================================== */
 var makeRateFromObj = function makeRateFromObj(source, col, numProp, denomProp) {
-  tableau.log("in makeRateFromObj");
+  console.log("in makeRateFromObj");
   var result = source[col][numProp] / source[col][denomProp];
-  tableau.log("result: " + result);
+  console.log("result: " + result);
   return result;
 };
 
@@ -13578,11 +13582,11 @@ var makeSumFromObj = function makeSumFromObj(source, col) {
     counts[_key - 2] = arguments[_key];
   }
 
-  tableau.log("in makeSumFromObj ...counts = " + counts);
+  console.log("in makeSumFromObj ...counts = " + counts);
   var result = counts.reduce(function (acc, cur) {
     return acc + source[col][cur];
   }, 0);
-  tableau.log("after await -> counts.reduce...: " + result);
+  console.log("after await -> counts.reduce...: " + result);
   return result;
 };
 
@@ -13593,13 +13597,13 @@ var makeSumFromArr = function makeSumFromArr(source, col) {
     counts[_key2 - 2] = arguments[_key2];
   }
 
-  tableau.log("in makeSumFromArr ...counts = ");
+  console.log("in makeSumFromArr ...counts = ");
   var result = source[col].reduce(function (acc, cur) {
     return counts.reduce(function (a, b) {
       return acc + a + cur[b];
     }, 0);
   }, 0);
-  tableau.log(result);
+  console.log(result);
   return result;
 };
 
@@ -13704,6 +13708,12 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                                 'Accept': 'application/hal+json',
                                 'X-AUTH-TOKEN': key
                               }
+                            }).then(function (response) {
+                              if (response.ok) {
+                                return response;
+                              } else {
+                                return {};
+                              }
                             });
 
                           case 2:
@@ -13744,23 +13754,27 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                 }
 
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
-                  // evens are engagement rate and odds are topic summaries
-                  if (i % 2 === 0) {
-                    var todo = {};
-                    todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"]; // tableau.log("engagement_rate: ")
-                    // tableau.log(todo)
-                    // tableau.log("acc:")
-                    // tableau.log(acc)
+                  if (res["name"]) {
+                    // evens are engagement rate and odds are topic summaries
+                    if (i % 2 === 0) {
+                      var todo = {};
+                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"]; // console.log("engagement_rate: ")
+                      // console.log(todo)
+                      // console.log("acc:")
+                      // console.log(acc)
 
-                    return Object.assign(acc, todo);
+                      return Object.assign(acc, todo);
+                    } else {
+                      var _todo = {};
+                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"]; // console.log("Subscribers: ")
+                      // console.log(todo)
+                      // console.log("acc:")
+                      // console.log(acc)
+
+                      return Object.assign(acc, _todo);
+                    }
                   } else {
-                    var _todo = {};
-                    _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"]; // tableau.log("Subscribers: ")
-                    // tableau.log(todo)
-                    // tableau.log("acc:")
-                    // tableau.log(acc)
-
-                    return Object.assign(acc, _todo);
+                    return acc;
                   }
                 }, {}));
 
@@ -13820,10 +13834,10 @@ var detailFetcher = function detailFetcher(tableID, key) {
 
               case 5:
                 prime = _context4.sent;
-                tableau.log("api call: " + url);
-                tableau.log("prime:");
-                tableau.log(prime);
-                tableau.log("ok?:" + result.ok);
+                console.log("api call: " + url);
+                console.log("prime:");
+                console.table(prime);
+                console.log("ok?:" + result.ok);
 
                 if (!(tableID === "bulletin_details")) {
                   _context4.next = 40;
@@ -13836,14 +13850,14 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 }
 
                 cur = prime["bulletin_activity_details"];
-                tableau.log("in bulletin_details...");
+                console.log("in bulletin_details...");
 
                 if (!(typeof cur === "undefined")) {
                   _context4.next = 19;
                   break;
                 }
 
-                tableau.log("cur == undefined");
+                console.log("cur == undefined");
                 return _context4.abrupt("return", acc);
 
               case 19:
@@ -13853,8 +13867,8 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 }
 
                 last = acc.concat(cur);
-                tableau.log("Less than 20 results: ");
-                tableau.log(last);
+                console.log("Less than 20 results: ");
+                console.log(last);
                 return _context4.abrupt("return", last);
 
               case 26:
@@ -13864,9 +13878,9 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 }
 
                 todo = acc.concat(cur);
-                tableau.log("More than 20 results: ");
-                tableau.log(todo);
-                tableau.log("recurring fetcher");
+                console.log("More than 20 results: ");
+                console.log(todo);
+                console.log("recurring fetcher");
                 _context4.next = 33;
                 return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
 
@@ -13875,8 +13889,8 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 break;
 
               case 35:
-                tableau.log("no results in `next`... acc = ");
-                tableau.log(acc);
+                console.log("no results in `next`... acc = ");
+                console.table(acc);
                 return _context4.abrupt("return", acc);
 
               case 38:
@@ -13943,7 +13957,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    tableau.log("Iteration 68");
+    console.log("Iteration 69");
     /* =================================
     Data Getters
     ================================== */
@@ -13954,7 +13968,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(calls) {
-        var results, dump, newSubs, openRates, clickRates, deliveryRates, unsubRate;
+        var results, dump, openRates, clickRates, deliveryRates, newSubs, unsubRate;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -13968,19 +13982,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 3:
                 dump = _context.sent;
                 _context.t0 = TABLEID;
-                _context.next = _context.t0 === "bulletins" ? 7 : _context.t0 === "subscribers" ? 7 : _context.t0 === "bulletin_rates" ? 9 : _context.t0 === "subscriber_rates" ? 13 : 15;
+                _context.next = _context.t0 === "bulletin_rates" ? 7 : _context.t0 === "subscribers" ? 11 : _context.t0 === "subscriber_rates" ? 13 : 15;
                 break;
 
               case 7:
-                newSubs = {
-                  name: "new_subscribers",
-                  pusher: function pusher(source, col) {
-                    return (0, _derivatives.makeSumFromObj)(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
-                  }
-                };
-                return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, newSubs));
-
-              case 9:
                 openRates = {
                   name: "open_rate",
                   pusher: function pusher(source, col) {
@@ -14000,6 +14005,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 };
                 return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, openRates, clickRates, deliveryRates));
+
+              case 11:
+                newSubs = {
+                  name: "new_subscribers",
+                  pusher: function pusher(source, col) {
+                    return (0, _derivatives.makeSumFromObj)(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
+                  }
+                };
+                return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, newSubs));
 
               case 13:
                 unsubRate = {
@@ -14141,8 +14155,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       makeCallsDetails(urlList).then(function (results) {
         results.map(function (obj) {
           table.appendRows(Object.keys(obj).reduce(function (acc, cur) {
+            var todo = {};
+            todo["".concat(cur)] = obj[cur];
             return Object.assign(acc, _defineProperty({}, cur, obj[cur]));
-          }));
+          }, {}));
         });
       });
     };
@@ -14174,12 +14190,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       case "bulletin_details":
         {
-          detailGetter((0, _callLists.bulletinDetailsCallList)(DATE));
+          detailGetter((0, _callLists.bulletinDetailsCallsForDays)(DATE, 30));
           break;
         }
 
       default:
-        tableau.log("SLIPPED THROUGH THE TABLE TARGETS");
+        console.log("SLIPPED THROUGH THE TABLE TARGETS");
     } //
     // else if (table.tableInfo.id === "bulletin_details") {
     //   dataGetter(callList3)

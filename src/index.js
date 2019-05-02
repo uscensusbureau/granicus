@@ -30,7 +30,7 @@ import {
 import { fetcher, arrayFetcher, detailFetcher } from "./fetchers";
 import { makeSumFromObj, makeRateFromObj, makeSumFromArr } from "./derivatives";
 import { dumpNZIP, augmentDumpNZip, createDumpNZIP } from "./payloadModifiers";
-import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetailsCallList } from "./callLists";
+import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetailsCallsForDays } from "./callLists";
 
 (function () {
   // Create the connector object
@@ -61,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    tableau.log("Iteration 68")
+    console.log("Iteration 69")
     
 
     /* =================================
@@ -75,14 +75,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
       let dump = await Promise.all(results);
   
       switch (TABLEID) {
-        case "bulletins" : 
-        case "subscribers": {
-          const newSubs = {
-            name: "new_subscribers",
-            pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
-          }
-          return augmentDumpNZip(dump, newSubs)
-        }
+        // case "bulletins" :
         case "bulletin_rates": {
           const openRates = {
             name: "open_rate",
@@ -96,9 +89,14 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
             name: "delivery_rates",
             pusher: (source, col) => makeRateFromObj(source, col, "total_delivered", "total_recipients")
           }
-
-
           return createDumpNZIP(dump, openRates, clickRates, deliveryRates)
+        }
+        case "subscribers": {
+          const newSubs = {
+            name: "new_subscribers",
+            pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
+          }
+          return augmentDumpNZip(dump, newSubs)
         }
         case "subscriber_rates": {
           const unsubRate = {
@@ -189,8 +187,10 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
           results.map( obj => {
             table.appendRows(
               Object.keys(obj).reduce((acc, cur) => {
+                let todo = {}
+                todo[`${cur}`] = obj[cur]
                 return Object.assign(acc, {[cur]: obj[cur]})
-              })
+              }, {})
             )
           })
         })
@@ -220,10 +220,10 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
         break
       }
       case "bulletin_details": {
-        detailGetter(bulletinDetailsCallList(DATE))
+        detailGetter(bulletinDetailsCallsForDays(DATE, 30))
         break
       }
-      default: tableau.log("SLIPPED THROUGH THE TABLE TARGETS")
+      default: console.log("SLIPPED THROUGH THE TABLE TARGETS")
     }
     //
     // else if (table.tableInfo.id === "bulletin_details") {

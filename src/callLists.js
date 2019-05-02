@@ -105,8 +105,12 @@ Bulletin Details Calls Array
 
 const makeTopicParams = topicIDs => "".concat(...Object.values(topicIDs).map(topicID => `&topic%5B%5D=${topicID}`))
 
-const bulletinDetailsCallList = (user_date, days) => [...Array(days).keys()].map(day => {
-  `${makeURL(user_date, BURL, day + 2, day +1)}${makeTopicParams(topics)}`
+const bulletinDetailsCallsForDays = (user_date, days) => [...Array(days).keys()].map(day => {
+  console.log("in bulletinDetailsCallsForDays")
+  let result = `${makeURL(user_date, BURL, day + 1, day)}${makeTopicParams(topics)}`
+  console.log("url:")
+  console.log(result)
+  return result
 })
 
-export { bulletinsCallList, subscribersCallList, topicsCallList, bulletinDetailsCallList }
+export { bulletinsCallList, subscribersCallList, topicsCallList, bulletinDetailsCallsForDays }
