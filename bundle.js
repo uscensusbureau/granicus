@@ -13359,17 +13359,94 @@ module.exports = zip;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
+exports.bulletinDetailsCallList = exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
 
 var _moment = _interopRequireDefault(require("moment"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// Get stuff from user input
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+/* =================================
+URL Creating Functions
+================================== */
+// account number
+var account = "11723";
+/* =================================
+General Purpose
+================================== */
+// function for creating dates formatted for Granicus API
+// `user_date` = Latest date from user input
+
+var makeDate = function makeDate(user_date, days_ago) {
+  return (0, _moment["default"])(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD');
+};
+
+var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
+
+var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
+  return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
+};
+
+var makeURL = function makeURL(user_date, extURL, _end, _start) {
+  return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, _end, _start));
+};
+
+var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
+  for (var _len = arguments.length, days = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    days[_key - 2] = arguments[_key];
+  }
+
+  return days.map(function (day) {
+    return makeURL(user_date, str, day, day + 7);
+  });
+};
+
+var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, _end, _start) {
+  return Object.values(_topics).map(function (id) {
+    return makeURL(user_date, func(id), _end, _start);
+  });
+};
+/* =================================
+Endpoints (extensions)
+================================== */
+// Bulletins summary url:
+
+
+var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
+
+var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
+
+var BURL = "reports/bulletins";
+/* =================================
+Shallow Calls
+================================== */
+// Bulletin Summary
+
+var bulletinsCallList = function bulletinsCallList(user_date) {
+  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
+}; // Subscriber Summary
+
+
+exports.bulletinsCallList = bulletinsCallList;
+
+var subscribersCallList = function subscribersCallList(user_date) {
+  return makeWklyURLArr(user_date, SSURL, 0, 7, 14);
+}; // Bulletin Detail
+// const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
 
 /* ================================
 Topics List
 ================================== */
+
+
+exports.subscribersCallList = subscribersCallList;
 var topics = {
   "General 2020 Census Updates": "289016",
   "America Counts": "449122",
@@ -13391,38 +13468,11 @@ var topics = {
   "Stats for Stories": "452958" // "USCENSUS_11960"
 
   /* =================================
-  URL Creating Functions
+  Engagement Calls Array (deep)
   ================================== */
-  // account number
+  // Topic Summary
 
 };
-var account = "11723"; // Latest date from user input
-// function for creating dates formatted for Granicus API
-
-var makeDate = function makeDate(user_date, days_ago) {
-  return (0, _moment["default"])(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD');
-}; //
-// const makeDate = (user_date, days_ago) => {
-//   // create date from number of 'days_ago' from
-//   const date = new Date().setDate(user_date.getDate() - days_ago);
-//   const month = date.getUTCMonth() + 1; //jan = 0
-//   const day = date.getUTCDate();
-//   const year = date.getUTCFullYear();
-//   return `${year}-${month}-${day}`
-// }
-
-
-var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
-  return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
-};
-
-var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/"); // Bulletins summary url:
-
-var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
-
-var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
-
-var BURL = "reports/bulletins"; // Topic Summary
 
 var makeTopicURL = function makeTopicURL(topicID) {
   return "reports/topics/".concat(topicID);
@@ -13431,26 +13481,6 @@ var makeTopicURL = function makeTopicURL(topicID) {
 
 var makeEngageURL = function makeEngageURL(topicID) {
   return "reports/topics/".concat(topicID, "/engagement_rate");
-};
-
-var makeURL = function makeURL(user_date, extURL, _end, _start) {
-  return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, _end, _start));
-};
-
-var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
-  for (var _len = arguments.length, days = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    days[_key - 2] = arguments[_key];
-  }
-
-  return days.map(function (day) {
-    return makeURL(user_date, str, day, day + 7);
-  });
-};
-
-var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, _end, _start) {
-  return Object.values(_topics).map(function (id) {
-    return makeURL(user_date, func(id), _end, _start);
-  });
 }; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
 
 
@@ -13494,30 +13524,34 @@ var EplusS_2wk = function EplusS_2wk(user_date) {
 
 var EplusS_3wk = function EplusS_3wk(user_date) {
   return interleave(engage_3wk(user_date), topicS_3wk(user_date));
-}; // Bulletin Summary
+}; // Engagement Rates = Array of arrays of URLS
 
-
-var bulletinsCallList = function bulletinsCallList(user_date) {
-  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
-}; // Subscriber Summary
-
-
-exports.bulletinsCallList = bulletinsCallList;
-
-var subscribersCallList = function subscribersCallList(user_date) {
-  return makeWklyURLArr(user_date, SSURL, 0, 7, 14);
-}; // Bulletin Detail
-// const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
-// Engagement Rates = Array of arrays of URLS
-
-
-exports.subscribersCallList = subscribersCallList;
 
 var topicsCallList = function topicsCallList(user_date) {
   return [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)];
 };
+/* =================================
+Bulletin Details Calls Array
+================================== */
+
 
 exports.topicsCallList = topicsCallList;
+
+var makeTopicParams = function makeTopicParams(topicIDs) {
+  var _ref;
+
+  return (_ref = "").concat.apply(_ref, _toConsumableArray(Object.values(topicIDs).map(function (topicID) {
+    return "&topic%5B%5D=".concat(topicID);
+  })));
+};
+
+var bulletinDetailsCallList = function bulletinDetailsCallList(user_date, days) {
+  return _toConsumableArray(Array(days).keys()).map(function (day) {
+    "".concat(makeURL(user_date, BURL, day + 2, day + 1)).concat(makeTopicParams(topics));
+  });
+};
+
+exports.bulletinDetailsCallList = bulletinDetailsCallList;
 
 },{"moment":333}],336:[function(require,module,exports){
 "use strict";
@@ -13615,9 +13649,9 @@ var fetcher = function fetcher(tableID, key) {
 
               case 5:
                 prime = _context.sent;
-                tableau.log("api call: " + url);
-                tableau.log("prime:");
-                tableau.log(prime);
+                console.log("api call: " + url);
+                console.log("prime:");
+                console.table(prime);
                 return _context.abrupt("return", prime);
 
               case 10:
@@ -13679,8 +13713,8 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
 
                           case 5:
                             prime = _context2.sent;
-                            tableau.log("prime:");
-                            tableau.log(prime);
+                            console.log("prime:");
+                            console.table(prime);
                             return _context2.abrupt("return", prime);
 
                           case 9:
@@ -13703,30 +13737,43 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
 
               case 5:
                 promiseArr = _context3.sent;
+
+                if (!(tableID === "topics")) {
+                  _context3.next = 10;
+                  break;
+                }
+
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   // evens are engagement rate and odds are topic summaries
-                  if (tableID === "topics") {
-                    if (i % 2 === 0) {
-                      var todo = {};
-                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"];
-                      tableau.log("engagement_rate: ");
-                      tableau.log(todo);
-                      tableau.log("acc:");
-                      tableau.log(acc);
-                      return Object.assign(acc, todo);
-                    } else {
-                      var _todo = {};
-                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
-                      tableau.log("Subscribers: ");
-                      tableau.log(_todo);
-                      tableau.log("acc:");
-                      tableau.log(acc);
-                      return Object.assign(acc, _todo);
-                    }
+                  if (i % 2 === 0) {
+                    var todo = {};
+                    todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"]; // tableau.log("engagement_rate: ")
+                    // tableau.log(todo)
+                    // tableau.log("acc:")
+                    // tableau.log(acc)
+
+                    return Object.assign(acc, todo);
+                  } else {
+                    var _todo = {};
+                    _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"]; // tableau.log("Subscribers: ")
+                    // tableau.log(todo)
+                    // tableau.log("acc:")
+                    // tableau.log(acc)
+
+                    return Object.assign(acc, _todo);
                   }
                 }, {}));
 
-              case 7:
+              case 10:
+                return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
+                  if (res.bulletin_activity_details) {
+                    return acc.concat(res.bulletin_activity_details);
+                  } else {
+                    return acc;
+                  }
+                }, []));
+
+              case 11:
               case "end":
                 return _context3.stop();
             }
@@ -13873,6 +13920,8 @@ var _payloadModifiers = require("./payloadModifiers");
 
 var _callLists = require("./callLists");
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -13882,7 +13931,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   var myConnector = tableau.makeConnector();
 
   myConnector.getSchema = function (schemaCallback) {
-    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.subscriber_rates_schema
+    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.subscriber_rates_schema, _schemas.bulletin_details_schema
     /*, bulletin_details */
     ]);
   };
@@ -13894,7 +13943,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    tableau.log("Iteration 67");
+    tableau.log("Iteration 68");
     /* =================================
     Data Getters
     ================================== */
@@ -13905,7 +13954,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(calls) {
-        var results, dump, pushNewSubs, pushOpenRates, pushClickRates, pushDeliveryRates, pushUnsubRate;
+        var results, dump, newSubs, openRates, clickRates, deliveryRates, unsubRate;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -13923,43 +13972,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 break;
 
               case 7:
-                pushNewSubs = {
+                newSubs = {
                   name: "new_subscribers",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeSumFromObj)(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers");
                   }
                 };
-                return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, pushNewSubs));
+                return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, newSubs));
 
               case 9:
-                pushOpenRates = {
+                openRates = {
                   name: "open_rate",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "opens_count", "total_delivered");
                   }
                 };
-                pushClickRates = {
+                clickRates = {
                   name: "click_rates",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "clicks_count", "total_delivered");
                   }
                 };
-                pushDeliveryRates = {
+                deliveryRates = {
                   name: "delivery_rates",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "total_delivered", "total_recipients");
                   }
                 };
-                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushOpenRates, pushClickRates, pushDeliveryRates));
+                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, openRates, clickRates, deliveryRates));
 
               case 13:
-                pushUnsubRate = {
+                unsubRate = {
                   name: "unsubscribe_rate",
                   pusher: function pusher(source, col) {
                     return (0, _derivatives.makeRateFromObj)(source, col, "deleted_subscribers", "total_subscribers");
                   }
                 };
-                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, pushUnsubRate));
+                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, unsubRate));
 
               case 15:
                 return _context.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
@@ -14000,19 +14049,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 dump = _context2.sent;
 
                 if (!(TABLEID === "topics")) {
-                  _context2.next = 7;
+                  _context2.next = 8;
                   break;
                 }
 
-                // const pushOpenRates = {
-                //   name: "open_rate",
-                //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
-                // }
-                // return createDumpNZIP(dump, pushOpenRates)
-                tableau.log("\n        =====================\n        COMPLETE\n        =====================\n        ");
+                console.log("\n        =====================\n        COMPLETE\n        =====================\n        ");
+                console.table(dump);
                 return _context2.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 7:
+              case 8:
               case "end":
                 return _context2.stop();
             }
@@ -14022,6 +14067,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return function makeCallsArr(_x2) {
         return _ref2.apply(this, arguments);
+      };
+    }();
+
+    var makeCallsDetails =
+    /*#__PURE__*/
+    function () {
+      var _ref3 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee3(calls) {
+        var results, dump;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                results = (0, _fetchers.arrayFetcher)(TABLEID, KEY)(calls);
+                _context3.next = 3;
+                return Promise.all(results);
+
+              case 3:
+                dump = _context3.sent;
+                // will be an array of promises of objects
+                console.log("in makeCallsDetails:");
+                console.table(dump);
+                return _context3.abrupt("return", dump);
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }));
+
+      return function makeCallsDetails(_x3) {
+        return _ref3.apply(this, arguments);
       };
     }();
     /* =================================
@@ -14056,6 +14136,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         doneCallback();
       });
     };
+
+    var detailGetter = function detailGetter(urlList) {
+      makeCallsDetails(urlList).then(function (results) {
+        results.map(function (obj) {
+          table.appendRows(Object.keys(obj).reduce(function (acc, cur) {
+            return Object.assign(acc, _defineProperty({}, cur, obj[cur]));
+          }));
+        });
+      });
+    };
     /* =================================
     Table Targets
     ================================== */
@@ -14079,6 +14169,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       case "topics":
         {
           arrDataGetter((0, _callLists.topicsCallList)(DATE));
+          break;
+        }
+
+      case "bulletin_details":
+        {
+          detailGetter((0, _callLists.bulletinDetailsCallList)(DATE));
           break;
         }
 
@@ -14183,7 +14279,7 @@ exports.dumpNZIP = dumpNZIP;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.topics_engagement_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
+exports.bulletin_details_schema = exports.topics_engagement_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
 
 /* =================================
   Schemas
@@ -14220,6 +14316,139 @@ var counts_schema = [{
 }, {
   id: "three_wk",
   alias: "Three Weeks Ago",
+  dataType: tableau.dataTypeEnum["int"]
+}];
+var tgi_schema = [{
+  id: "created_at",
+  alias: "Created at",
+  dataType: tableau.dataTypeEnum.datetime
+}, {
+  id: "subject",
+  alias: "Subject",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "to_text",
+  alias: "To Text:",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "delivery_status_name",
+  alias: "Delivery Status Name",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "addresses_count",
+  alias: "Addresses Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "success_count",
+  alias: "Success Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "failed_count",
+  alias: "Failed Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "percent_success",
+  alias: "Percent Success",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "immediate_email_recipients",
+  alias: "Immediate Email Recipients",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "emails_delivered",
+  alias: "Emails Delivered",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "emails_failed",
+  alias: "Emails Failed",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "percent_emails_delivered",
+  alias: "Percent Emails Delivered",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "opens_count",
+  alias: "Opens Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "percent_opened",
+  alias: "Percent Opened",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "nonunique_opens_count",
+  alias: "Nonunique Opens Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "links_count",
+  alias: "Links Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "click_rate",
+  alias: "Click Rate",
+  dataType: tableau.dataTypeEnum["float"]
+}, {
+  id: "clicks_count",
+  alias: "Clicks Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "nonunique_clicks_count",
+  alias: "Nonunique Clicks Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "shared_views",
+  alias: "Shared Views",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "sender_email",
+  alias: "Sender Email",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "digest_email_recipients",
+  alias: "Digest Email Recipients",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "wireless_recipients",
+  alias: "Wireless Recipients",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "wireless_delivered",
+  alias: "Wireless Delivered",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "wireless_failed_count",
+  alias: "Wireless Failed Count",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "bulletin_visibility?",
+  alias: "Bulletin Visibility?",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "publish_to_facebook",
+  alias: "Publish to Facebook",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "publish_to_twitter",
+  alias: "Publish to Twitter",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "publish_to_rss?",
+  alias: "Publish to RSS?",
+  dataType: tableau.dataTypeEnum.string
+}, {
+  id: "wireless_unique_clicks",
+  alias: "Wireless Unique Clicks",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "wireless_nonunique_clicks",
+  alias: "Wireless Nonunique Clicks",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "facebook_nonunique_clicks",
+  alias: "Facebook Nonunique Clicks",
+  dataType: tableau.dataTypeEnum["int"]
+}, {
+  id: "twitter_nonunique_clicks",
+  alias: "Twitter Nonunique Clicks",
   dataType: tableau.dataTypeEnum["int"]
 }];
 /* =================================
@@ -14263,5 +14492,11 @@ var topics_engagement_schema = {
   columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
 };
 exports.topics_engagement_schema = topics_engagement_schema;
+var bulletin_details_schema = {
+  id: "bulletin_details",
+  alias: "Bulletin Details",
+  columns: tgi_schema
+};
+exports.bulletin_details_schema = bulletin_details_schema;
 
 },{}]},{},[338]);

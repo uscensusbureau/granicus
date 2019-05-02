@@ -14,9 +14,9 @@ const fetcher = (tableID, key) => async url => {
   })
   
   const prime = await result.json()
-  tableau.log("api call: " + url);
-  tableau.log("prime:")
-  tableau.log(prime)
+  console.log("api call: " + url);
+  console.log("prime:")
+  console.table(prime)
   return prime // summaries is an object
 }
 
@@ -36,36 +36,49 @@ const arrayFetcher = (tableID, key) => async urls => {
     })
     
     const prime = await result.json()
-    tableau.log("prime:")
-    tableau.log(prime)
+    console.log("prime:")
+    console.table(prime)
     return prime
   })
   
   const promiseArr = await Promise.all(responses)
   
-  return promiseArr.reduce( (acc, res, i) => {
-    
-    // evens are engagement rate and odds are topic summaries
-    if (tableID === "topics") {
+  
+  // topics table = array of promises of objects
+  // return a single object with k/v pairs
+  if (tableID === "topics") {
+    return promiseArr.reduce((acc, res, i) => {
+      // evens are engagement rate and odds are topic summaries
       if (i % 2 === 0) {
         let todo = {}
         todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
-        tableau.log("engagement_rate: ")
-        tableau.log(todo)
-        tableau.log("acc:")
-        tableau.log(acc)
+        // tableau.log("engagement_rate: ")
+        // tableau.log(todo)
+        // tableau.log("acc:")
+        // tableau.log(acc)
         return Object.assign(acc, todo)
       } else {
         let todo = {}
         todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
-        tableau.log("Subscribers: ")
-        tableau.log(todo)
-        tableau.log("acc:")
-        tableau.log(acc)
+        // tableau.log("Subscribers: ")
+        // tableau.log(todo)
+        // tableau.log("acc:")
+        // tableau.log(acc)
         return Object.assign(acc, todo)
       }
-    }
-  }, {})
+    }, {})
+  // bulletin details table = array of promises of array (get`bulletin_activity_details`)
+  // of objects
+  // return a single array of objects (one for each bulletin)
+  } else {
+    return promiseArr.reduce((acc, res) => {
+      if (res.bulletin_activity_details) {
+        return acc.concat(res.bulletin_activity_details)
+      } else {
+        return acc
+      }
+    }, [])
+  }
 }
 
 

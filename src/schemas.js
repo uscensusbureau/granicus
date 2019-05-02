@@ -48,6 +48,174 @@ const counts_schema =  [
   },
 ];
 
+const tgi_schema = [
+  {
+    id: "created_at",                              
+    alias: "Created at",
+    dataType: tableau.dataTypeEnum.datetime
+  },
+  {
+    id: "subject",                                 
+    alias: "Subject",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "to_text",                                 
+    alias: "To Text:",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "delivery_status_name",                    
+    alias: "Delivery Status Name",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "addresses_count",                         
+    alias: "Addresses Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "success_count",                           
+    alias: "Success Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "failed_count",                            
+    alias: "Failed Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "percent_success",                         
+    alias: "Percent Success",
+    dataType: tableau.dataTypeEnum.float
+  },
+  {
+    id: "immediate_email_recipients",              
+    alias: "Immediate Email Recipients",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "emails_delivered",                        
+    alias: "Emails Delivered",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "emails_failed",                           
+    alias: "Emails Failed",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "percent_emails_delivered",                
+    alias: "Percent Emails Delivered",
+    dataType: tableau.dataTypeEnum.float
+  },
+  {
+    id: "opens_count",                             
+    alias: "Opens Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "percent_opened",                          
+    alias: "Percent Opened",
+    dataType: tableau.dataTypeEnum.float
+  },
+  {
+    id: "nonunique_opens_count",                   
+    alias: "Nonunique Opens Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "links_count",                             
+    alias: "Links Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "click_rate",                              
+    alias: "Click Rate",
+    dataType: tableau.dataTypeEnum.float
+  },
+  {
+    id: "clicks_count",                            
+    alias: "Clicks Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "nonunique_clicks_count",                  
+    alias: "Nonunique Clicks Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "shared_views",                            
+    alias: "Shared Views",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "sender_email",                            
+    alias: "Sender Email",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "digest_email_recipients",                 
+    alias: "Digest Email Recipients",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "wireless_recipients",                     
+    alias: "Wireless Recipients",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "wireless_delivered",                      
+    alias: "Wireless Delivered",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "wireless_failed_count",                   
+    alias: "Wireless Failed Count",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "bulletin_visibility?",                     
+    alias: "Bulletin Visibility?",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "publish_to_facebook",                     
+    alias: "Publish to Facebook",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "publish_to_twitter",                      
+    alias: "Publish to Twitter",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "publish_to_rss?",                          
+    alias: "Publish to RSS?",
+    dataType: tableau.dataTypeEnum.string
+  },
+  {
+    id: "wireless_unique_clicks",                  
+    alias: "Wireless Unique Clicks",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "wireless_nonunique_clicks",               
+    alias: "Wireless Nonunique Clicks",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "facebook_nonunique_clicks",               
+    alias: "Facebook Nonunique Clicks",
+    dataType: tableau.dataTypeEnum.int
+  },
+  {
+    id: "twitter_nonunique_clicks",                
+    alias: "Twitter Nonunique Clicks",
+    dataType: tableau.dataTypeEnum.int
+  }
+]
+
 
 /* =================================
 Schema Representatives
@@ -92,5 +260,10 @@ const topics_engagement_schema = {
   columns: JSON.parse(JSON.stringify([...rates_schema]))
 };
 
+const bulletin_details_schema = {
+  id: "bulletin_details",
+  alias: "Bulletin Details",
+  columns: tgi_schema
+};
 
-export {bulletins_schema, bulletin_rates_schema, subscribers_schema, subscriber_rates_schema, topics_engagement_schema}
+export {bulletins_schema, bulletin_rates_schema, subscribers_schema, subscriber_rates_schema, topics_engagement_schema, bulletin_details_schema}

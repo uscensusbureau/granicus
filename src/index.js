@@ -19,16 +19,18 @@ import 'babel-polyfill';
 // special polyfill for fetch support (not provided by babel-polyfill)
 import 'fetch-ie8'
 
-import { bulletins_schema,
-         bulletin_rates_schema,
-         subscribers_schema,
-         subscriber_rates_schema,
-         topics_engagement_schema
-       } from "./schemas"
+import {
+  bulletins_schema,
+  bulletin_rates_schema,
+  subscribers_schema,
+  subscriber_rates_schema,
+  topics_engagement_schema,
+  bulletin_details_schema
+} from "./schemas"
 import { fetcher, arrayFetcher, detailFetcher } from "./fetchers";
 import { makeSumFromObj, makeRateFromObj, makeSumFromArr } from "./derivatives";
 import { dumpNZIP, augmentDumpNZip, createDumpNZIP } from "./payloadModifiers";
-import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLists";
+import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetailsCallList } from "./callLists";
 
 (function () {
   // Create the connector object
@@ -42,7 +44,8 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
       bulletins_schema,
       bulletin_rates_schema,
       subscribers_schema,
-      subscriber_rates_schema
+      subscriber_rates_schema,
+      bulletin_details_schema
       /*, bulletin_details */ ]);
   };
   
@@ -58,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
     let TABLEID = table.tableInfo.id
     
   
-    tableau.log("Iteration 67")
+    tableau.log("Iteration 68")
     
 
     /* =================================
@@ -74,35 +77,35 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
       switch (TABLEID) {
         case "bulletins" : 
         case "subscribers": {
-          const pushNewSubs = {
+          const newSubs = {
             name: "new_subscribers",
             pusher: (source, col) => makeSumFromObj(source, col, "direct_subscribers", "overlay_subscribers", "upload_subscribers", "all_network_subscribers")
           }
-          return augmentDumpNZip(dump, pushNewSubs)
+          return augmentDumpNZip(dump, newSubs)
         }
         case "bulletin_rates": {
-          const pushOpenRates = {
+          const openRates = {
             name: "open_rate",
             pusher: (source, col) => makeRateFromObj(source, col, "opens_count", "total_delivered")
           }
-          const pushClickRates = {
+          const clickRates = {
             name: "click_rates",
             pusher: (source, col) => makeRateFromObj(source, col, "clicks_count", "total_delivered")
           }
-          const pushDeliveryRates = {
+          const deliveryRates = {
             name: "delivery_rates",
             pusher: (source, col) => makeRateFromObj(source, col, "total_delivered", "total_recipients")
           }
 
 
-          return createDumpNZIP(dump, pushOpenRates, pushClickRates, pushDeliveryRates)
+          return createDumpNZIP(dump, openRates, clickRates, deliveryRates)
         }
         case "subscriber_rates": {
-          const pushUnsubRate = {
+          const unsubRate = {
             name: "unsubscribe_rate",
             pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
           }
-          return createDumpNZIP(dump, pushUnsubRate)
+          return createDumpNZIP(dump, unsubRate)
         }
         default: {
           return dumpNZIP(dump);
@@ -122,21 +125,27 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
 
       // control logic for derived/calculated fields
       if (TABLEID === "topics") {
-        // const pushOpenRates = {
-        //   name: "open_rate",
-        //   pusher: (source, wk, col) => wk.push(makeRateFromObj(source, col, "opens_count", "total_delivered"))
-        // }
         
-        // return createDumpNZIP(dump, pushOpenRates)
-        tableau.log(`
+        console.log(`
         =====================
         COMPLETE
         =====================
         `)
+        console.table(dump)
         return dumpNZIP(dump)
       }
     }
 
+    const makeCallsDetails = async calls => {
+      const results = arrayFetcher(TABLEID, KEY)(calls)
+      
+      const dump = await Promise.all(results) // will be an array of promises of objects
+      
+      console.log("in makeCallsDetails:")
+      console.table(dump)
+      
+      return dump
+    }
 
     /* =================================
     Table Constructors
@@ -173,6 +182,19 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
         doneCallback()
       })
     }
+    
+    const detailGetter = urlList => {
+      makeCallsDetails(urlList)
+        .then( results => {
+          results.map( obj => {
+            table.appendRows(
+              Object.keys(obj).reduce((acc, cur) => {
+                return Object.assign(acc, {[cur]: obj[cur]})
+              })
+            )
+          })
+        })
+    }
  
  
     
@@ -195,6 +217,10 @@ import { topicsCallList, subscribersCallList, bulletinsCallList } from "./callLi
       }
       case "topics": {
         arrDataGetter(topicsCallList(DATE))
+        break
+      }
+      case "bulletin_details": {
+        detailGetter(bulletinDetailsCallList(DATE))
         break
       }
       default: tableau.log("SLIPPED THROUGH THE TABLE TARGETS")
