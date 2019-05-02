@@ -13394,8 +13394,8 @@ var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
   return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
 };
 
-var makeURL = function makeURL(user_date, extURL, _end, _start) {
-  return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, _end, _start));
+var makeURL = function makeURL(user_date, extURL, end, start) {
+  return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, end, start));
 };
 
 var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
@@ -13408,9 +13408,9 @@ var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
   });
 };
 
-var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, _end, _start) {
+var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, end, start) {
   return Object.values(_topics).map(function (id) {
-    return makeURL(user_date, func(id), _end, _start);
+    return makeURL(user_date, func(id), end, start);
   });
 };
 /* =================================
@@ -13548,7 +13548,7 @@ var makeTopicParams = function makeTopicParams(topicIDs) {
 var bulletinDetailsCallsForDays = function bulletinDetailsCallsForDays(user_date, days) {
   return _toConsumableArray(Array(days).keys()).map(function (day) {
     console.log("in bulletinDetailsCallsForDays");
-    var result = "".concat(makeURL(user_date, BURL, day + 1, day)).concat(makeTopicParams(topics));
+    var result = "".concat(makeURL(user_date, BURL, day, day + 1)).concat(makeTopicParams(topics));
     console.log("url:");
     console.log(result);
     return result;
@@ -13957,7 +13957,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 69");
+    console.log("Iteration 70");
     /* =================================
     Data Getters
     ================================== */

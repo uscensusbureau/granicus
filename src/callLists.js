@@ -19,11 +19,11 @@ const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v
 
 const makeURLDateRange = (user_date, end, start) => `start_date=${makeDate(user_date, start)}&end_date=${makeDate(user_date, end)}`
 
-const makeURL = (user_date, extURL, _end, _start) => `${base_url}${extURL}?${makeURLDateRange(user_date, _end, _start)}`
+const makeURL = (user_date, extURL, end, start) => `${base_url}${extURL}?${makeURLDateRange(user_date, end, start)}`
 
 const makeWklyURLArr = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 7))
 
-const makeWkFnArr = (user_date, _topics, func, _end, _start) => Object.values(_topics).map( id => makeURL(user_date, func(id), _end, _start))
+const makeWkFnArr = (user_date, _topics, func, end, start) => Object.values(_topics).map( id => makeURL(user_date, func(id), end, start))
 
 /* =================================
 Endpoints (extensions)
@@ -107,7 +107,7 @@ const makeTopicParams = topicIDs => "".concat(...Object.values(topicIDs).map(top
 
 const bulletinDetailsCallsForDays = (user_date, days) => [...Array(days).keys()].map(day => {
   console.log("in bulletinDetailsCallsForDays")
-  let result = `${makeURL(user_date, BURL, day + 1, day)}${makeTopicParams(topics)}`
+  let result = `${makeURL(user_date, BURL, day, day + 1)}${makeTopicParams(topics)}`
   console.log("url:")
   console.log(result)
   return result

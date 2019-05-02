@@ -61,7 +61,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 69")
+    console.log("Iteration 70")
     
 
     /* =================================
