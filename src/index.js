@@ -25,12 +25,19 @@ import {
   subscribers_schema,
   subscriber_rates_schema,
   topics_engagement_schema,
-  bulletin_details_schema
+  bulletin_details_schema,
+  synthetic_rates_schema
 } from "./schemas"
 import { fetcher, arrayFetcher, detailFetcher } from "./fetchers";
 import { makeSumFromObj, makeRateFromObj, makeSumFromArr } from "./derivatives";
 import { dumpNZIP, augmentDumpNZip, createDumpNZIP } from "./payloadModifiers";
-import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetailsCallsForDays } from "./callLists";
+import {
+  topicsCallList,
+  subscribersCallList,
+  bulletinsCallList,
+  bulletinDetailsCallsForDays,
+  syntheticCallList
+} from "./callLists";
 
 (function () {
   // Create the connector object
@@ -44,6 +51,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
       bulletins_schema,
       bulletin_rates_schema,
       subscribers_schema,
+      synthetic_rates_schema,
       subscriber_rates_schema,
       bulletin_details_schema
       /*, bulletin_details */ ]);
@@ -61,7 +69,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 76")
+    console.log("Iteration 77")
     
 
     /* =================================
@@ -98,13 +106,13 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
           }
           return augmentDumpNZip(dump, newSubs)
         }
-        case "subscriber_rates": {
-          const unsubRate = {
-            name: "unsubscribe_rate",
-            pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
-          }
-          return createDumpNZIP(dump, unsubRate)
-        }
+        // case "subscriber_rates": {
+        //   const unsubRate = {
+        //     name: "unsubscribe_rate",
+        //     pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_subscribers")
+        //   }
+        //   return createDumpNZIP(dump, unsubRate)
+        // }
         default: {
           return dumpNZIP(dump);
         }
@@ -113,24 +121,31 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     }
 
     const makeCallsArr = async calls => {
-
-      const results = calls.map( urls => arrayFetcher(TABLEID, KEY)(urls))
-
+  
+      const results = calls.map(urls => arrayFetcher(TABLEID, KEY)(urls))
+  
       // For Object results, returns an array of promises containing objects
       // For Array results, returns an array of promises containing arrays of objects
       const dump = await Promise.all(results);
-
-
+  
+  
       // control logic for derived/calculated fields
-      if (TABLEID === "topics") {
-        
-        console.log(`
-        =====================
-        COMPLETE
-        =====================
-        `)
-        console.table(dump)
-        return dumpNZIP(dump)
+  
+      switch (TABLEID) {
+        case "topics" : {
+          console.log("in makeCallsArr (index.js) -> 'topics' dump:")
+          console.table(dump)
+          return dumpNZIP(dump)
+        }
+        case "synthetic_rates" : {
+          console.log("in makeCallsArr (index.js) -> 'synthetic_rates' dump:")
+          console.table(dump)
+          const unsubRate = {
+            name: "unsubscribe_rate",
+            pusher: (source, col) => makeRateFromObj(source, col, "deleted_subscribers", "total_delivered")
+          }
+          return createDumpNZIP(dump, unsubRate)
+        }
       }
     }
 
@@ -182,17 +197,7 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
     const detailGetter = urlList => {
       makeCallsDetails(urlList)
       .then( results => {
-        table.appendRows(
-          results
-        //   results.map( obj => {
-        //     Object.keys(obj).reduce((acc, cur) => {
-        //       let todo = {}
-        //       todo[`${cur}`] = obj[cur]
-        //       return Object.assign(acc, todo)
-        //     }, {})
-        //   })
-        
-        )
+        table.appendRows(results)
         doneCallback()
       })
     }
@@ -211,9 +216,12 @@ import { topicsCallList, subscribersCallList, bulletinsCallList, bulletinDetails
         dataGetter(bulletinsCallList(DATE))
         break
       }
-      case "subscribers":
-      case "subscriber_rates": {
+      case "subscribers": {
         dataGetter(subscribersCallList(DATE))
+        break
+      }
+      case "subscriber_rates": {
+        arrDataGetter(syntheticCallList(DATE))
         break
       }
       case "topics": {

@@ -25,6 +25,9 @@ const makeWklyURLArr = (user_date, str, ...days) => days.map( day => makeURL(use
 
 const makeWkFnArr = (user_date, _topics, func, end, start) => Object.values(_topics).map( id => makeURL(user_date, func(id), end, start))
 
+const interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
+const interleaveWks = (wks1, wks2) => [[],[],[]].map((wk, i) => wk.concat([wks1[i], wks2[i]]))
+
 /* =================================
 Endpoints (extensions)
 ================================== */
@@ -49,6 +52,23 @@ const subscribersCallList = user_date => makeWklyURLArr(user_date, SSURL, 0, 7, 
 // Bulletin Detail
 // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
 
+/* =================================
+Synthesized (subscriber_activity & bulletins - summaries) Calls Array
+================================== */
+
+const syntheticCallList = user_date => interleaveWks(subscribersCallList(user_date), bulletinsCallList(user_date))
+
+// syntheticCallList("April 20 2019")//?
+/*
+
+[ [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-13&end_date=2019-04-20',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-13&end_date=2019-04-20' ],
+  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-06&end_date=2019-04-13',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-06&end_date=2019-04-13' ],
+  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-03-30&end_date=2019-04-06',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-03-30&end_date=2019-04-06' ] ]
+    
+*/
 
 /* ================================
 Topics List
@@ -87,8 +107,6 @@ const topicS_2wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 7,
 const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 14, 21)
 const topicS_3wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 14, 21)
 
-const interleave = (arr1, arr2) => arr1.reduce((acc, cur, i) => acc.concat(cur, arr2[i]), [])
-
 const EplusS_1wk = user_date => interleave(engage_1wk(user_date), topicS_1wk(user_date))
 const EplusS_2wk = user_date => interleave(engage_2wk(user_date), topicS_2wk(user_date))
 const EplusS_3wk = user_date => interleave(engage_3wk(user_date), topicS_3wk(user_date))
@@ -113,4 +131,4 @@ const bulletinDetailsCallsForDays = (user_date, days) => [...Array(days).keys()]
   return result
 })
 
-export { bulletinsCallList, subscribersCallList, topicsCallList, bulletinDetailsCallsForDays }
+export { bulletinsCallList, subscribersCallList, syntheticCallList, topicsCallList, bulletinDetailsCallsForDays }

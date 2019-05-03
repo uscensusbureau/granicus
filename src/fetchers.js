@@ -65,7 +65,6 @@ const arrayFetcher = (tableID, key) => async urls => {
   
   const promiseArr = await Promise.all(responses)
   
-  
   // topics table = array of promises of objects
   // return a single object with k/v pairs
   
@@ -77,18 +76,10 @@ const arrayFetcher = (tableID, key) => async urls => {
           if (i % 2 === 0) {
             let todo = {}
             todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
-            // console.log("engagement_rate: ")
-            // console.log(todo)
-            // console.log("acc:")
-            // console.log(acc)
             return Object.assign(acc, todo)
           } else {
             let todo = {}
             todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
-            // console.log("Subscribers: ")
-            // console.log(todo)
-            // console.log("acc:")
-            // console.log(acc)
             return Object.assign(acc, todo)
           }
         } else {
@@ -96,6 +87,17 @@ const arrayFetcher = (tableID, key) => async urls => {
         }
       }, {})
     }
+    
+    case "synthetic_rates" : {
+      return promiseArr.reduce((acc, res) => {
+        if (res["_links"]) {
+          return Object.assign(acc, res)
+        } else {
+          return acc
+        }
+      }, {})
+    }
+    
     // bulletin details table = array of promises of array (get`bulletin_activity_details`)
     // of objects
     // return a single array of objects (one for each bulletin)
@@ -103,8 +105,6 @@ const arrayFetcher = (tableID, key) => async urls => {
       console.log("in arrayFetcher: bulletin_details")
       return promiseArr.reduce((acc, res) => {
         if (res["bulletin_activity_details"]) {
-          console.log("res['bulletin_activity_details'][0]['subject']")
-          console.log(res["bulletin_activity_details"][0]["subject"])
           // fixes keys with question marks (not allowed in Tableau)
           return acc.concat(res["bulletin_activity_details"].map(o => renameKeysWQMarks(o)))
           
@@ -131,10 +131,8 @@ const detailFetcher = (tableID, key) => async (url, acc) => {
   
   const prime = await result.json()
   console.log("api call: " + url);
-  console.log("prime:")
-  console.table(prime)
-  console.log("ok?:" + result.ok)
   
+  // for hadling pagination (TBD):
   if (tableID === "bulletin_details") {
     if (result.ok) {
       const cur = prime["bulletin_activity_details"]
@@ -159,7 +157,8 @@ const detailFetcher = (tableID, key) => async (url, acc) => {
       console.table(acc)
       return acc
     }
-    
+  
+  // currently this is the only valid case:
   } else {
     
     return prime // summaries is an object

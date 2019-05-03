@@ -17128,7 +17128,7 @@ module.exports = zip;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.bulletinDetailsCallsForDays = exports.topicsCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
+exports.bulletinDetailsCallsForDays = exports.topicsCallList = exports.syntheticCallList = exports.subscribersCallList = exports.bulletinsCallList = void 0;
 
 var _moment = _interopRequireDefault(require("moment"));
 
@@ -17182,6 +17182,18 @@ var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, end, start) {
     return makeURL(user_date, func(id), end, start);
   });
 };
+
+var interleave = function interleave(arr1, arr2) {
+  return arr1.reduce(function (acc, cur, i) {
+    return acc.concat(cur, arr2[i]);
+  }, []);
+};
+
+var interleaveWks = function interleaveWks(wks1, wks2) {
+  return [[], [], []].map(function (wk, i) {
+    return wk.concat([wks1[i], wks2[i]]);
+  });
+};
 /* =================================
 Endpoints (extensions)
 ================================== */
@@ -17210,12 +17222,34 @@ var subscribersCallList = function subscribersCallList(user_date) {
 }; // Bulletin Detail
 // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
 
+/* =================================
+Synthesized (subscriber_activity & bulletins - summaries) Calls Array
+================================== */
+
+
+exports.subscribersCallList = subscribersCallList;
+
+var syntheticCallList = function syntheticCallList(user_date) {
+  return interleaveWks(subscribersCallList(user_date), bulletinsCallList(user_date));
+}; // syntheticCallList("April 20 2019")//?
+
+/*
+
+[ [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-13&end_date=2019-04-20',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-13&end_date=2019-04-20' ],
+  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-06&end_date=2019-04-13',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-06&end_date=2019-04-13' ],
+  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-03-30&end_date=2019-04-06',
+    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-03-30&end_date=2019-04-06' ] ]
+    
+*/
+
 /* ================================
 Topics List
 ================================== */
 
 
-exports.subscribersCallList = subscribersCallList;
+exports.syntheticCallList = syntheticCallList;
 var topics = {
   "General 2020 Census Updates": "289016",
   "America Counts": "449122",
@@ -17275,12 +17309,6 @@ var engage_3wk = function engage_3wk(user_date) {
 
 var topicS_3wk = function topicS_3wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 14, 21);
-};
-
-var interleave = function interleave(arr1, arr2) {
-  return arr1.reduce(function (acc, cur, i) {
-    return acc.concat(cur, arr2[i]);
-  }, []);
 };
 
 var EplusS_1wk = function EplusS_1wk(user_date) {
@@ -17543,7 +17571,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
               case 5:
                 promiseArr = _context3.sent;
                 _context3.t0 = tableID;
-                _context3.next = _context3.t0 === "topics" ? 9 : _context3.t0 === "bulletin_details" ? 10 : 12;
+                _context3.next = _context3.t0 === "topics" ? 9 : _context3.t0 === "synthetic_rates" ? 10 : _context3.t0 === "bulletin_details" ? 11 : 13;
                 break;
 
               case 9:
@@ -17552,19 +17580,11 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                     // evens are engagement rate and odds are topic summaries
                     if (i % 2 === 0) {
                       var todo = {};
-                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"]; // console.log("engagement_rate: ")
-                      // console.log(todo)
-                      // console.log("acc:")
-                      // console.log(acc)
-
+                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"];
                       return Object.assign(acc, todo);
                     } else {
                       var _todo = {};
-                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"]; // console.log("Subscribers: ")
-                      // console.log(todo)
-                      // console.log("acc:")
-                      // console.log(acc)
-
+                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
                       return Object.assign(acc, _todo);
                     }
                   } else {
@@ -17573,12 +17593,19 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                 }, {}));
 
               case 10:
+                return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
+                  if (res["_links"]) {
+                    return Object.assign(acc, res);
+                  } else {
+                    return acc;
+                  }
+                }, {}));
+
+              case 11:
                 console.log("in arrayFetcher: bulletin_details");
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
                   if (res["bulletin_activity_details"]) {
-                    console.log("res['bulletin_activity_details'][0]['subject']");
-                    console.log(res["bulletin_activity_details"][0]["subject"]); // fixes keys with question marks (not allowed in Tableau)
-
+                    // fixes keys with question marks (not allowed in Tableau)
                     return acc.concat(res["bulletin_activity_details"].map(function (o) {
                       return renameKeysWQMarks(o);
                     }));
@@ -17587,7 +17614,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                   }
                 }, []));
 
-              case 12:
+              case 13:
               case "end":
                 return _context3.stop();
             }
@@ -17634,18 +17661,15 @@ var detailFetcher = function detailFetcher(tableID, key) {
 
               case 5:
                 prime = _context4.sent;
-                console.log("api call: " + url);
-                console.log("prime:");
-                console.table(prime);
-                console.log("ok?:" + result.ok);
+                console.log("api call: " + url); // for hadling pagination (TBD):
 
                 if (!(tableID === "bulletin_details")) {
-                  _context4.next = 40;
+                  _context4.next = 37;
                   break;
                 }
 
                 if (!result.ok) {
-                  _context4.next = 35;
+                  _context4.next = 32;
                   break;
                 }
 
@@ -17653,16 +17677,16 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 console.log("in bulletin_details...");
 
                 if (!(typeof cur === "undefined")) {
-                  _context4.next = 19;
+                  _context4.next = 16;
                   break;
                 }
 
                 console.log("cur == undefined");
                 return _context4.abrupt("return", acc);
 
-              case 19:
+              case 16:
                 if (!(cur.length < 20)) {
-                  _context4.next = 26;
+                  _context4.next = 23;
                   break;
                 }
 
@@ -17671,9 +17695,9 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 console.log(last);
                 return _context4.abrupt("return", last);
 
-              case 26:
+              case 23:
                 if (!(cur.length === 20)) {
-                  _context4.next = 33;
+                  _context4.next = 30;
                   break;
                 }
 
@@ -17681,26 +17705,26 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 console.log("More than 20 results: ");
                 console.log(todo);
                 console.log("recurring fetcher");
-                _context4.next = 33;
+                _context4.next = 30;
                 return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
 
-              case 33:
-                _context4.next = 38;
+              case 30:
+                _context4.next = 35;
                 break;
 
-              case 35:
+              case 32:
                 console.log("no results in `next`... acc = ");
                 console.table(acc);
                 return _context4.abrupt("return", acc);
 
-              case 38:
-                _context4.next = 41;
+              case 35:
+                _context4.next = 38;
                 break;
 
-              case 40:
+              case 37:
                 return _context4.abrupt("return", prime);
 
-              case 41:
+              case 38:
               case "end":
                 return _context4.stop();
             }
@@ -17743,7 +17767,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   var myConnector = tableau.makeConnector();
 
   myConnector.getSchema = function (schemaCallback) {
-    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.subscriber_rates_schema, _schemas.bulletin_details_schema
+    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.synthetic_rates_schema, _schemas.subscriber_rates_schema, _schemas.bulletin_details_schema
     /*, bulletin_details */
     ]);
   };
@@ -17755,7 +17779,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 76");
+    console.log("Iteration 77");
     /* =================================
     Data Getters
     ================================== */
@@ -17766,7 +17790,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(calls) {
-        var results, dump, openRates, clickRates, deliveryRates, newSubs, unsubRate;
+        var results, dump, openRates, clickRates, deliveryRates, newSubs;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -17780,7 +17804,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 3:
                 dump = _context.sent;
                 _context.t0 = TABLEID;
-                _context.next = _context.t0 === "bulletin_rates" ? 7 : _context.t0 === "subscribers" ? 11 : _context.t0 === "subscriber_rates" ? 13 : 15;
+                _context.next = _context.t0 === "bulletin_rates" ? 7 : _context.t0 === "subscribers" ? 11 : 13;
                 break;
 
               case 7:
@@ -17814,18 +17838,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context.abrupt("return", (0, _payloadModifiers.augmentDumpNZip)(dump, newSubs));
 
               case 13:
-                unsubRate = {
-                  name: "unsubscribe_rate",
-                  pusher: function pusher(source, col) {
-                    return (0, _derivatives.makeRateFromObj)(source, col, "deleted_subscribers", "total_subscribers");
-                  }
-                };
-                return _context.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, unsubRate));
-
-              case 15:
                 return _context.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 16:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -17844,7 +17859,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(calls) {
-        var results, dump;
+        var results, dump, unsubRate;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -17859,17 +17874,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 dump = _context2.sent;
+                _context2.t0 = TABLEID;
+                _context2.next = _context2.t0 === "topics" ? 7 : _context2.t0 === "synthetic_rates" ? 10 : 14;
+                break;
 
-                if (!(TABLEID === "topics")) {
-                  _context2.next = 8;
-                  break;
-                }
-
-                console.log("\n        =====================\n        COMPLETE\n        =====================\n        ");
+              case 7:
+                console.log("in makeCallsArr (index.js) -> 'topics' dump:");
                 console.table(dump);
                 return _context2.abrupt("return", (0, _payloadModifiers.dumpNZIP)(dump));
 
-              case 8:
+              case 10:
+                console.log("in makeCallsArr (index.js) -> 'synthetic_rates' dump:");
+                console.table(dump);
+                unsubRate = {
+                  name: "unsubscribe_rate",
+                  pusher: function pusher(source, col) {
+                    return (0, _derivatives.makeRateFromObj)(source, col, "deleted_subscribers", "total_delivered");
+                  }
+                };
+                return _context2.abrupt("return", (0, _payloadModifiers.createDumpNZIP)(dump, unsubRate));
+
+              case 14:
               case "end":
                 return _context2.stop();
             }
@@ -17950,14 +17975,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
     var detailGetter = function detailGetter(urlList) {
       makeCallsDetails(urlList).then(function (results) {
-        table.appendRows(results //   results.map( obj => {
-        //     Object.keys(obj).reduce((acc, cur) => {
-        //       let todo = {}
-        //       todo[`${cur}`] = obj[cur]
-        //       return Object.assign(acc, todo)
-        //     }, {})
-        //   })
-        );
+        table.appendRows(results);
         doneCallback();
       });
     };
@@ -17975,9 +17993,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
 
       case "subscribers":
-      case "subscriber_rates":
         {
           dataGetter((0, _callLists.subscribersCallList)(DATE));
+          break;
+        }
+
+      case "subscriber_rates":
+        {
+          arrDataGetter((0, _callLists.syntheticCallList)(DATE));
           break;
         }
 
@@ -18094,7 +18117,7 @@ exports.dumpNZIP = dumpNZIP;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.bulletin_details_schema = exports.topics_engagement_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
+exports.bulletin_details_schema = exports.topics_engagement_schema = exports.synthetic_rates_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
 
 /* =================================
   Schemas
@@ -18302,13 +18325,14 @@ var subscriber_rates_schema = {
   id: "subscriber_rates",
   alias: "Subscriber Rates",
   columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
-}; //const bulletin_details = {
-//   id: "bulletin_details",
-//   alias: "Bulletin Details",
-//   columns:JSON.parse(JSON.stringify ([...counts_schema]
-// };
-
+};
 exports.subscriber_rates_schema = subscriber_rates_schema;
+var synthetic_rates_schema = {
+  id: "synthetic_rates",
+  alias: "Synthesized Rates",
+  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
+};
+exports.synthetic_rates_schema = synthetic_rates_schema;
 var topics_engagement_schema = {
   id: "topics",
   alias: "Topic Engagement + Subscribers",
