@@ -249,11 +249,11 @@ const subscribers_schema = {
   columns: JSON.parse(JSON.stringify([...counts_schema]))
 };
 
-const subscriber_rates_schema = {
-  id: "subscriber_rates",
-  alias: "Subscriber Rates",
-  columns: JSON.parse(JSON.stringify([...rates_schema]))
-};
+// const subscriber_rates_schema = {
+//   id: "subscriber_rates",
+//   alias: "Subscriber Rates",
+//   columns: JSON.parse(JSON.stringify([...rates_schema]))
+// };
 
 const synthetic_rates_schema = {
   id: "synthetic_rates",
@@ -273,10 +273,12 @@ const bulletin_details_schema = {
   columns: tgi_schema
 };
 
-export {bulletins_schema,
+export {
+  bulletins_schema,
   bulletin_rates_schema,
   subscribers_schema,
-  subscriber_rates_schema,
+  // subscriber_rates_schema,
   synthetic_rates_schema,
   topics_engagement_schema,
-  bulletin_details_schema}
+  bulletin_details_schema
+}

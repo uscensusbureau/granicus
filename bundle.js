@@ -17767,7 +17767,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   var myConnector = tableau.makeConnector();
 
   myConnector.getSchema = function (schemaCallback) {
-    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.synthetic_rates_schema, _schemas.subscriber_rates_schema, _schemas.bulletin_details_schema
+    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.synthetic_rates_schema, subscriber_rates_schema, _schemas.bulletin_details_schema
     /*, bulletin_details */
     ]);
   };
@@ -17779,7 +17779,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 77");
+    console.log("Iteration 78");
     /* =================================
     Data Getters
     ================================== */
@@ -17998,7 +17998,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           break;
         }
 
-      case "subscriber_rates":
+      case "synthetic_rates":
         {
           arrDataGetter((0, _callLists.syntheticCallList)(DATE));
           break;
@@ -18117,7 +18117,7 @@ exports.dumpNZIP = dumpNZIP;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.bulletin_details_schema = exports.topics_engagement_schema = exports.synthetic_rates_schema = exports.subscriber_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
+exports.bulletin_details_schema = exports.topics_engagement_schema = exports.synthetic_rates_schema = exports.subscribers_schema = exports.bulletin_rates_schema = exports.bulletins_schema = void 0;
 
 /* =================================
   Schemas
@@ -18319,14 +18319,13 @@ var subscribers_schema = {
   id: "subscribers",
   alias: "Subscribers",
   columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
-};
+}; // const subscriber_rates_schema = {
+//   id: "subscriber_rates",
+//   alias: "Subscriber Rates",
+//   columns: JSON.parse(JSON.stringify([...rates_schema]))
+// };
+
 exports.subscribers_schema = subscribers_schema;
-var subscriber_rates_schema = {
-  id: "subscriber_rates",
-  alias: "Subscriber Rates",
-  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
-};
-exports.subscriber_rates_schema = subscriber_rates_schema;
 var synthetic_rates_schema = {
   id: "synthetic_rates",
   alias: "Synthesized Rates",

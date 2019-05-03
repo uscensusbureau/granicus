@@ -23,7 +23,7 @@ import {
   bulletins_schema,
   bulletin_rates_schema,
   subscribers_schema,
-  subscriber_rates_schema,
+  // subscriber_rates_schema,
   topics_engagement_schema,
   bulletin_details_schema,
   synthetic_rates_schema
@@ -69,7 +69,7 @@ import {
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 77")
+    console.log("Iteration 78")
     
 
     /* =================================
@@ -220,7 +220,7 @@ import {
         dataGetter(subscribersCallList(DATE))
         break
       }
-      case "subscriber_rates": {
+      case "synthetic_rates": {
         arrDataGetter(syntheticCallList(DATE))
         break
       }
