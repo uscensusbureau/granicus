@@ -52,9 +52,9 @@ import {
       bulletin_rates_schema,
       subscribers_schema,
       synthetic_rates_schema,
-      subscriber_rates_schema,
+      // subscriber_rates_schema,
       bulletin_details_schema
-      /*, bulletin_details */ ]);
+    ]);
   };
   
   myConnector.getData = function (table, doneCallback) {
@@ -69,7 +69,7 @@ import {
     let TABLEID = table.tableInfo.id
     
   
-    console.log("Iteration 78")
+    console.log("Iteration 79")
     
 
     /* =================================

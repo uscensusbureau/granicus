@@ -17767,9 +17767,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   var myConnector = tableau.makeConnector();
 
   myConnector.getSchema = function (schemaCallback) {
-    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.synthetic_rates_schema, subscriber_rates_schema, _schemas.bulletin_details_schema
-    /*, bulletin_details */
-    ]);
+    schemaCallback([_schemas.topics_engagement_schema, _schemas.bulletins_schema, _schemas.bulletin_rates_schema, _schemas.subscribers_schema, _schemas.synthetic_rates_schema, // subscriber_rates_schema,
+    _schemas.bulletin_details_schema]);
   };
 
   myConnector.getData = function (table, doneCallback) {
@@ -17779,7 +17778,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var DATE = cd_data.end_date; // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
-    console.log("Iteration 78");
+    console.log("Iteration 79");
     /* =================================
     Data Getters
     ================================== */
