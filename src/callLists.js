@@ -1,4 +1,5 @@
 import moment from 'moment'
+import fullTopicMap from '../sprints/topicObj'
 
 /* =================================
 URL Creating Functions
@@ -75,19 +76,20 @@ Topics List
 ================================== */
 
 
-const topics = {
-  "General 2020 Census Updates"   : "289016",
-  "America Counts"                : "449122", // "USCENSUS_11939",
-  "Census Academy"                : "454831", // "USCENSUS_11971",
-  "Census Jobs"                   : "449126", // "USCENSUS_11941",
-  "Census Partnerships"           : "452433", // "USCENSUS_11958",
-  "Census Updates"                : "444983", // "USCENSUS_11926",
-  "Census Updates for Business"   : "444992", // "USCENSUS_11927",
-  "Data Visualization Newsletter" : "447782", // "USCENSUS_11932",
-  "Statistics in Schools"         : "449124", // "USCENSUS_11940",
-  "Stats for Stories"             : "452958"  // "USCENSUS_11960"
-}
+// const topics = {
+//   "General 2020 Census Updates"   : "289016",
+//   "America Counts"                : "449122", // "USCENSUS_11939",
+//   "Census Academy"                : "454831", // "USCENSUS_11971",
+//   "Census Jobs"                   : "449126", // "USCENSUS_11941",
+//   "Census Partnerships"           : "452433", // "USCENSUS_11958",
+//   "Census Updates"                : "444983", // "USCENSUS_11926",
+//   "Census Updates for Business"   : "444992", // "USCENSUS_11927",
+//   "Data Visualization Newsletter" : "447782", // "USCENSUS_11932",
+//   "Statistics in Schools"         : "449124", // "USCENSUS_11940",
+//   "Stats for Stories"             : "452958"  // "USCENSUS_11960"
+// }
 
+let topics = fullTopicMap
 
 /* =================================
 Engagement Calls Array (deep)
