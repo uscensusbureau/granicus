@@ -59,18 +59,6 @@ Synthesized (subscriber_activity & bulletins - summaries) Calls Array
 
 const syntheticCallList = user_date => interleaveWks(subscribersCallList(user_date), bulletinsCallList(user_date))
 
-// syntheticCallList("April 20 2019")//?
-/*
-
-[ [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-13&end_date=2019-04-20',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-13&end_date=2019-04-20' ],
-  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-06&end_date=2019-04-13',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-06&end_date=2019-04-13' ],
-  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-03-30&end_date=2019-04-06',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-03-30&end_date=2019-04-06' ] ]
-    
-*/
-
 /* ================================
 Topics List
 ================================== */
@@ -102,19 +90,20 @@ const makeEngageURL = topicID => `reports/topics/${topicID}/engagement_rate`
 
 
 // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
-const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
+// const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
 const topicS_1wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 0, 7)
-const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
+// const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
 const topicS_2wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 8, 15)
-const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
+// const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
 const topicS_3wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 16, 23)
 
-const EplusS_1wk = user_date => interleave(engage_1wk(user_date), topicS_1wk(user_date))
-const EplusS_2wk = user_date => interleave(engage_2wk(user_date), topicS_2wk(user_date))
-const EplusS_3wk = user_date => interleave(engage_3wk(user_date), topicS_3wk(user_date))
+// const EplusS_1wk = user_date => interleave(engage_1wk(user_date), topicS_1wk(user_date))
+// const EplusS_2wk = user_date => interleave(engage_2wk(user_date), topicS_2wk(user_date))
+// const EplusS_3wk = user_date => interleave(engage_3wk(user_date), topicS_3wk(user_date))
 
 // Engagement Rates = Array of arrays of URLS
-const topicsCallList = user_date => [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)]
+// const topicsCallList = user_date => [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)]
+const topicsCallList = user_date => [topicS_1wk(user_date), topicS_2wk(user_date), topicS_3wk(user_date)]
 
 
 

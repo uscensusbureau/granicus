@@ -73,15 +73,18 @@ const arrayFetcher = (tableID, key) => async urls => {
       return promiseArr.reduce((acc, res, i) => {
         if (res["name"]) {
           // evens are engagement rate and odds are topic summaries
-          if (i % 2 === 0) {
-            let todo = {}
-            todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
-            return Object.assign(acc, todo)
-          } else {
-            let todo = {}
-            todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
-            return Object.assign(acc, todo)
-          }
+          // if (i % 2 === 0) {
+          //   let todo = {}
+          //   todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
+          //   return Object.assign(acc, todo)
+          // } else {
+          //   let todo = {}
+          //   todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
+          //   return Object.assign(acc, todo)
+          // }
+          let todo = {}
+          todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
+          return Object.assign(acc, todo)
         } else {
           return acc
         }

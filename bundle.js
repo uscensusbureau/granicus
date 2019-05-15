@@ -17233,19 +17233,7 @@ exports.subscribersCallList = subscribersCallList;
 
 var syntheticCallList = function syntheticCallList(user_date) {
   return interleaveWks(subscribersCallList(user_date), bulletinsCallList(user_date));
-}; // syntheticCallList("April 20 2019")//?
-
-/*
-
-[ [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-13&end_date=2019-04-20',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-13&end_date=2019-04-20' ],
-  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-04-06&end_date=2019-04-13',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-04-06&end_date=2019-04-13' ],
-  [ 'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/subscriber_activity/summary?start_date=2019-03-30&end_date=2019-04-06',
-    'https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/11723/reports/bulletins/summary?start_date=2019-03-30&end_date=2019-04-06' ] ]
-    
-*/
-
+};
 /* ================================
 Topics List
 ================================== */
@@ -17288,47 +17276,30 @@ var makeTopicURL = function makeTopicURL(topicID) {
 var makeEngageURL = function makeEngageURL(topicID) {
   return "reports/topics/".concat(topicID, "/engagement_rate");
 }; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
+// const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
 
-
-var engage_1wk = function engage_1wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeEngageURL, 0, 7);
-};
 
 var topicS_1wk = function topicS_1wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 0, 7);
-};
+}; // const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
 
-var engage_2wk = function engage_2wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeEngageURL, 8, 15);
-};
 
 var topicS_2wk = function topicS_2wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 8, 15);
-};
+}; // const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
 
-var engage_3wk = function engage_3wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeEngageURL, 16, 23);
-};
 
 var topicS_3wk = function topicS_3wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 16, 23);
-};
-
-var EplusS_1wk = function EplusS_1wk(user_date) {
-  return interleave(engage_1wk(user_date), topicS_1wk(user_date));
-};
-
-var EplusS_2wk = function EplusS_2wk(user_date) {
-  return interleave(engage_2wk(user_date), topicS_2wk(user_date));
-};
-
-var EplusS_3wk = function EplusS_3wk(user_date) {
-  return interleave(engage_3wk(user_date), topicS_3wk(user_date));
-}; // Engagement Rates = Array of arrays of URLS
+}; // const EplusS_1wk = user_date => interleave(engage_1wk(user_date), topicS_1wk(user_date))
+// const EplusS_2wk = user_date => interleave(engage_2wk(user_date), topicS_2wk(user_date))
+// const EplusS_3wk = user_date => interleave(engage_3wk(user_date), topicS_3wk(user_date))
+// Engagement Rates = Array of arrays of URLS
+// const topicsCallList = user_date => [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)]
 
 
 var topicsCallList = function topicsCallList(user_date) {
-  return [EplusS_1wk(user_date), EplusS_2wk(user_date), EplusS_3wk(user_date)];
+  return [topicS_1wk(user_date), topicS_2wk(user_date), topicS_3wk(user_date)];
 };
 /* =================================
 Bulletin Details Calls Array
@@ -17581,15 +17552,18 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
                   if (res["name"]) {
                     // evens are engagement rate and odds are topic summaries
-                    if (i % 2 === 0) {
-                      var todo = {};
-                      todo["".concat(res["name"], " Engagement Rate")] = res["engagement_rate"];
-                      return Object.assign(acc, todo);
-                    } else {
-                      var _todo = {};
-                      _todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
-                      return Object.assign(acc, _todo);
-                    }
+                    // if (i % 2 === 0) {
+                    //   let todo = {}
+                    //   todo[`${res["name"]} Engagement Rate`] = res["engagement_rate"]
+                    //   return Object.assign(acc, todo)
+                    // } else {
+                    //   let todo = {}
+                    //   todo[`${res["name"]} Subscribers`] = res["total_subscriptions_to_date"]
+                    //   return Object.assign(acc, todo)
+                    // }
+                    var todo = {};
+                    todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
+                    return Object.assign(acc, todo);
                   } else {
                     return acc;
                   }
@@ -18336,8 +18310,8 @@ var synthetic_rates_schema = {
 exports.synthetic_rates_schema = synthetic_rates_schema;
 var topics_engagement_schema = {
   id: "topics",
-  alias: "Topic Engagement + Subscribers",
-  columns: JSON.parse(JSON.stringify([].concat(rates_schema)))
+  alias: "Topic Subscribers",
+  columns: JSON.parse(JSON.stringify([].concat(counts_schema)))
 };
 exports.topics_engagement_schema = topics_engagement_schema;
 var bulletin_details_schema = {

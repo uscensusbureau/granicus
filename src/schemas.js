@@ -263,8 +263,8 @@ const synthetic_rates_schema = {
 
 const topics_engagement_schema = {
   id: "topics",
-  alias: "Topic Engagement + Subscribers",
-  columns: JSON.parse(JSON.stringify([...rates_schema]))
+  alias: "Topic Subscribers",
+  columns: JSON.parse(JSON.stringify([...counts_schema]))
 };
 
 const bulletin_details_schema = {
