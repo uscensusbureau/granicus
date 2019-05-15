@@ -17213,14 +17213,14 @@ Shallow Calls
 // Bulletin Summary
 
 var bulletinsCallList = function bulletinsCallList(user_date) {
-  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
+  return makeWklyURLArr(user_date, BSURL, 0, 8, 16);
 }; // Subscriber Summary
 
 
 exports.bulletinsCallList = bulletinsCallList;
 
 var subscribersCallList = function subscribersCallList(user_date) {
-  return makeWklyURLArr(user_date, SSURL, 0, 7, 14);
+  return makeWklyURLArr(user_date, SSURL, 0, 8, 16);
 }; // Bulletin Detail
 // const callList3 = makeWklyURLArr(BURL, 0, 7, 14)
 
@@ -17299,19 +17299,19 @@ var topicS_1wk = function topicS_1wk(user_date) {
 };
 
 var engage_2wk = function engage_2wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeEngageURL, 7, 14);
+  return makeWkFnArr(user_date, topics, makeEngageURL, 8, 15);
 };
 
 var topicS_2wk = function topicS_2wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeTopicURL, 7, 14);
+  return makeWkFnArr(user_date, topics, makeTopicURL, 8, 15);
 };
 
 var engage_3wk = function engage_3wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeEngageURL, 14, 21);
+  return makeWkFnArr(user_date, topics, makeEngageURL, 16, 23);
 };
 
 var topicS_3wk = function topicS_3wk(user_date) {
-  return makeWkFnArr(user_date, topics, makeTopicURL, 14, 21);
+  return makeWkFnArr(user_date, topics, makeTopicURL, 16, 23);
 };
 
 var EplusS_1wk = function EplusS_1wk(user_date) {
