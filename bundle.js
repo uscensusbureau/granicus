@@ -17185,7 +17185,7 @@ var makeWklyURLArrNudge = function makeWklyURLArrNudge(user_date, str) {
   }
 
   return days.map(function (day) {
-    return makeURL(user_date, str, day, day + 7);
+    return makeURL(user_date, str, day - 1, day + 6);
   });
 };
 
@@ -17223,7 +17223,7 @@ Shallow Calls
 // Bulletin Summary
 
 var bulletinsCallList = function bulletinsCallList(user_date) {
-  return makeWklyURLArrNudge(user_date + 1, BSURL, 0, 7, 14);
+  return makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14);
 }; // Subscriber Summary
 
 

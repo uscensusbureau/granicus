@@ -23,7 +23,7 @@ const makeURLDateRange = (user_date, end, start) => `start_date=${makeDate(user_
 const makeURL = (user_date, extURL, end, start) => `${base_url}${extURL}?${makeURLDateRange(user_date, end, start)}`
 
 const makeWklyURLArr = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 6))
-const makeWklyURLArrNudge = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 7))
+const makeWklyURLArrNudge = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day - 1, day + 6))
 
 const makeWkFnArr = (user_date, _topics, func, end, start) => Object.values(_topics).map( id => makeURL(user_date, func(id), end, start))
 
@@ -46,7 +46,7 @@ Shallow Calls
 ================================== */
 
 // Bulletin Summary
-const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date + 1, BSURL, 0, 7, 14)
+const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14)
 
 // Subscriber Summary
 const subscribersCallList = user_date => makeWklyURLArr(user_date, SSURL, 0, 7, 14)
