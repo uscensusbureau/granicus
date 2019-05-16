@@ -17179,6 +17179,16 @@ var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
   });
 };
 
+var makeWklyURLArrNudge = function makeWklyURLArrNudge(user_date, str) {
+  for (var _len2 = arguments.length, days = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+    days[_key2 - 2] = arguments[_key2];
+  }
+
+  return days.map(function (day) {
+    return makeURL(user_date, str, day, day + 7);
+  });
+};
+
 var makeWkFnArr = function makeWkFnArr(user_date, _topics, func, end, start) {
   return Object.values(_topics).map(function (id) {
     return makeURL(user_date, func(id), end, start);
@@ -17213,7 +17223,7 @@ Shallow Calls
 // Bulletin Summary
 
 var bulletinsCallList = function bulletinsCallList(user_date) {
-  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
+  return makeWklyURLArrNudge(user_date + 1, BSURL, 0, 7, 14);
 }; // Subscriber Summary
 
 
@@ -17275,19 +17285,18 @@ var makeTopicURL = function makeTopicURL(topicID) {
 
 var makeEngageURL = function makeEngageURL(topicID) {
   return "reports/topics/".concat(topicID, "/engagement_rate");
-}; // const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
-// const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
+}; // const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
+// const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
+// const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
 
 
 var topicS_1wk = function topicS_1wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 0, 6);
-}; // const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
-
+};
 
 var topicS_2wk = function topicS_2wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 7, 13);
-}; // const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
-
+};
 
 var topicS_3wk = function topicS_3wk(user_date) {
   return makeWkFnArr(user_date, topics, makeTopicURL, 14, 22);

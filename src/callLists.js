@@ -23,6 +23,7 @@ const makeURLDateRange = (user_date, end, start) => `start_date=${makeDate(user_
 const makeURL = (user_date, extURL, end, start) => `${base_url}${extURL}?${makeURLDateRange(user_date, end, start)}`
 
 const makeWklyURLArr = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 6))
+const makeWklyURLArrNudge = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 7))
 
 const makeWkFnArr = (user_date, _topics, func, end, start) => Object.values(_topics).map( id => makeURL(user_date, func(id), end, start))
 
@@ -45,7 +46,7 @@ Shallow Calls
 ================================== */
 
 // Bulletin Summary
-const bulletinsCallList = user_date => makeWklyURLArr(user_date, BSURL, 0, 7, 14)
+const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date + 1, BSURL, 0, 7, 14)
 
 // Subscriber Summary
 const subscribersCallList = user_date => makeWklyURLArr(user_date, SSURL, 0, 7, 14)
@@ -88,13 +89,12 @@ const makeTopicURL = topicID => `reports/topics/${topicID}`
 // Engagement rate url
 const makeEngageURL = topicID => `reports/topics/${topicID}/engagement_rate`
 
-
-// const engage_1wk = Object.values(topics).map(topic => makeEngagement_1wk(topic))
 // const engage_1wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 0, 7)
-const topicS_1wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 0, 6)
 // const engage_2wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 8, 15)
-const topicS_2wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 7, 13)
 // const engage_3wk = user_date =>  makeWkFnArr(user_date, topics, makeEngageURL, 16, 23)
+
+const topicS_1wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 0, 6)
+const topicS_2wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 7, 13)
 const topicS_3wk = user_date =>  makeWkFnArr(user_date, topics, makeTopicURL, 14, 22)
 
 // const EplusS_1wk = user_date => interleave(engage_1wk(user_date), topicS_1wk(user_date))
