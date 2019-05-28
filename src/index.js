@@ -62,7 +62,7 @@ import {
     // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
     const cd_data = JSON.parse(tableau.connectionData);
     const KEY = cd_data.key
-    const DATE = cd_data.end_date
+    const DATE = cd_data.end_date ? cd_data.end_date : new Date()
     
     // Table ID for case by case deploys
     

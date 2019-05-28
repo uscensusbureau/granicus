@@ -17761,7 +17761,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     // Data passed through lifecycle phases (Interactive -> Data Gathering) via tableau.connectionData
     var cd_data = JSON.parse(tableau.connectionData);
     var KEY = cd_data.key;
-    var DATE = cd_data.end_date; // Table ID for case by case deploys
+    var DATE = cd_data.end_date ? cd_data.end_date : new Date(); // Table ID for case by case deploys
 
     var TABLEID = table.tableInfo.id;
     console.log("Iteration 79");
