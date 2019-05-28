@@ -153,7 +153,7 @@ const detailFetcher = (tableID, key) => async (url, acc) => {
         console.log("More than 20 results: ")
         console.log(todo)
         console.log("recurring fetcher")
-        await fetcher(`https://cors-e.herokuapp.com/https://api.govdelivery.com${prime._links.next.href}`, todo)
+        await fetcher(`https://cors.app.cloud.gov/https://api.govdelivery.com${prime._links.next.href}`, todo)
       }
     } else {
       console.log("no results in `next`... acc = ")

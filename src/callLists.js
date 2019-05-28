@@ -16,13 +16,13 @@ General Purpose
 // `user_date` = Latest date from user input
 const makeDate = (user_date, days_ago) => moment(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD')
 
-const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/`;
+const base_url = `https://cors.app.cloud.gov/https://api.govdelivery.com/api/v2/accounts/${account}/`;
 
 const makeURLDateRange = (user_date, end, start) => `start_date=${makeDate(user_date, start)}&end_date=${makeDate(user_date, end)}`
 
 const makeURL = (user_date, extURL, end, start) => `${base_url}${extURL}?${makeURLDateRange(user_date, end, start)}`
 
-const makeWklyURLArr = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day, day + 6))
+const makeWklyURLArr = (user_date, extURL, ...days) => days.map( day => makeURL(user_date, extURL, day, day + 6))
 const makeWklyURLArrNudge = (user_date, str, ...days) => days.map( day => makeURL(user_date, str, day - 1, day + 6))
 
 const makeWkFnArr = (user_date, _topics, func, end, start) => Object.values(_topics).map( id => makeURL(user_date, func(id), end, start))

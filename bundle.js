@@ -17159,7 +17159,7 @@ var makeDate = function makeDate(user_date, days_ago) {
   return (0, _moment["default"])(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD');
 };
 
-var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
+var base_url = "https://cors.app.cloud.gov/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
 
 var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
   return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
@@ -17169,13 +17169,13 @@ var makeURL = function makeURL(user_date, extURL, end, start) {
   return "".concat(base_url).concat(extURL, "?").concat(makeURLDateRange(user_date, end, start));
 };
 
-var makeWklyURLArr = function makeWklyURLArr(user_date, str) {
+var makeWklyURLArr = function makeWklyURLArr(user_date, extURL) {
   for (var _len = arguments.length, days = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     days[_key - 2] = arguments[_key];
   }
 
   return days.map(function (day) {
-    return makeURL(user_date, str, day, day + 6);
+    return makeURL(user_date, extURL, day, day + 6);
   });
 };
 
@@ -17692,7 +17692,7 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 console.log(todo);
                 console.log("recurring fetcher");
                 _context4.next = 30;
-                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
+                return fetcher("https://cors.app.cloud.gov/https://api.govdelivery.com".concat(prime._links.next.href), todo);
 
               case 30:
                 _context4.next = 35;
