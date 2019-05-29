@@ -46,7 +46,8 @@ Shallow Calls
 ================================== */
 
 // Bulletin Summary
-const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14)
+const bulletinsCallList = user_date => makeWklyURLArr(user_date, BSURL, 0, 7, 14)
+// const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14)
 
 // Subscriber Summary
 const subscribersCallList = user_date => makeWklyURLArr(user_date, SSURL, 0, 7, 14)

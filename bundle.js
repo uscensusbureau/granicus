@@ -17223,8 +17223,9 @@ Shallow Calls
 // Bulletin Summary
 
 var bulletinsCallList = function bulletinsCallList(user_date) {
-  return makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14);
-}; // Subscriber Summary
+  return makeWklyURLArr(user_date, BSURL, 0, 7, 14);
+}; // const bulletinsCallList = user_date => makeWklyURLArrNudge(user_date, BSURL, 0, 7, 14)
+// Subscriber Summary
 
 
 exports.bulletinsCallList = bulletinsCallList;
