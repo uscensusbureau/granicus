@@ -17159,7 +17159,7 @@ var makeDate = function makeDate(user_date, days_ago) {
   return (0, _moment["default"])(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD');
 };
 
-var base_url = "https://cors-e.herokuapp.com//https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
+var base_url = "https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
 
 var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
   return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
@@ -17425,7 +17425,7 @@ var fetcher = function fetcher(tableID, key) {
               case 0:
                 _context.next = 2;
                 return window.fetch(url, {
-                  method: "GET",
+                  method: 'GET',
                   headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/hal+json',
@@ -17440,8 +17440,8 @@ var fetcher = function fetcher(tableID, key) {
 
               case 5:
                 prime = _context.sent;
-                console.log("api call: " + url);
-                console.log("prime:");
+                console.log('api call: ' + url);
+                console.log('prime:');
                 console.table(prime);
                 return _context.abrupt("return", prime);
 
@@ -17465,21 +17465,21 @@ exports.fetcher = fetcher;
 var renameKeysWQMarks = function renameKeysWQMarks(obj) {
   var cleaned = (0, _lodash["default"])(obj, function (v, k) {
     switch (k) {
-      case "bulletin_visibility?":
+      case 'bulletin_visibility?':
         {
-          return "bulletin_visibility";
+          return 'bulletin_visibility';
         }
 
-      case "publish_to_rss?":
+      case 'publish_to_rss?':
         {
-          return "publish_to_rss";
+          return 'publish_to_rss';
         }
 
       default:
         return k;
     }
   });
-  return (0, _lodash2["default"])(cleaned, ["_links"]);
+  return (0, _lodash2["default"])(cleaned, ['_links']);
 }; // handle Many calls in one weekly bundle (e.g., Engagement Rates)
 
 
@@ -17509,7 +17509,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                           case 0:
                             _context2.next = 2;
                             return window.fetch(url, {
-                              method: "GET",
+                              method: 'GET',
                               headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/hal+json',
@@ -17530,7 +17530,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
 
                           case 5:
                             prime = _context2.sent;
-                            console.log("prime:");
+                            console.log('prime:');
                             console.table(prime);
                             return _context2.abrupt("return", prime);
 
@@ -17555,12 +17555,12 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
               case 5:
                 promiseArr = _context3.sent;
                 _context3.t0 = tableID;
-                _context3.next = _context3.t0 === "topics" ? 9 : _context3.t0 === "synthetic_rates" ? 10 : _context3.t0 === "bulletin_details" ? 11 : 13;
+                _context3.next = _context3.t0 === 'topics' ? 9 : _context3.t0 === 'synthetic_rates' ? 10 : _context3.t0 === 'bulletin_details' ? 11 : 13;
                 break;
 
               case 9:
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res, i) {
-                  if (res["name"]) {
+                  if (res['name']) {
                     // evens are engagement rate and odds are topic summaries
                     // if (i % 2 === 0) {
                     //   let todo = {}
@@ -17572,7 +17572,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                     //   return Object.assign(acc, todo)
                     // }
                     var todo = {};
-                    todo["".concat(res["name"], " Subscribers")] = res["total_subscriptions_to_date"];
+                    todo["".concat(res['name'], " Subscribers")] = res['total_subscriptions_to_date'];
                     return Object.assign(acc, todo);
                   } else {
                     return acc;
@@ -17581,7 +17581,7 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
 
               case 10:
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
-                  if (res["_links"]) {
+                  if (res['_links']) {
                     return Object.assign(acc, res);
                   } else {
                     return acc;
@@ -17589,11 +17589,11 @@ var arrayFetcher = function arrayFetcher(tableID, key) {
                 }, {}));
 
               case 11:
-                console.log("in arrayFetcher: bulletin_details");
+                console.log('in arrayFetcher: bulletin_details');
                 return _context3.abrupt("return", promiseArr.reduce(function (acc, res) {
-                  if (res["bulletin_activity_details"]) {
+                  if (res['bulletin_activity_details']) {
                     // fixes keys with question marks (not allowed in Tableau)
-                    return acc.concat(res["bulletin_activity_details"].map(function (o) {
+                    return acc.concat(res['bulletin_activity_details'].map(function (o) {
                       return renameKeysWQMarks(o);
                     }));
                   } else {
@@ -17633,7 +17633,7 @@ var detailFetcher = function detailFetcher(tableID, key) {
               case 0:
                 _context4.next = 2;
                 return window.fetch(url, {
-                  method: "GET",
+                  method: 'GET',
                   headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/hal+json',
@@ -17648,9 +17648,9 @@ var detailFetcher = function detailFetcher(tableID, key) {
 
               case 5:
                 prime = _context4.sent;
-                console.log("api call: " + url); // for hadling pagination (TBD):
+                console.log('api call: ' + url); // for hadling pagination (TBD):
 
-                if (!(tableID === "bulletin_details")) {
+                if (!(tableID === 'bulletin_details')) {
                   _context4.next = 37;
                   break;
                 }
@@ -17660,15 +17660,15 @@ var detailFetcher = function detailFetcher(tableID, key) {
                   break;
                 }
 
-                cur = prime["bulletin_activity_details"];
-                console.log("in bulletin_details...");
+                cur = prime['bulletin_activity_details'];
+                console.log('in bulletin_details...');
 
-                if (!(typeof cur === "undefined")) {
+                if (!(typeof cur === 'undefined')) {
                   _context4.next = 16;
                   break;
                 }
 
-                console.log("cur == undefined");
+                console.log('cur == undefined');
                 return _context4.abrupt("return", acc);
 
               case 16:
@@ -17678,7 +17678,7 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 }
 
                 last = acc.concat(cur);
-                console.log("Less than 20 results: ");
+                console.log('Less than 20 results: ');
                 console.log(last);
                 return _context4.abrupt("return", last);
 
@@ -17689,18 +17689,18 @@ var detailFetcher = function detailFetcher(tableID, key) {
                 }
 
                 todo = acc.concat(cur);
-                console.log("More than 20 results: ");
+                console.log('More than 20 results: ');
                 console.log(todo);
-                console.log("recurring fetcher");
+                console.log('recurring fetcher');
                 _context4.next = 30;
-                return fetcher("https://cors.app.cloud.gov/https://api.govdelivery.com".concat(prime._links.next.href), todo);
+                return fetcher("https://cors-e.herokuapp.com/https://api.govdelivery.com".concat(prime._links.next.href), todo);
 
               case 30:
                 _context4.next = 35;
                 break;
 
               case 32:
-                console.log("no results in `next`... acc = ");
+                console.log('no results in `next`... acc = ');
                 console.table(acc);
                 return _context4.abrupt("return", acc);
 

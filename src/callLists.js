@@ -19,7 +19,7 @@ const makeDate = (user_date, days_ago) =>
     .subtract(days_ago, 'days')
     .format('YYYY-MM-DD')
 
-const base_url = `https://cors-e.herokuapp.com//https://api.govdelivery.com/api/v2/accounts/${account}/`
+const base_url = `https://cors-e.herokuapp.com/https://api.govdelivery.com/api/v2/accounts/${account}/`
 
 const makeURLDateRange = (user_date, end, start) =>
   `start_date=${makeDate(user_date, start)}&end_date=${makeDate(user_date, end)}`
