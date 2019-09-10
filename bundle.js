@@ -17148,7 +17148,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 URL Creating Functions
 ================================== */
 // account number
-var account = "11723";
+var account = '11723';
 /* =================================
 General Purpose
 ================================== */
@@ -17159,7 +17159,7 @@ var makeDate = function makeDate(user_date, days_ago) {
   return (0, _moment["default"])(user_date).subtract(days_ago, 'days').format('YYYY-MM-DD');
 };
 
-var base_url = "https://cors.app.cloud.gov/https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
+var base_url = "https://cors-e.herokuapp.com//https://api.govdelivery.com/api/v2/accounts/".concat(account, "/");
 
 var makeURLDateRange = function makeURLDateRange(user_date, end, start) {
   return "start_date=".concat(makeDate(user_date, start), "&end_date=").concat(makeDate(user_date, end));
@@ -17212,11 +17212,11 @@ Endpoints (extensions)
 // Bulletins summary url:
 
 
-var BSURL = "reports/bulletins/summary"; // Subscriber summary url:
+var BSURL = 'reports/bulletins/summary'; // Subscriber summary url:
 
-var SSURL = "reports/subscriber_activity/summary"; // Bulletins report url:
+var SSURL = 'reports/subscriber_activity/summary'; // Bulletins report url:
 
-var BURL = "reports/bulletins";
+var BURL = 'reports/bulletins';
 /* =================================
 Shallow Calls
 ================================== */
@@ -17252,24 +17252,24 @@ Topics List
 
 exports.syntheticCallList = syntheticCallList;
 var topics = {
-  "General 2020 Census Updates": "289016",
-  "America Counts": "449122",
+  'General 2020 Census Updates': '289016',
+  'America Counts': '449122',
   // "USCENSUS_11939",
-  "Census Academy": "454831",
+  'Census Academy': '454831',
   // "USCENSUS_11971",
-  "Census Jobs": "449126",
+  'Census Jobs': '449126',
   // "USCENSUS_11941",
-  "Census Partnerships": "452433",
+  'Census Partnerships': '452433',
   // "USCENSUS_11958",
-  "Census Updates": "444983",
+  'Census Updates': '444983',
   // "USCENSUS_11926",
-  "Census Updates for Business": "444992",
+  'Census Updates for Business': '444992',
   // "USCENSUS_11927",
-  "Data Visualization Newsletter": "447782",
+  'Data Visualization Newsletter': '447782',
   // "USCENSUS_11932",
-  "Statistics in Schools": "449124",
+  'Statistics in Schools': '449124',
   // "USCENSUS_11940",
-  "Stats for Stories": "452958" // "USCENSUS_11960"
+  'Stats for Stories': '452958' // "USCENSUS_11960"
   // let topics = fullTopicMap
 
   /* =================================
@@ -17321,16 +17321,16 @@ exports.topicsCallList = topicsCallList;
 var makeTopicParams = function makeTopicParams(topicIDs) {
   var _ref;
 
-  return (_ref = "").concat.apply(_ref, _toConsumableArray(Object.values(topicIDs).map(function (topicID) {
+  return (_ref = '').concat.apply(_ref, _toConsumableArray(Object.values(topicIDs).map(function (topicID) {
     return "&topic%5B%5D=".concat(topicID);
   })));
 };
 
 var bulletinDetailsCallsForDays = function bulletinDetailsCallsForDays(user_date, days) {
   return _toConsumableArray(Array(days).keys()).map(function (day) {
-    console.log("in bulletinDetailsCallsForDays");
+    console.log('in bulletinDetailsCallsForDays');
     var result = "".concat(makeURL(user_date, BURL, day, day + 1)).concat(makeTopicParams(topics));
-    console.log("url:");
+    console.log('url:');
     console.log(result);
     return result;
   });
